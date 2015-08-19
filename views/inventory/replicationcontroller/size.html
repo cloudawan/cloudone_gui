@@ -1,0 +1,34 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Resize Replication Controller</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/inventory/replicationcontroller/size" method="post">		
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" readonly="readonly">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="size">Replica Amount:</label>
+					<div class="col-md-9">
+						<input id="size" class="form-control" type="number" name="size" value="{{ .size }}" min="1" max="1000">
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Resize">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

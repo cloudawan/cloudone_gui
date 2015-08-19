@@ -1,0 +1,167 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Create Image</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/repository/imageinformation/create" method="post">		
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="kind">Type:</label>
+					<div class="col-md-9">
+						<select id="kind" class="form-control" name="kind" onchange="moduleImageInformationCreate.switchInput(this.value);">
+							<option value="git">Git</option>
+							<option value="scp">SCP</option>
+							<option value="sftp">SFTP</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="description">Description:</label>
+					<div class="col-md-9">
+						<input id="description" class="form-control" type="text" name="description">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="repositoryPath">Repository Path(Domain name format):</label>
+					<div class="col-md-9">
+						<input id="repositoryPath" class="form-control" type="text" name="repositoryPath">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sourceCodeProject">Source Code Project:</label>
+					<div class="col-md-9">
+						<input id="sourceCodeProject" class="form-control" type="text" name="sourceCodeProject">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sourceCodeDirectory">Source Code Directory:</label>
+					<div class="col-md-9">
+						<input id="sourceCodeDirectory" class="form-control" type="text" name="sourceCodeDirectory">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sourceCodeMakeScript">Source Code Make Script:</label>
+					<div class="col-md-9">
+						<input id="sourceCodeMakeScript" class="form-control" type="text" name="sourceCodeMakeScript">
+					</div>
+				</div>
+				<div class="form-group">
+						<label class="col-md-3 control-label" for="environmentFile">Environment File:</label>
+						<div class="col-md-9">
+							<input id="environmentFile" class="form-control" type="text" name="environmentFile">
+						</div>
+					</div>
+				
+				<div id="git_specific">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="sourceCodeURL">Source Code URL:</label>
+						<div class="col-md-9">
+							<input id="sourceCodeURL" class="form-control" type="text" name="sourceCodeURL">
+						</div>
+					</div>
+				</div>
+					
+				<div id="file_specific">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="hostAndPort">Host And Port:</label>
+						<div class="col-md-9">
+							<input id="hostAndPort" class="form-control" type="text" name="hostAndPort">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="username">Username:</label>
+						<div class="col-md-9">
+							<input id="username" class="form-control" type="text" name="username">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="password">Password:</label>
+						<div class="col-md-9">
+							<input id="password" class="form-control" type="text" name="password">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="sourcePath">Source Path:</label>
+						<div class="col-md-9">
+							<input id="sourcePath" class="form-control" type="text" name="sourcePath">
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="versionFile">Version File:</label>
+						<div class="col-md-9">
+							<input id="versionFile" class="form-control" type="text" name="versionFile">
+						</div>
+					</div>
+				</div>
+				
+				<div id="scp_specific">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="compressFileName">Compress File Name:</label>
+						<div class="col-md-9">
+							<input id="compressFileName" class="form-control" type="text" name="compressFileName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="unpackageCommand">Unpackage Command:</label>
+						<div class="col-md-9">
+							<input id="unpackageCommand" class="form-control" type="text" name="unpackageCommand">
+						</div>
+					</div>
+				</div>		
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/">Cancel</a>
+				<input class="btn btn-md btn-success pull-right" type="submit" value="Deploy"
+						onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" >
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript"> 
+
+	    var moduleImageInformationCreate = (function(){
+			var switchInput = function(kind) {
+				switch(kind) {
+					case "git":
+						$("#git_specific").show();
+						$("#file_specific").hide();
+						$("#scp_specific").hide();
+						break;
+					case "scp":
+						$("#git_specific").hide();
+						$("#file_specific").show();
+						$("#scp_specific").show();
+						break;
+					default:
+						$("#git_specific").hide();
+						$("#file_specific").show();
+						$("#scp_specific").hide();
+						break;
+				}
+			};
+			
+			switchInput("git");
+			
+			return {
+				switchInput: switchInput
+			};
+		})();
+		
+
+    </script>
+{{ end}}

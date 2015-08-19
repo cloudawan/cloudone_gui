@@ -1,0 +1,31 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Pod Log</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal">		
+				<div class="form-group">
+					<div class="form-group">
+									
+					<textarea readonly rows="30" cols="125">
+						{{ .log }}
+					</textarea>
+					
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" 
+					onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" 
+					href="/gui/inventory/replicationcontroller/">Cancel</a>
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

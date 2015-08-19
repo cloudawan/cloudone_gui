@@ -1,0 +1,86 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/inventory/service/edit" method="post">		
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .service }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="selectorName">Selector:</label>
+					<div class="col-md-9">
+						<input id="selectorName" class="form-control" type="text" name="selectorName">
+					</div>
+				</div>
+				<!--
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="labelName">Label(Name):</label>
+					<div class="col-md-9">
+						<input id="labelName" class="form-control" type="text" name="labelName">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="portName">Port Name:</label>
+					<div class="col-md-9">
+						<input id="portName" class="form-control" type="text" name="portName">
+					</div>
+				</div>
+				-->
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="protocol">Protocol:</label>
+					<div class="col-md-9">
+						<select id="protocol" class="form-control" name="protocol">
+							<option value="TCP">TCP</option>
+							<option value="UDP">UDP</option>
+						</select>
+					</div>
+				</div>
+					
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="port">Port:</label>
+					<div class="col-md-9">
+						<input id="port" class="form-control" type="number" name="port" min="1" max="65535">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="targetPort">Target Port:</label>
+					<div class="col-md-9">
+						<input id="targetPort" class="form-control" type="number" name="targetPort" min="1" max="65535">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="nodePort">Node Port:</label>
+					<div class="col-md-9">
+						<input id="nodePort" class="form-control" type="number" name="nodePort" min="30000" max="32767">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sessionAffinity">Session Affinity:</label>
+					<div class="col-md-9">
+						<select id="sessionAffinity" class="form-control" name="sessionAffinity">
+							<option value="None">None</option>
+							<option value="ClientIP">ClientIP</option>
+						</select>
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="{{.actionButtonValue}}">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

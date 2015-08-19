@@ -1,0 +1,70 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Image Record List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="">
+				<a class="btn btn-md btn-warning pull-right" 
+					href="/gui/repository/imageinformation"
+					onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" >Cancel</a>
+			</div>
+
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Version</th>
+					<th>Path</th>
+					<th>VersionInfo</th>
+					<th>Environment</th>
+					<th>Description</th>
+					<th>CreatedTime</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $imageRecordKey, $imageRecord := .imageRecordSlice}}
+					<tr>
+						<td>{{$imageRecordKey}}</td>
+						<td>{{$imageRecord.ImageInformation}}</td>
+						<td>{{$imageRecord.Version}}</td>
+						<td>{{$imageRecord.Path}}</td>
+						<td>
+							{{range $versionKey, $versionValue := $imageRecord.VersionInfo}}
+								{{ $versionKey }}: {{ $versionValue }}<br/>
+							{{end}}
+						</td>
+						<td>
+							{{range $environmentKey, $environmentValue := $imageRecord.Environment}}
+								{{ $environmentKey }}: {{ $environmentValue }}<br/>
+							{{end}}
+						</td>
+						<td>{{$imageRecord.Description}}</td>
+						<td>{{$imageRecord.CreatedTime}}</td>
+						<td>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imagerecord/delete?name={{$imageRecord.ImageInformation}}&version={{$imageRecord.Version}}">Delete</a>
+						</td>
+					</thead>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

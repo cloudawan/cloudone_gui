@@ -1,0 +1,88 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Update Deploy</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/deploy/deploy/update" method="post">		
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" readonly="readonly">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="version">Version:</label>
+					<div class="col-md-9">
+						<select id="version" class="form-control" name="version" onchange="moduleDeployDeployUpdate.hideAll();moduleDeployDeployUpdate.show(this.value);">
+							{{ range $versionKey, $version := .versionSlice}}
+								<option value="{{ $version }}">{{ $version }}</option>
+							{{end}}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="description">Description:</label>
+					<div class="col-md-9">
+						<input id="description" class="form-control" type="text" name="description">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" >Environment Value:</label>
+				</div>
+				
+				{{ range $version, $environmentMap := .versionEnvironmentMap}}
+				<div id="{{ $version }}_specific">
+					{{ range $environment, $description := $environmentMap}}
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="{{ $version }}_{{ $environment }}">{{ $environment }}:</label>
+						<div class="col-md-9">
+							<input id="{{ $version }}_{{ $environment }}" class="form-control" type="text" name="{{ $version }}_{{ $environment }}">
+						</div>
+					</div>
+					{{end}}
+				</div>
+				{{end}}
+				
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" type="submit" value="Deploy"
+						onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" >
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript">
+
+	var moduleDeployDeployUpdate = (function(){
+		
+		var hideAll = function() {
+			{{ range $versionKey, $version := .versionSlice}}
+			$("#{{ $version }}_specific").hide()
+			{{end}}
+			
+		}
+		
+		var show = function(version) {
+			$("#" + version + "_specific").show()
+		}
+		
+		hideAll();
+		show($("#version").val());
+		
+		return {
+			hideAll: hideAll,
+			show: show,
+		};
+	})();
+
+	</script>
+{{ end}}
