@@ -40,6 +40,20 @@
 						<textarea id="environment" class="form-control" name="environment" rows="10" cols="50">{{ .environment }}</textarea>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="scriptType">Script Type:</label>
+					<div class="col-md-9">
+						<select id="scriptType" class="form-control" name="scriptType" value="{{ .scriptType }}">
+							<option value="python">Python</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="scriptContent">Script Content:</label>
+					<div class="col-md-9">
+						<textarea id="scriptContent" class="form-control" name="scriptContent" rows="10" cols="50">{{ .scriptContent }}</textarea>
+					</div>
+				</div>
 
 				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/">Cancel</a>
 				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="{{.actionButtonValue}}">

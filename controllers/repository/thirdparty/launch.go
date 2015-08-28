@@ -7,12 +7,14 @@ import (
 	"strings"
 )
 
-type StatelessSerializable struct {
+type Cluster struct {
 	Name                      string
 	Description               string
-	ReplicationControllerJson map[string]interface{}
-	ServiceJson               map[string]interface{}
+	ReplicationControllerJson string
+	ServiceJson               string
 	Environment               map[string]string
+	ScriptType                string
+	ScriptContent             string
 }
 
 type LaunchController struct {
@@ -30,9 +32,9 @@ func (c *LaunchController) Get() {
 	name := c.GetString("name")
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/statelessapplications/" + name
-	statelessSerializable := StatelessSerializable{}
-	_, err := restclient.RequestGetWithStructure(url, &statelessSerializable)
+		"/api/v1/clusterapplications/" + name
+	cluster := Cluster{}
+	_, err := restclient.RequestGetWithStructure(url, &cluster)
 
 	if err != nil {
 		guimessage.AddDanger("Fail to get with error" + err.Error())
@@ -44,7 +46,7 @@ func (c *LaunchController) Get() {
 		c.Data["actionButtonValue"] = "Launch"
 		c.Data["pageHeader"] = "Launch third party service"
 		c.Data["thirdPartyApplicationName"] = name
-		c.Data["environment"] = statelessSerializable.Environment
+		c.Data["environment"] = cluster.Environment
 
 		guimessage.OutputMessage(c.Data)
 	}
@@ -61,6 +63,7 @@ func (c *LaunchController) Post() {
 
 	namespace, _ := c.GetSession("namespace").(string)
 	name := c.GetString("name")
+	size := c.GetString("size")
 
 	keySlice := make([]string, 0)
 	inputMap := c.Input()
@@ -82,8 +85,8 @@ func (c *LaunchController) Post() {
 	}
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/statelessapplications/launch/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
+		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
 	jsonMap := make(map[string]interface{})
 	nil, err := restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap)
 
@@ -96,7 +99,7 @@ func (c *LaunchController) Post() {
 			guimessage.AddDanger(err.Error())
 		}
 	} else {
-		guimessage.AddSuccess("Stateless application " + name + " is launched")
+		guimessage.AddSuccess("Cluster application " + name + " is launched")
 	}
 
 	// Redirect to list

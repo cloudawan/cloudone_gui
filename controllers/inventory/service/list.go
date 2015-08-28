@@ -30,11 +30,9 @@ type ServicePort struct {
 }
 
 var displayMap map[string]string = map[string]string{
-	"elasticsearch":         "disabled",
-	"cassandra":             "disabled",
 	"kube-dns":              "disabled",
 	"kubernetes":            "disabled",
-	"private-repository":    "disabled",
+	"private-registry":      "disabled",
 	"kubernetes-management": "disabled",
 }
 

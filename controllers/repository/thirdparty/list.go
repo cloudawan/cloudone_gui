@@ -24,7 +24,7 @@ func (c *ListController) Get() {
 	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/statelessapplications/"
+		"/api/v1/clusterapplications/"
 
 	thirdPartyApplicationSlice := make([]ThirdPartyApplication, 0)
 

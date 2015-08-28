@@ -28,9 +28,9 @@ func (c *EditController) Get() {
 		guimessage.OutputMessage(c.Data)
 	} else {
 		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-			"/api/v1/statelessapplications/" + name
-		statelessSerializable := StatelessSerializable{}
-		_, err := restclient.RequestGetWithStructure(url, &statelessSerializable)
+			"/api/v1/clusterapplications/" + name
+		cluster := Cluster{}
+		_, err := restclient.RequestGetWithStructure(url, &cluster)
 		if err != nil {
 			guimessage.AddDanger("Fail to get with error" + err.Error())
 			// Redirect to list
@@ -38,25 +38,7 @@ func (c *EditController) Get() {
 
 			guimessage.RedirectMessage(c)
 		} else {
-			replicationControllerByteSlice, err := json.MarshalIndent(statelessSerializable.ReplicationControllerJson, "", "    ")
-			if err != nil {
-				guimessage.AddDanger("Fail to get with error" + err.Error())
-				// Redirect to list
-				c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
-
-				guimessage.RedirectMessage(c)
-			}
-
-			serviceByteSlice, err := json.MarshalIndent(statelessSerializable.ServiceJson, "", "    ")
-			if err != nil {
-				guimessage.AddDanger("Fail to get with error" + err.Error())
-				// Redirect to list
-				c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
-
-				guimessage.RedirectMessage(c)
-			}
-
-			environmentByteSlice, err := json.MarshalIndent(statelessSerializable.Environment, "", "    ")
+			environmentByteSlice, err := json.MarshalIndent(cluster.Environment, "", "    ")
 			if err != nil {
 				guimessage.AddDanger("Fail to get with error" + err.Error())
 				// Redirect to list
@@ -67,11 +49,13 @@ func (c *EditController) Get() {
 
 			c.Data["actionButtonValue"] = "Update"
 			c.Data["pageHeader"] = "Update third party service"
-			c.Data["name"] = statelessSerializable.Name
-			c.Data["description"] = statelessSerializable.Description
-			c.Data["replicationControllerJson"] = string(replicationControllerByteSlice)
-			c.Data["serviceJson"] = string(serviceByteSlice)
+			c.Data["name"] = cluster.Name
+			c.Data["description"] = cluster.Description
+			c.Data["replicationControllerJson"] = string(cluster.ReplicationControllerJson)
+			c.Data["serviceJson"] = cluster.ServiceJson
 			c.Data["environment"] = string(environmentByteSlice)
+			c.Data["scriptType"] = cluster.ScriptType
+			c.Data["scriptContent"] = cluster.ScriptContent
 
 			guimessage.OutputMessage(c.Data)
 		}
@@ -87,35 +71,17 @@ func (c *EditController) Post() {
 
 	name := c.GetString("name")
 	description := c.GetString("description")
-	replicationControllerJsonText := c.GetString("replicationControllerJson")
-	serviceJsonText := c.GetString("serviceJson")
+	replicationControllerJson := c.GetString("replicationControllerJson")
+	serviceJson := c.GetString("serviceJson")
 	environmentText := c.GetString("environment")
 	if environmentText == "" {
 		environmentText = "{}"
 	}
-
-	replicationControllerJsonMap := make(map[string]interface{})
-	err := json.Unmarshal([]byte(replicationControllerJsonText), &replicationControllerJsonMap)
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
-		guimessage.RedirectMessage(c)
-		return
-	}
-
-	serviceJsonMap := make(map[string]interface{})
-	err = json.Unmarshal([]byte(serviceJsonText), &serviceJsonMap)
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
-		guimessage.RedirectMessage(c)
-		return
-	}
+	scriptType := c.GetString("scriptType")
+	scriptContent := c.GetString("scriptContent")
 
 	environmentJsonMap := make(map[string]string)
-	err = json.Unmarshal([]byte(environmentText), &environmentJsonMap)
+	err := json.Unmarshal([]byte(environmentText), &environmentJsonMap)
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -124,17 +90,20 @@ func (c *EditController) Post() {
 		return
 	}
 
-	statelessApplicationJsonMap := make(map[string]interface{})
-	statelessApplicationJsonMap["name"] = name
-	statelessApplicationJsonMap["description"] = description
-	statelessApplicationJsonMap["replicationControllerJson"] = replicationControllerJsonMap
-	statelessApplicationJsonMap["serviceJson"] = serviceJsonMap
-	statelessApplicationJsonMap["environment"] = environmentJsonMap
+	cluster := Cluster{
+		name,
+		description,
+		replicationControllerJson,
+		serviceJson,
+		environmentJsonMap,
+		scriptType,
+		scriptContent,
+	}
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/statelessapplications/"
+		"/api/v1/clusterapplications/"
 
-	_, err = restclient.RequestPost(url, statelessApplicationJsonMap, true)
+	_, err = restclient.RequestPost(url, cluster, true)
 
 	if err != nil {
 		// Error

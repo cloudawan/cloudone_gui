@@ -20,14 +20,14 @@ func (c *DeleteController) Get() {
 	name := c.GetString("name")
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/statelessapplications/" + name
+		"/api/v1/clusterapplications/" + name
 	_, err := restclient.RequestDelete(url, nil, true)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess("Stateless application " + name + " is deleted")
+		guimessage.AddSuccess("Third party service " + name + " is deleted")
 	}
 
 	// Redirect to list
