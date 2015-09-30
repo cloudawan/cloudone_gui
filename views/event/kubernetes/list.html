@@ -22,6 +22,9 @@
 					<th>#</th>
 					-->
 					<th>Namespace</th>
+					<th>Name</th>
+					<th>Kind</th>
+					<th>Source</th>
 					<th>First Timestamp (UTC)</th>
 					<th>LastT imestamp (UTC)</th>
 					<th>Count</th>
@@ -37,6 +40,13 @@
 						<td>{{$kubernetesEventKey}}</td>
 						-->
 						<td>{{$kubernetesEvent.Namespace}}</td>
+						<td>{{$kubernetesEvent.Name}}</td>
+						<td>{{$kubernetesEvent.Kind}}</td>
+						<td>
+							{{range $sourceKey, $sourceValue := $kubernetesEvent.Source}}
+								{{$sourceKey}}: {{$sourceValue}}<br/>
+							{{end}}
+						</td>
 						<td>{{$kubernetesEvent.FirstTimestamp}}</td>
 						<td>{{$kubernetesEvent.LastTimestamp}}</td>
 						<td>{{$kubernetesEvent.Count}}</td>

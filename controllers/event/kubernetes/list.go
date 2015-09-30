@@ -28,6 +28,9 @@ type ListController struct {
 
 type KubernetesEvent struct {
 	Namespace      string
+	Name           string
+	Kind           string
+	Source         map[string]interface{}
 	Id             string
 	FirstTimestamp string
 	LastTimestamp  string
@@ -85,6 +88,9 @@ func (c *ListController) Get() {
 			sourceJsonMap, _ := jsonMap["_source"].(map[string]interface{})
 
 			namespace, _ := sourceJsonMap["metadata"].(map[string]interface{})["namespace"].(string)
+			name, _ := sourceJsonMap["involvedObject"].(map[string]interface{})["name"].(string)
+			kind, _ := sourceJsonMap["involvedObject"].(map[string]interface{})["kind"].(string)
+			source, _ := sourceJsonMap["source"].(map[string]interface{})
 			id, _ := jsonMap["_id"].(string)
 			firstTimestamp, _ := sourceJsonMap["firstTimestamp"].(string)
 			lastTimestamp, _ := sourceJsonMap["lastTimestamp"].(string)
@@ -109,6 +115,9 @@ func (c *ListController) Get() {
 
 			kubernetesEvent := KubernetesEvent{
 				namespace,
+				name,
+				kind,
+				source,
 				id,
 				firstTimestamp,
 				lastTimestamp,

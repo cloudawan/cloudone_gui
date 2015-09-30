@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/astaxie/beego"
+	"github.com/cloudawan/kubernetes_management_gui/Godeps/_workspace/src/github.com/astaxie/beego"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/identity"
 	restapiidentity "github.com/cloudawan/kubernetes_management_gui/restapi/v1/identity"
 	_ "github.com/cloudawan/kubernetes_management_gui/routers"
