@@ -72,7 +72,13 @@ func (c *EditController) Post() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	replicationControllerJson := c.GetString("replicationControllerJson")
+	if replicationControllerJson == "" {
+		replicationControllerJson = "{}"
+	}
 	serviceJson := c.GetString("serviceJson")
+	if serviceJson == "" {
+		serviceJson = "{}"
+	}
 	environmentText := c.GetString("environment")
 	if environmentText == "" {
 		environmentText = "{}"
