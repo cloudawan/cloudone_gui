@@ -35,7 +35,6 @@
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$deployBlueGreen.ImageInformation}}&currentEnvironment={{$deployBlueGreen.Namespace}}&nodePort={{$deployBlueGreen.NodePort}}&description={{$deployBlueGreen.Description}}">Select</a>
 							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/delete?imageInformation={{$deployBlueGreen.ImageInformation}}">Delete</a>
 						</td>
-					</thead>
 					</tr>
 				{{end}}
 			</tbody>

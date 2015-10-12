@@ -21,6 +21,7 @@ import (
 	"github.com/cloudawan/kubernetes_management_gui/controllers/deploy/autoscaler"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/deploy/deploy"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/deploy/deploybluegreen"
+	"github.com/cloudawan/kubernetes_management_gui/controllers/deploy/deployclusterapplication"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/event/kubernetes"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/identity"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/inventory/replicationcontroller"
@@ -79,6 +80,8 @@ func init() {
 	beego.Router("/gui/deploy/deploybluegreen/", &deploybluegreen.ListController{})
 	beego.Router("/gui/deploy/deploybluegreen/delete", &deploybluegreen.DeleteController{})
 	beego.Router("/gui/deploy/deploybluegreen/select", &deploybluegreen.SelectController{})
+	beego.Router("/gui/deploy/deployclusterapplication/", &deployclusterapplication.ListController{})
+	beego.Router("/gui/deploy/deployclusterapplication/delete", &deployclusterapplication.DeleteController{})
 	beego.Router("/gui/deploy/autoscaler/", &autoscaler.ListController{})
 	beego.Router("/gui/deploy/autoscaler/delete", &autoscaler.DeleteController{})
 	beego.Router("/gui/deploy/autoscaler/edit", &autoscaler.EditController{})
