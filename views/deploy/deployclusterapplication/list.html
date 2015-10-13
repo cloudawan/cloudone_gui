@@ -30,6 +30,7 @@
 						<td>{{$deployClusterApplication.ServiceName}}</td>
 						<td>{{$deployClusterApplication.ReplicationControllerNameSlice}}</td>
 						<td>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deployclusterapplication/size?name={{$deployClusterApplication.Name}}&size={{$deployClusterApplication.Size}}" >Resize</a>	
 							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deployclusterapplication/delete?clusterApplicationName={{$deployClusterApplication.Name}}">Delete</a>
 						</td>
 					</tr>

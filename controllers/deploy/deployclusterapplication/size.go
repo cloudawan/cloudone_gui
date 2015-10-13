@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package thirdparty
+package deployclusterapplication
 
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/kubernetes_management_utility/restclient"
-	"strings"
 )
 
 type Cluster struct {
@@ -31,42 +30,46 @@ type Cluster struct {
 	ScriptContent             string
 }
 
-type LaunchController struct {
+type ReplicationController struct {
+	Name           string
+	ReplicaAmount  int
+	Selector       ReplicationControllerSelector
+	Label          ReplicationControllerLabel
+	ContainerSlice []ReplicationControllerContainer
+}
+
+type ReplicationControllerSelector struct {
+	Name    string
+	Version string
+}
+
+type ReplicationControllerLabel struct {
+	Name string
+}
+
+type ReplicationControllerContainer struct {
+	Name             string
+	Image            string
+	PortSlice        []ReplicationControllerContainerPort
+	EnvironmentSlice []ReplicationControllerContainerEnvironment
+}
+
+type ReplicationControllerContainerPort struct {
+	Name          string
+	ContainerPort int
+}
+
+type ReplicationControllerContainerEnvironment struct {
+	Name  string
+	Value string
+}
+
+type SizeController struct {
 	beego.Controller
 }
 
-func (c *LaunchController) Get() {
-	c.TplNames = "repository/thirdparty/launch.html"
-	guimessage := guimessagedisplay.GetGUIMessage(c)
-
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
-
-	name := c.GetString("name")
-
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/clusterapplications/" + name
-	cluster := Cluster{}
-	_, err := restclient.RequestGetWithStructure(url, &cluster)
-
-	if err != nil {
-		guimessage.AddDanger("Fail to get with error" + err.Error())
-		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
-
-		guimessage.RedirectMessage(c)
-	} else {
-		c.Data["actionButtonValue"] = "Launch"
-		c.Data["pageHeader"] = "Launch third party service"
-		c.Data["thirdPartyApplicationName"] = name
-		c.Data["environment"] = cluster.Environment
-
-		guimessage.OutputMessage(c.Data)
-	}
-}
-
-func (c *LaunchController) Post() {
+func (c *SizeController) Get() {
+	c.TplNames = "deploy/deployclusterapplication/size.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
@@ -76,6 +79,59 @@ func (c *LaunchController) Post() {
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
 	namespace, _ := c.GetSession("namespace").(string)
+
+	name := c.GetString("name")
+	size := c.GetString("size")
+
+	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		"/api/v1/clusterapplications/" + name
+	cluster := Cluster{}
+	_, err := restclient.RequestGetWithStructure(url, &cluster)
+
+	if err != nil {
+		guimessage.AddDanger("Fail to get cluster application with error" + err.Error())
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+
+		guimessage.RedirectMessage(c)
+	} else {
+		c.Data["name"] = name
+		c.Data["size"] = size
+
+		// Get configured environment from the first instance
+		clusterApplicationFirstInstanceName := name + "-instance-0"
+		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+			"/api/v1/replicationcontrollers/" + namespace + "/" + clusterApplicationFirstInstanceName +
+			"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
+		replicationController := ReplicationController{}
+		_, err := restclient.RequestGetWithStructure(url, &replicationController)
+
+		// Cluster application
+		if err == nil {
+			for _, container := range replicationController.ContainerSlice {
+				for _, environment := range container.EnvironmentSlice {
+					cluster.Environment[environment.Name] = environment.Value
+				}
+			}
+
+			c.Data["environment"] = cluster.Environment
+		}
+
+		guimessage.OutputMessage(c.Data)
+	}
+}
+
+func (c *SizeController) Post() {
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
+	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
+	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	kubeapiHost := beego.AppConfig.String("kubeapiHost")
+	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+
+	namespace, _ := c.GetSession("namespace").(string)
+
 	name := c.GetString("name")
 	size := c.GetString("size")
 
@@ -83,10 +139,7 @@ func (c *LaunchController) Post() {
 	inputMap := c.Input()
 	if inputMap != nil {
 		for key, _ := range inputMap {
-			// Ignore the non environment field
-			if key != "name" && key != "size" {
-				keySlice = append(keySlice, key)
-			}
+			keySlice = append(keySlice, key)
 		}
 	}
 
@@ -102,24 +155,18 @@ func (c *LaunchController) Post() {
 	}
 
 	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
-		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
+		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
-	jsonMap := make(map[string]interface{})
-	nil, err := restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap)
+
+	_, err := restclient.RequestPut(url, environmentSlice, true)
 
 	if err != nil {
 		// Error
-		errorMessage, _ := jsonMap["Error"].(string)
-		if strings.HasPrefix(errorMessage, "Replication controller already exists") {
-			guimessage.AddDanger("Replication controller " + name + " already exists")
-		} else {
-			guimessage.AddDanger(err.Error())
-		}
+		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess("Cluster application " + name + " is launched")
+		guimessage.AddSuccess("Cluster application " + name + " is resized")
 	}
 
-	// Redirect to list
 	c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
 
 	guimessage.RedirectMessage(c)

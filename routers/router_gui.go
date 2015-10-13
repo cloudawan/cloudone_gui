@@ -81,6 +81,7 @@ func init() {
 	beego.Router("/gui/deploy/deploybluegreen/delete", &deploybluegreen.DeleteController{})
 	beego.Router("/gui/deploy/deploybluegreen/select", &deploybluegreen.SelectController{})
 	beego.Router("/gui/deploy/deployclusterapplication/", &deployclusterapplication.ListController{})
+	beego.Router("/gui/deploy/deployclusterapplication/size", &deployclusterapplication.SizeController{})
 	beego.Router("/gui/deploy/deployclusterapplication/delete", &deployclusterapplication.DeleteController{})
 	beego.Router("/gui/deploy/autoscaler/", &autoscaler.ListController{})
 	beego.Router("/gui/deploy/autoscaler/delete", &autoscaler.DeleteController{})

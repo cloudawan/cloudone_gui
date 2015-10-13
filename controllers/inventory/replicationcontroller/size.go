@@ -51,7 +51,7 @@ func (c *SizeController) Post() {
 		"/api/v1/replicationcontrollers/size/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
 
 	putBodyJsonMap := make(map[string]interface{})
-	putBodyJsonMap["size"] = size
+	putBodyJsonMap["Size"] = size
 
 	_, err := restclient.RequestPut(url, putBodyJsonMap, true)
 
