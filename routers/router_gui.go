@@ -33,6 +33,7 @@ import (
 	"github.com/cloudawan/kubernetes_management_gui/controllers/repository/imageinformation"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/repository/imagerecord"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/repository/thirdparty"
+	"github.com/cloudawan/kubernetes_management_gui/controllers/storage/glusterfs/volume"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/system/namespace"
 )
 
@@ -88,4 +89,7 @@ func init() {
 	beego.Router("/gui/deploy/autoscaler/edit", &autoscaler.EditController{})
 	beego.Router("/gui/event/kubernetes/", &kubernetes.ListController{})
 	beego.Router("/gui/event/kubernetes/acknowledge", &kubernetes.AcknowledgeController{})
+	beego.Router("/gui/storage/glusterfs/volume/", &volume.ListController{})
+	beego.Router("/gui/storage/glusterfs/volume/create", &volume.CreateController{})
+	beego.Router("/gui/storage/glusterfs/volume/delete", &volume.DeleteController{})
 }

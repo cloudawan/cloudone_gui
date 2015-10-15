@@ -1,0 +1,121 @@
+// Copyright 2015 CloudAwan LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package volume
+
+import (
+	"fmt"
+	"github.com/astaxie/beego"
+	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/kubernetes_management_utility/restclient"
+)
+
+type GlusterfsVolumeInput struct {
+	Name      string
+	Stripe    int
+	Replica   int
+	Transport string
+	IpList    []string
+}
+
+type GlusterfsVolumeControl struct {
+	GlusterfsClusterIPSlice []string
+	GlusterfsPath           string
+}
+
+type CreateController struct {
+	beego.Controller
+}
+
+func (c *CreateController) Get() {
+	c.TplNames = "storage/glusterfs/volume/create.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
+	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
+	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+
+	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		"/api/v1/glusterfsvolumes/configuration"
+
+	glusterfsVolumeControl := GlusterfsVolumeControl{}
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeControl)
+
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+	} else {
+		c.Data["glusterfsClusterIPSlice"] = glusterfsVolumeControl.GlusterfsClusterIPSlice
+	}
+
+	guimessage.OutputMessage(c.Data)
+}
+
+func (c *CreateController) Post() {
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
+	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
+	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+
+	name := c.GetString("name")
+	stripe, _ := c.GetInt("stripe")
+	replica, _ := c.GetInt("replica")
+	transport := c.GetString("transport")
+
+	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		"/api/v1/glusterfsvolumes/configuration"
+
+	glusterfsVolumeControl := GlusterfsVolumeControl{}
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeControl)
+
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+	} else {
+		ipList := make([]string, 0)
+		for _, ip := range glusterfsVolumeControl.GlusterfsClusterIPSlice {
+			ipSelected := c.GetString(ip)
+			if ipSelected == "on" {
+				ipList = append(ipList, ip)
+			}
+		}
+
+		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+			"/api/v1/glusterfsvolumes/"
+
+		glusterfsVolumeInput := GlusterfsVolumeInput{
+			name,
+			stripe,
+			replica,
+			transport,
+			ipList,
+		}
+
+		fmt.Println(glusterfsVolumeInput)
+
+		_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil)
+
+		if err != nil {
+			// Error
+			guimessage.AddDanger(err.Error())
+		} else {
+			guimessage.AddSuccess("Glusterfs volume " + name + " is created and started")
+		}
+	}
+
+	c.Ctx.Redirect(302, "/gui/storage/glusterfs/volume/")
+
+	guimessage.RedirectMessage(c)
+}
