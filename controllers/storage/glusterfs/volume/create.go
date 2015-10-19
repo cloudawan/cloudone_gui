@@ -26,12 +26,12 @@ type GlusterfsVolumeInput struct {
 	Stripe    int
 	Replica   int
 	Transport string
-	IpList    []string
+	HostSlice []string
 }
 
 type GlusterfsVolumeControl struct {
-	GlusterfsClusterIPSlice []string
-	GlusterfsPath           string
+	GlusterfsClusterHostSlice []string
+	GlusterfsPath             string
 }
 
 type CreateController struct {
@@ -56,7 +56,7 @@ func (c *CreateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["glusterfsClusterIPSlice"] = glusterfsVolumeControl.GlusterfsClusterIPSlice
+		c.Data["glusterfsClusterHostSlice"] = glusterfsVolumeControl.GlusterfsClusterHostSlice
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -84,11 +84,11 @@ func (c *CreateController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		ipList := make([]string, 0)
-		for _, ip := range glusterfsVolumeControl.GlusterfsClusterIPSlice {
-			ipSelected := c.GetString(ip)
-			if ipSelected == "on" {
-				ipList = append(ipList, ip)
+		hostSlice := make([]string, 0)
+		for _, host := range glusterfsVolumeControl.GlusterfsClusterHostSlice {
+			hostSelected := c.GetString(host)
+			if hostSelected == "on" {
+				hostSlice = append(hostSlice, host)
 			}
 		}
 
@@ -100,7 +100,7 @@ func (c *CreateController) Post() {
 			stripe,
 			replica,
 			transport,
-			ipList,
+			hostSlice,
 		}
 
 		fmt.Println(glusterfsVolumeInput)
