@@ -1,0 +1,7 @@
+for button,
+
+info     light blue        Update PUT
+warning  orange            Cancel
+danger   red               Delete Delete
+primary  heavy blue        View   Get 
+success  green             Create POST

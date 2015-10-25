@@ -1,0 +1,43 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Resize Third-party service</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/deploy/deployclusterapplication/size" method="post">		
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" readonly="readonly">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="size">Size:</label>
+					<div class="col-md-9">
+						<input id="size" class="form-control" type="number" name="size" value="{{ .size }}" min="1" max="1000">
+					</div>
+				</div>
+
+				{{range $key, $value := .environment}}
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="{{ $key }}">{{ $key }}:</label>
+						<div class="col-md-9">
+							<input id="{{ $key }}" class="form-control" type="text" name="{{ $key }}" value="{{ $value }}">
+						</div>
+					</div>
+				{{end}}
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deployclusterapplication/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Resize">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

@@ -1,0 +1,149 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/deploy/autoscaler/edit" method="post">		
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="kind">Type:</label>
+					<div class="col-md-9">
+						<select id="kind" class="form-control" name="kind" value="{{ .kind }}" {{ .readonly }}>
+							<option value="selector">Selector</option>
+							<option value="replicationController">ReplicationController</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" {{ .readonly }}>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="coolDownDuration">Cool Down Duration (second):</label>
+					<div class="col-md-9">
+						<input id="coolDownDuration" class="form-control" type="number" name="coolDownDuration" min="10" max="3600" value="{{ .coolDownDuration }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="maximumReplica">MaximumReplica:</label>
+					<div class="col-md-9">
+						<input id="maximumReplica" class="form-control" type="number" name="maximumReplica" value="1" min="1" max="10" value="{{ .maximumReplica }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="minimumReplica">MinimumReplica:</label>
+					<div class="col-md-9">
+						<input id="minimumReplica" class="form-control" type="number" name="minimumReplica" value="1" min="1" max="10" value="{{ .minimumReplica }}">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="cpu">CPU:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="cpu" type="checkbox" name="cpu" onclick="$('#cpu_specific').toggle();" {{ .cpuChecked }}>
+					</div>
+				</div>
+				
+				<div id="cpu_specific" {{ .cpuHidden }}>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuAboveAllOrOne">All containers above:</label>
+						<div class="col-md-offset-1 col-md-6 checkbox">
+							<input id="cpuAboveAllOrOne" type="checkbox" name="cpuAboveAllOrOne" {{ .cpuAboveAllOrOneChecked }}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuAbovePercentageOfData">Above % of time:</label>
+						<div class="col-md-9">
+							<input id="cpuAbovePercentageOfData" class="form-control" type="number" name="cpuAbovePercentageOfData" min="0" max="100" value="{{ .cpuAbovePercentageOfData }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuAboveThreshold">Above threshold(ms):</label>
+						<div class="col-md-9">
+							<input id="cpuAboveThreshold" class="form-control" type="number" name="cpuAboveThreshold" min="0" max="64000" value="{{ .cpuAboveThreshold }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuBelowAllOrOne">All containers below:</label>
+						<div class="col-md-offset-1 col-md-6 checkbox">
+							<input id="cpuBelowAllOrOne" type="checkbox" name="cpuBelowAllOrOne" {{ .cpuBelowAllOrOneChecked }}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuBelowPercentageOfData">Below % of time:</label>
+						<div class="col-md-9">
+							<input id="cpuBelowPercentageOfData" class="form-control" type="number" name="cpuBelowPercentageOfData" min="0" max="100" value="{{ .cpuBelowPercentageOfData }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpuBelowThreshold">Below threshold(ms):</label>
+						<div class="col-md-9">
+							<input id="cpuBelowThreshold" class="form-control" type="number" name="cpuBelowThreshold" min="0" max="64000" value="{{ .cpuBelowThreshold }}">
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="memory">Memory:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="memory" type="checkbox" name="memory" onclick="$('#memory_specific').toggle();" {{ .memoryChecked }}>
+					</div>
+				</div>
+					
+				<div id="memory_specific" {{ .memoryHidden }}>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryAboveAllOrOne">All containers above:</label>
+						<div class="col-md-offset-1 col-md-6 checkbox">
+							<input id="memoryAboveAllOrOne" type="checkbox" name="memoryAboveAllOrOne" {{ .memoryAboveAllOrOneChecked }}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryAbovePercentageOfData">Above % of time:</label>
+						<div class="col-md-9">
+							<input id="memoryAbovePercentageOfData" class="form-control" type="number" name="memoryAbovePercentageOfData" min="0" max="100" value="{{ .memoryAbovePercentageOfData }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryAboveThreshold">Above threshold(MB):</label>
+						<div class="col-md-9">
+							<input id="memoryAboveThreshold" class="form-control" type="number" name="memoryAboveThreshold" min="0" max="409600" value="{{ .memoryAboveThreshold }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryBelowAllOrOne">All containers below:</label>
+						<div class="col-md-offset-1 col-md-6 checkbox">
+							<input id="memoryBelowAllOrOne" type="checkbox" name="memoryBelowAllOrOne" {{ .memoryBelowAllOrOneChecked }}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryBelowPercentageOfData">Below % of time:</label>
+						<div class="col-md-9">
+							<input id="memoryBelowPercentageOfData" class="form-control" type="number" name="memoryBelowPercentageOfData" min="0" max="100" value="{{ .memoryBelowPercentageOfData }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="memoryBelowThreshold">Below threshold(MB):</label>
+						<div class="col-md-9">
+							<input id="memoryBelowThreshold" class="form-control" type="number" name="memoryBelowThreshold" min="0" max="40960" value="{{ .memoryBelowThreshold }}">
+						</div>
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="{{.actionButtonValue}}">
+				
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

@@ -1,0 +1,89 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Auto Scaler List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Environment</th>
+					<th>Kind</th>
+					<th>Name</th>
+					<th>MaximumReplica</th>
+					<th>MinimumReplica</th>
+					<th>CoolDownDuration</th>
+					<th>RemainingCoolDown</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $replicationControllerAutoScalerKey, $replicationControllerAutoScaler := .replicationControllerAutoScalerSlice}}
+					<tr class="treegrid-{{$replicationControllerAutoScalerKey}}">
+						<td>{{$replicationControllerAutoScalerKey}}</td>
+						<td>{{$replicationControllerAutoScaler.Namespace}}</td>
+						<td>{{$replicationControllerAutoScaler.Kind}}</td>
+						<td>{{$replicationControllerAutoScaler.Name}}</td>
+						<td>{{$replicationControllerAutoScaler.MaximumReplica}}</td>
+						<td>{{$replicationControllerAutoScaler.MinimumReplica}}</td>
+						<td>{{$replicationControllerAutoScaler.CoolDownDuration}}</td>
+						<td>{{$replicationControllerAutoScaler.RemainingCoolDown}}</td>
+						<td>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit?kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Update</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/delete?namespace={{$replicationControllerAutoScaler.Namespace}}&kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Delete</a>
+						</td>
+					</tr>
+				
+					<thead>
+						<tr class="treegrid-parent-{{$replicationControllerAutoScalerKey}}">
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
+							<th>Type</th>
+							<th>AboveAllOrOne</th>
+							<th>AbovePercentageOfTime</th>
+							<th>AboveThreshold</th>
+							<th>BelowAllOrOne</th>
+							<th>BelowPercentageOfTime</th>
+							<th>BelowThreshold</th>
+							<th></th>
+						</tr>
+					</thead>
+					
+					{{range $indicatorKey, $indicator := $replicationControllerAutoScaler.IndicatorSlice}}
+						<tr class="treegrid-parent-{{$replicationControllerAutoScalerKey}}">
+							<td>{{$indicatorKey}}</td>
+							<td>{{$indicator.Type}}</td>
+							<td>{{$indicator.AboveAllOrOne}}</td>
+							<td>{{$indicator.AbovePercentageOfData}}</td>
+							<td>{{$indicator.AboveThreshold}}</td>
+							<td>{{$indicator.BelowAllOrOne}}</td>
+							<td>{{$indicator.BelowPercentageOfData}}</td>
+							<td>{{$indicator.BelowThreshold}}</td>
+							<td></td>
+						</tr>					
+					{{end}}
+
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

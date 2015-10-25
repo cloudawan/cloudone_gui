@@ -1,0 +1,47 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Blue Green Deployment List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Image</th>
+					<th>Namespace</th>
+					<th>NodePort</th>
+					<th>Description</th>
+					<th>SessionAffinity</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $deployBlueGreenKey, $deployBlueGreen := .deployBlueGreenSlice}}
+					<tr>
+						<td>{{$deployBlueGreenKey}}</td>
+						<td>{{$deployBlueGreen.ImageInformation}}</td>
+						<td>{{$deployBlueGreen.Namespace}}</td>
+						<td>{{$deployBlueGreen.NodePort}}</td>
+						<td>{{$deployBlueGreen.Description}}</td>
+						<td>{{$deployBlueGreen.SessionAffinity}}</td>
+						<td>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$deployBlueGreen.ImageInformation}}&currentEnvironment={{$deployBlueGreen.Namespace}}&nodePort={{$deployBlueGreen.NodePort}}&description={{$deployBlueGreen.Description}}">Select</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/delete?imageInformation={{$deployBlueGreen.ImageInformation}}">Delete</a>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

@@ -1,0 +1,46 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Update Deploy</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/repository/deploy/update" method="post">		
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="version">Version:</label>
+					<div class="col-md-9">
+						<select id="version" class="form-control" name="version">
+							{{ range $versionKey, $version := .versionSlice}}
+								<option value="{{ $version }}">{{ $version }}</option>
+							{{end}}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="description">Description:</label>
+					<div class="col-md-9">
+						<input id="description" class="form-control" type="text" name="description">
+					</div>
+				</div>
+				
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/deploy/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" type="submit" value="Deploy"
+						onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" >
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

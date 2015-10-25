@@ -1,0 +1,63 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Image List: Application</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/create">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Current Version</th>
+					<th>Build Parameter</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $imageInformationKey, $imageInformation := .imageInformationSlice}}
+					<tr class="">
+						<td>{{$imageInformationKey}}</td>
+						<td>{{$imageInformation.Name}}</td>
+						<td>{{$imageInformation.Kind}}</td>
+						<td>{{$imageInformation.Description}}</td>
+						<td>{{$imageInformation.CurrentVersion}}</td>
+						<td>
+							{{range $buildParameterKey, $buildParameterValue := $imageInformation.BuildParameter}}
+								{{ $buildParameterKey }}: {{ $buildParameterValue }} <br/>
+							{{end}}
+						</td>
+						<td>
+							<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imagerecord/?name={{$imageInformation.Name}}">View Records</a><br/>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/upgrade?name={{$imageInformation.Name}}">Upgrade</a><br/>
+							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/create?name={{$imageInformation.Name}}">Deploy</a><br/>
+							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$imageInformation.Name}}">B/G deployment</a><br/>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/delete?name={{$imageInformation.Name}}">Delete</a>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

@@ -1,0 +1,86 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Service List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/edit">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Namespace</th>
+					<th>Selector</th>
+					<th>ClusterIP</th>
+					<th>LabelMap</th>
+					<th>SessionAffinity</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $serviceKey, $service := .serviceSlice}}
+					<tr class="treegrid-{{$serviceKey}}">
+						<td>{{$serviceKey}}</td>
+						<td>{{$service.Name}}</td>
+						<td>{{$service.Namespace}}</td>
+						<td>{{$service.Selector}}</td>
+						<td>{{$service.ClusterIP}}</td>
+						<td>
+							{{range $labelKey, $labelValue := $service.LabelMap}}
+								{{$labelKey}}: {{$labelValue}}<br/>
+							{{end}}
+						</td>
+						<td>{{$service.SessionAffinity}}</td>
+						<td>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/delete?namespace={{$service.Namespace}}&service={{$service.Name}}" {{$service.Display}}>Delete</a>
+						</td>
+					</tr>
+				
+					<thead>
+						<tr class="treegrid-parent-{{$serviceKey}}">
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
+							<th>Name</th>
+							<th>Protocol</th>
+							<th>Port</th>
+							<th>TargetPort</th>
+							<th>NodePort</th>
+							<th></th>
+						</tr>
+					</thead>
+					
+					{{range $portKey, $port := $service.PortSlice}}
+						<tr class="treegrid-parent-{{$serviceKey}}">
+							<td>{{$portKey}}</td>
+							<td>{{$port.Name}}</td>
+							<td>{{$port.Protocol}}</td>
+							<td>{{$port.Port}}</td>
+							<td>{{$port.TargetPort}}</td>
+							<td>{{$port.NodePort}}</td>
+							<td></td>
+						</tr>		
+					{{end}}
+
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

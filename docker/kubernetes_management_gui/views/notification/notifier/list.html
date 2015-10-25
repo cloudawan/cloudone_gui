@@ -1,0 +1,85 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1> Notifier List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Environment</th>
+					<th>Kind</th>
+					<th>Name</th>
+					<th>Receiver</th>
+					<th>CoolDownDuration</th>
+					<th>RemainingCoolDown</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $replicationControllerNotifierKey, $replicationControllerNotifier := .replicationControllerNotifierSlice}}
+					<tr class="treegrid-{{$replicationControllerNotifierKey}}">
+						<td>{{$replicationControllerNotifierKey}}</td>
+						<td>{{$replicationControllerNotifier.Namespace}}</td>
+						<td>{{$replicationControllerNotifier.Kind}}</td>
+						<td>{{$replicationControllerNotifier.Name}}</td>
+						<td>{{$replicationControllerNotifier.NotifierSlice}}</td>
+						<td>{{$replicationControllerNotifier.CoolDownDuration}}</td>
+						<td>{{$replicationControllerNotifier.RemainingCoolDown}}</td>
+						<td>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit?&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Update</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/delete?namespace={{$replicationControllerNotifier.Namespace}}&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Delete</a>
+						</td>
+					</tr>
+				
+					<thead>
+						<tr class="treegrid-parent-{{$replicationControllerNotifierKey}}">
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
+							<th>Type</th>
+							<th>AboveAllOrOne</th>
+							<th>AbovePercentageOfTime</th>
+							<th>AboveThreshold</th>
+							<th>BelowAllOrOne</th>
+							<th>BelowPercentageOfTime</th>
+							<th>BelowThreshold</th>
+						</tr>
+					</thead>
+					
+					{{range $indicatorKey, $indicator := $replicationControllerNotifier.IndicatorSlice}}
+						<tr class="treegrid-parent-{{$replicationControllerNotifierKey}}">
+							<td>{{$indicatorKey}}</td>
+							<td>{{$indicator.Type}}</td>
+							<td>{{$indicator.AboveAllOrOne}}</td>
+							<td>{{$indicator.AbovePercentageOfData}}</td>
+							<td>{{$indicator.AboveThreshold}}</td>
+							<td>{{$indicator.BelowAllOrOne}}</td>
+							<td>{{$indicator.BelowPercentageOfData}}</td>
+							<td>{{$indicator.BelowThreshold}}</td>
+						</tr>					
+					{{end}}
+
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

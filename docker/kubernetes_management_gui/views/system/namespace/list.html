@@ -1,0 +1,46 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Namespace List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/edit">Create</a>
+			</div>
+
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Selected</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $namespaceKey, $namespace := .namespaceSlice}}
+					<tr>
+						<td>{{$namespaceKey}}</td>
+						<td>{{$namespace.Name}}</td>
+						<td>{{$namespace.Selected}}</td>
+						<td>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/select?name={{$namespace.Name}}">Select</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/delete?name={{$namespace.Name}}" {{$namespace.Display}} >Delete</a>
+						</td>
+					</thead>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

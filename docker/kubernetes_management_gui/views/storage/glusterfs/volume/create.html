@@ -1,0 +1,63 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Create Glusterfs Volume</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/storage/glusterfs/volume/create" method="post">		
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="stripe">Stripe:</label>
+					<div class="col-md-9">
+						<input id="stripe" class="form-control" type="number" name="stripe" value="0" min="0" max="1000">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="replica">Replica:</label>
+					<div class="col-md-9">
+						<input id="replica" class="form-control" type="number" name="replica" value="0" min="0" max="1000">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="transport">Transport:</label>
+					<div class="col-md-9">
+						<select id="transport" class="form-control" name="transport">
+							<option value="tcp">TCP</option>
+							<option value="rdma">RDMA</option>
+							<option value="tcp,rdma">TCP,RDMA</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="">Server List:</label>
+				</div>
+
+				{{range $key, $value := .glusterfsClusterHostSlice}}
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cpu">{{$value}}:</label>
+						<div class="col-md-offset-1 col-md-6 checkbox">
+							<input id="cpu" type="checkbox" name="{{$value}}">
+						</div>
+					</div>
+				{{end}}
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/storage/glusterfs/volume/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Create">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

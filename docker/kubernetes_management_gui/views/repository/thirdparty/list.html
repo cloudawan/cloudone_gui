@@ -1,0 +1,52 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Image List: Third Party Service</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $thirdPartyApplicationKey, $thirdPartyApplication := .thirdPartyApplicationSlice}}
+					<tr>
+						<td>{{$thirdPartyApplicationKey}}</td>
+						<td>{{$thirdPartyApplication.Name}}</td>
+						<td>{{$thirdPartyApplication.Description}}</td>
+						<td>
+							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/launch?name={{$thirdPartyApplication.Name}}">Launch</a>
+							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit?name={{$thirdPartyApplication.Name}}">Update</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/delete?name={{$thirdPartyApplication.Name}}">Delete</a>
+						</td>
+						<td></td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}
