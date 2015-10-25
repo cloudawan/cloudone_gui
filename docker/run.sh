@@ -8,6 +8,10 @@ sed -i "s/{{KUBEAPI_PORT}}/$KUBEAPI_PORT/g" /src/kubernetes_management_gui/conf/
 sed -i "s/{{NODE_HOST}}/$NODE_HOST/g" /src/kubernetes_management_gui/conf/app.conf
 sed -i "s/{{NODE_PORT}}/$NODE_PORT/g" /src/kubernetes_management_gui/conf/app.conf
 
+sed -i "s/{{KUBERNETES_MANAGEMENT_HOST}}/$KUBERNETES_MANAGEMENT_HOST/g" /src/kubernetes_management_gui/conf/app.conf
+sed -i "s/{{KUBERNETES_MANAGEMENT_PORT}}/$KUBERNETES_MANAGEMENT_PORT/g" /src/kubernetes_management_gui/conf/app.conf
+sed -i "s/{{KUBERNETES_MANAGEMENT_ANALYSIS_HOST}}/$KUBERNETES_MANAGEMENT_ANALYSIS_HOST/g" /src/kubernetes_management_gui/conf/app.conf
+sed -i "s/{{KUBERNETES_MANAGEMENT_ANALYSIS_PORT}}/$KUBERNETES_MANAGEMENT_ANALYSIS_PORT/g" /src/kubernetes_management_gui/conf/app.conf
 
 cd /src/kubernetes_management_gui
 ./kubernetes_management_gui &

@@ -2,5 +2,9 @@
 	"NODE_HOST": "Kubernetes Node IP. Used for outside to access. Format: IP ",
 	"NODE_PORT": "Kubernetes Node Port. Used for outside to access. Format: Number ",
 	"KUBEAPI_HOST": "Kubernetes API server host IP. Format: IP ",
-	"KUBEAPI_PORT": "Kubernetes API server Port. Format: Number "
+	"KUBEAPI_PORT": "Kubernetes API server Port. Format: Number ",
+	"KUBERNETES_MANAGEMENT_HOST": "Kubernetes API server Port. Format: IP ",
+	"KUBERNETES_MANAGEMENT_PORT": "Kubernetes API server Port. Format: Number ",
+	"KUBERNETES_MANAGEMENT_ANALYSIS_HOST": "Kubernetes API server Port. Format: IP ",
+	"KUBERNETES_MANAGEMENT_ANALYSIS_PORT": "Kubernetes API server Port. Format: Number "
 }
