@@ -54,8 +54,15 @@ func (c *EditController) Get() {
 			c.Data["replicationControllerJson"] = string(cluster.ReplicationControllerJson)
 			c.Data["serviceJson"] = cluster.ServiceJson
 			c.Data["environment"] = string(environmentByteSlice)
-			c.Data["scriptType"] = cluster.ScriptType
 			c.Data["scriptContent"] = cluster.ScriptContent
+
+			switch cluster.ScriptType {
+			case "none":
+				c.Data["scriptTypeNone"] = "selected"
+			case "python":
+				c.Data["scriptTypePython"] = "selected"
+			default:
+			}
 
 			guimessage.OutputMessage(c.Data)
 		}
