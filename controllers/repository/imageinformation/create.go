@@ -54,6 +54,7 @@ func (c *CreateController) Post() {
 	switch kind {
 	case "git":
 		buildParameter["sourceCodeURL"] = c.GetString("sourceCodeURL")
+		buildParameter["versionFile"] = c.GetString("versionFile")
 	case "scp":
 		buildParameter["hostAndPort"] = c.GetString("hostAndPort")
 		buildParameter["username"] = c.GetString("username")
