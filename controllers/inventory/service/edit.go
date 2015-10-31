@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/kubernetes_management_utility/restclient"
+	"regexp"
 )
 
 type EditController struct {
@@ -59,6 +60,15 @@ func (c *EditController) Post() {
 	targetPort := c.GetString("targetPort")
 	nodePort := c.GetString("nodePort")
 	sessionAffinity := c.GetString("sessionAffinity")
+
+	// Name need to be a DNS 952 label
+	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
+	if match == false {
+		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
+		c.Ctx.Redirect(302, "/gui/inventory/service/")
+		guimessage.RedirectMessage(c)
+		return
+	}
 
 	labelName := selectorName
 	portName := selectorName

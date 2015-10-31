@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/random"
 	"github.com/cloudawan/kubernetes_management_utility/restclient"
+	"regexp"
 )
 
 type CreateController struct {
@@ -39,6 +40,15 @@ func (c *CreateController) Post() {
 	name := c.GetString("name")
 	kind := c.GetString("kind")
 	description := c.GetString("description")
+
+	// Name need to be a DNS 952 label
+	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
+	if match == false {
+		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+		guimessage.RedirectMessage(c)
+		return
+	}
 
 	// Generate random work space
 	workingDirectory := "/tmp/tmp_" + random.UUID()
