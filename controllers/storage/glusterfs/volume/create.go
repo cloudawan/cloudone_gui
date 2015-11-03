@@ -17,8 +17,8 @@ package volume
 import (
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/cloudawan/kubernetes_management_gui/controllers/utility/guimessagedisplay"
-	"github.com/cloudawan/kubernetes_management_utility/restclient"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
 type GlusterfsVolumeInput struct {

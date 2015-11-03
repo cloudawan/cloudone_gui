@@ -16,9 +16,9 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/cloudawan/kubernetes_management_gui/controllers/identity"
-	restapiidentity "github.com/cloudawan/kubernetes_management_gui/restapi/v1/identity"
-	_ "github.com/cloudawan/kubernetes_management_gui/routers"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	restapiidentity "github.com/cloudawan/cloudone_gui/restapi/v1/identity"
+	_ "github.com/cloudawan/cloudone_gui/routers"
 )
 
 func main() {

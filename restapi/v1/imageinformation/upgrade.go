@@ -17,7 +17,7 @@ package imageinformation
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"github.com/cloudawan/kubernetes_management_utility/restclient"
+	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
 type UpdateController struct {

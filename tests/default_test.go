@@ -6,7 +6,7 @@ import (
 	"testing"
 	"runtime"
 	"path/filepath"
-	_ "github.com/cloudawan/kubernetes_management_gui/routers"
+	_ "github.com/cloudawan/cloudone_gui/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
