@@ -37,14 +37,14 @@ func (c *UpdateController) Get() {
 	c.TplNames = "deploy/deploy/update.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	name := c.GetString("name")
 	oldVersion := c.GetString("oldVersion")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imagerecords/" + name
 
 	imageRecordSlice := make([]ImageRecord, 0)
@@ -74,9 +74,9 @@ func (c *UpdateController) Get() {
 func (c *UpdateController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -107,7 +107,7 @@ func (c *UpdateController) Post() {
 		}
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploys/update/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	deployUpdateInput := DeployUpdateInput{imageInformationName, version, description, environmentSlice}

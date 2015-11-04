@@ -44,11 +44,11 @@ func (c *EditController) Get() {
 	} else {
 		namespace, _ := c.GetSession("namespace").(string)
 
-		kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-		kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-		kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+		cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+		cloudoneHost := beego.AppConfig.String("cloudoneHost")
+		cloudonePort := beego.AppConfig.String("cloudonePort")
 
-		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/autoscalers/" + namespace + "/" + kind + "/" + name
 
 		replicationControllerAutoScaler := ReplicationControllerAutoScaler{}
@@ -167,9 +167,9 @@ func (c *EditController) Post() {
 			memoryBelowAllOrOne, memoryBelowPercentageOfData / 100.0, memoryBelowThreshold * 1024 * 1024})
 	}
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -185,7 +185,7 @@ func (c *EditController) Post() {
 		true, time.Duration(coolDownDuration) * time.Second, 0, kubeapiHost, kubeapiPort, namespace, kind, name,
 		maximumReplica, minimumReplica, indicatorSlice}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/autoscalers/"
 
 	_, err := restclient.RequestPutWithStructure(url, replicationControllerAutoScaler, nil)

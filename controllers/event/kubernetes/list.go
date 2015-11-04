@@ -50,9 +50,9 @@ func (c *ListController) Get() {
 	c.TplNames = "event/kubernetes/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementAnalysisProtocol := beego.AppConfig.String("kubernetesManagementAnalysisProtocol")
-	kubernetesManagementAnalysisHost := beego.AppConfig.String("kubernetesManagementAnalysisHost")
-	kubernetesManagementAnalysisPort := beego.AppConfig.String("kubernetesManagementAnalysisPort")
+	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
+	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
+	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
 	acknowledge := c.GetString("acknowledge")
 	if acknowledge == "" {
@@ -63,7 +63,7 @@ func (c *ListController) Get() {
 
 	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)
 
-	url := kubernetesManagementAnalysisProtocol + "://" + kubernetesManagementAnalysisHost + ":" + kubernetesManagementAnalysisPort +
+	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/historicalevents?acknowledge=" + acknowledge + "&size=" + strconv.Itoa(amountPerPage) + "&offset=" + strconv.Itoa(offset)
 
 	jsonMapSlice := make([]map[string]interface{}, 0)

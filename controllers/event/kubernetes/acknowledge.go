@@ -31,11 +31,11 @@ func (c *AcknowledgeController) Get() {
 	id := c.GetString("id")
 	acknowledge := c.GetString("acknowledge")
 
-	kubernetesManagementAnalysisProtocol := beego.AppConfig.String("kubernetesManagementAnalysisProtocol")
-	kubernetesManagementAnalysisHost := beego.AppConfig.String("kubernetesManagementAnalysisHost")
-	kubernetesManagementAnalysisPort := beego.AppConfig.String("kubernetesManagementAnalysisPort")
+	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
+	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
+	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
-	url := kubernetesManagementAnalysisProtocol + "://" + kubernetesManagementAnalysisHost + ":" + kubernetesManagementAnalysisPort +
+	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/historicalevents/" + namespace + "/" + id + "?acknowledge=" + acknowledge
 
 	jsonMapSlice := make([]map[string]interface{}, 0)

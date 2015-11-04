@@ -38,13 +38,13 @@ func (c *ListController) Get() {
 	c.TplNames = "system/namespace/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
 
 	nameSlice := make([]string, 0)

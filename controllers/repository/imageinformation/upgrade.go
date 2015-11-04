@@ -38,14 +38,14 @@ func (c *UpgradeController) Get() {
 func (c *UpgradeController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	imageInformationName := c.GetString("name")
 	description := c.GetString("description")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imageinformations/upgrade/"
 
 	deployUpgradeInput := DeployUpgradeInput{imageInformationName, description}

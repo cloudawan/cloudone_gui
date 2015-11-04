@@ -42,7 +42,7 @@
 
 		var query = function() {
 			$.ajax({
-				url: "{{.kubernetesManagementGUIProtocol}}://{{.kubernetesManagementGUIHost}}:{{.kubernetesManagementGUIPort}}/gui/dashboard/topology/data",
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/topology/data",
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){

@@ -31,9 +31,9 @@ type DeployUpgradeInput struct {
 
 func (c *UpdateController) Post() {
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	deployUpgradeInput := DeployUpgradeInput{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &deployUpgradeInput)
@@ -47,7 +47,7 @@ func (c *UpdateController) Post() {
 		return
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imageinformations/upgrade/"
 
 	_, err = restclient.RequestPutWithStructure(url, deployUpgradeInput, nil)

@@ -59,13 +59,13 @@ func (c *CreateController) Get() {
 	c.TplNames = "deploy/deploy/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	name := c.GetString("name")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imagerecords/" + name
 
 	imageRecordSlice := make([]ImageRecord, 0)
@@ -93,9 +93,9 @@ func (c *CreateController) Get() {
 func (c *CreateController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -143,7 +143,7 @@ func (c *CreateController) Post() {
 		environmentSlice,
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploys/create/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	_, err = restclient.RequestPostWithStructure(url, deployCreateInput, nil)

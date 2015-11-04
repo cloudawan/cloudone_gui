@@ -29,9 +29,9 @@ func (c *SelectController) Get() {
 	c.TplNames = "deploy/deploybluegreen/select.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -44,7 +44,7 @@ func (c *SelectController) Get() {
 	c.Data["pageHeader"] = "Update Blue Green Deployment"
 	c.Data["imageInformation"] = imageInformation
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploybluegreens/deployable/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	namespaceSlice := make([]string, 0)
@@ -64,9 +64,9 @@ func (c *SelectController) Get() {
 func (c *SelectController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -84,7 +84,7 @@ func (c *SelectController) Post() {
 		sessionAffinity,
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploybluegreens/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	_, err := restclient.RequestPutWithStructure(url, deployBlueGreen, nil)

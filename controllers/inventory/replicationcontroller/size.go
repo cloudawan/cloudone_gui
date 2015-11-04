@@ -36,9 +36,9 @@ func (c *SizeController) Get() {
 func (c *SizeController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
@@ -47,7 +47,7 @@ func (c *SizeController) Post() {
 	name := c.GetString("name")
 	size, _ := c.GetInt("size")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/replicationcontrollers/size/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
 
 	putBodyJsonMap := make(map[string]interface{})

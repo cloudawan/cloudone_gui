@@ -28,15 +28,15 @@ func (c *PodLogController) Get() {
 	c.TplNames = "inventory/replicationcontroller/pod_log.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 	namespace := c.GetString("namespace")
 	pod := c.GetString("pod")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/podlogs/" + namespace + "/" + pod + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
 
 	result, err := restclient.RequestGet(url, true)

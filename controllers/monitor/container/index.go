@@ -68,18 +68,18 @@ func (c *IndexController) Get() {
 
 	c.TplNames = "monitor/container/index.html"
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
-	kubernetesManagementGUIProtocol := beego.AppConfig.String("kubernetesManagementGUIProtocol")
-	kubernetesManagementGUIHost := beego.AppConfig.String("kubernetesManagementGUIHost")
-	kubernetesManagementGUIPort := beego.AppConfig.String("kubernetesManagementGUIPort")
+	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
+	cloudoneGUIHost := beego.AppConfig.String("cloudoneGUIHost")
+	cloudoneGUIPort := beego.AppConfig.String("cloudoneGUIPort")
 
 	namespaces, _ := c.GetSession("namespace").(string)
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/replicationcontrollers/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	jsonMapSlice := make([]interface{}, 0)
@@ -100,9 +100,9 @@ func (c *IndexController) Get() {
 			}
 		}
 
-		c.Data["kubernetesManagementGUIProtocol"] = kubernetesManagementGUIProtocol
-		c.Data["kubernetesManagementGUIHost"] = kubernetesManagementGUIHost
-		c.Data["kubernetesManagementGUIPort"] = kubernetesManagementGUIPort
+		c.Data["cloudoneGUIProtocol"] = cloudoneGUIProtocol
+		c.Data["cloudoneGUIHost"] = cloudoneGUIHost
+		c.Data["cloudoneGUIPort"] = cloudoneGUIPort
 		c.Data["replicationControllerNameSlice"] = replicationControllerNameSlice
 	}
 
@@ -115,9 +115,9 @@ type DataController struct {
 
 func (c *DataController) Get() {
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -129,7 +129,7 @@ func (c *DataController) Get() {
 	replicationControllerMetricAmount := 0
 	if replicationControllerName != "" && replicationControllerName != allKeyword {
 		replicationControllerMetric := ReplicationControllerMetric{}
-		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/replicationcontrollermetrics/" + namespaces + "/" + replicationControllerName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		_, err := restclient.RequestGetWithStructure(url, &replicationControllerMetric)
@@ -144,7 +144,7 @@ func (c *DataController) Get() {
 		replicationControllerMetricSlice = append(replicationControllerMetricSlice, replicationControllerMetric)
 		replicationControllerMetricAmount = 1
 	} else {
-		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/replicationcontrollermetrics/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		replicationControllerMetricList, err := restclient.RequestGetWithStructure(url, &ReplicationControllerMetricList{})

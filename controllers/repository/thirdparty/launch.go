@@ -39,13 +39,13 @@ func (c *LaunchController) Get() {
 	c.TplNames = "repository/thirdparty/launch.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	name := c.GetString("name")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/" + name
 	cluster := Cluster{}
 	_, err := restclient.RequestGetWithStructure(url, &cluster)
@@ -69,9 +69,9 @@ func (c *LaunchController) Get() {
 func (c *LaunchController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
@@ -101,7 +101,7 @@ func (c *LaunchController) Post() {
 		}
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
 	jsonMap := make(map[string]interface{})

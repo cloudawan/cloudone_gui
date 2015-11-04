@@ -82,7 +82,7 @@
 		
 		var query = function(parameter) {
 			$.ajax({
-				url: "{{.kubernetesManagementGUIProtocol}}://{{.kubernetesManagementGUIHost}}:{{.kubernetesManagementGUIPort}}/gui/monitor/container/data?replicationController=" + parameter.replicationControllerName,
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/monitor/container/data?replicationController=" + parameter.replicationControllerName,
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){

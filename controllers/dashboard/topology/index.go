@@ -60,13 +60,13 @@ func (c *IndexController) Get() {
 
 	c.TplNames = "dashboard/topology/index.html"
 
-	kubernetesManagementGUIProtocol := beego.AppConfig.String("kubernetesManagementGUIProtocol")
-	kubernetesManagementGUIHost := beego.AppConfig.String("kubernetesManagementGUIHost")
-	kubernetesManagementGUIPort := beego.AppConfig.String("kubernetesManagementGUIPort")
+	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
+	cloudoneGUIHost := beego.AppConfig.String("cloudoneGUIHost")
+	cloudoneGUIPort := beego.AppConfig.String("cloudoneGUIPort")
 
-	c.Data["kubernetesManagementGUIProtocol"] = kubernetesManagementGUIProtocol
-	c.Data["kubernetesManagementGUIHost"] = kubernetesManagementGUIHost
-	c.Data["kubernetesManagementGUIPort"] = kubernetesManagementGUIPort
+	c.Data["cloudoneGUIProtocol"] = cloudoneGUIProtocol
+	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
+	c.Data["cloudoneGUIPort"] = cloudoneGUIPort
 
 	guimessage.OutputMessage(c.Data)
 }
@@ -76,14 +76,14 @@ type DataController struct {
 }
 
 func (c *DataController) Get() {
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 	namespace, _ := c.GetSession("namespace").(string)
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)

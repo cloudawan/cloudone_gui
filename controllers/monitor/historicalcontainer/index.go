@@ -38,16 +38,16 @@ func (c *IndexController) Get() {
 
 	c.TplNames = "monitor/historicalcontainer/index.html"
 
-	kubernetesManagementAnalysisProtocol := beego.AppConfig.String("kubernetesManagementAnalysisProtocol")
-	kubernetesManagementAnalysisHost := beego.AppConfig.String("kubernetesManagementAnalysisHost")
-	kubernetesManagementAnalysisPort := beego.AppConfig.String("kubernetesManagementAnalysisPort")
-	kubernetesManagementGUIProtocol := beego.AppConfig.String("kubernetesManagementGUIProtocol")
-	kubernetesManagementGUIHost := beego.AppConfig.String("kubernetesManagementGUIHost")
-	kubernetesManagementGUIPort := beego.AppConfig.String("kubernetesManagementGUIPort")
+	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
+	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
+	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
+	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
+	cloudoneGUIHost := beego.AppConfig.String("cloudoneGUIHost")
+	cloudoneGUIPort := beego.AppConfig.String("cloudoneGUIPort")
 
 	namespaces, _ := c.GetSession("namespace").(string)
 
-	url := kubernetesManagementAnalysisProtocol + "://" + kubernetesManagementAnalysisHost + ":" + kubernetesManagementAnalysisPort +
+	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/historicalreplicationcontrollers/names/" + namespaces
 
 	jsonMapSlice := make([]interface{}, 0)
@@ -67,9 +67,9 @@ func (c *IndexController) Get() {
 			}
 		}
 
-		c.Data["kubernetesManagementGUIProtocol"] = kubernetesManagementGUIProtocol
-		c.Data["kubernetesManagementGUIHost"] = kubernetesManagementGUIHost
-		c.Data["kubernetesManagementGUIPort"] = kubernetesManagementGUIPort
+		c.Data["cloudoneGUIProtocol"] = cloudoneGUIProtocol
+		c.Data["cloudoneGUIHost"] = cloudoneGUIHost
+		c.Data["cloudoneGUIPort"] = cloudoneGUIPort
 		c.Data["replicationControllerNameSlice"] = nameSlice
 	}
 
@@ -86,9 +86,9 @@ const (
 
 func (c *DataController) Get() {
 
-	kubernetesManagementAnalysisProtocol := beego.AppConfig.String("kubernetesManagementAnalysisProtocol")
-	kubernetesManagementAnalysisHost := beego.AppConfig.String("kubernetesManagementAnalysisHost")
-	kubernetesManagementAnalysisPort := beego.AppConfig.String("kubernetesManagementAnalysisPort")
+	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
+	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
+	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 
@@ -163,7 +163,7 @@ func (c *DataController) Get() {
 	allHistoricalReplicationControllerMetricJsonMap := make(map[string]interface{})
 	if replicationControllerName != "" && replicationControllerName != allKeyword {
 
-		encodingUrl, _ := url.Parse(kubernetesManagementAnalysisProtocol + "://" + kubernetesManagementAnalysisHost + ":" + kubernetesManagementAnalysisPort +
+		encodingUrl, _ := url.Parse(cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 			"/api/v1/historicalreplicationcontrollermetrics/" + namespaces + "/" + replicationControllerName)
 		parameters := url.Values{}
 		parameters.Add("kubeapihost", kubeapiHost)
@@ -185,7 +185,7 @@ func (c *DataController) Get() {
 		}
 		allHistoricalReplicationControllerMetricJsonMap[replicationControllerName] = historicalReplicationControllerMetricJsonMap
 	} else {
-		encodingUrl, _ := url.Parse(kubernetesManagementAnalysisProtocol + "://" + kubernetesManagementAnalysisHost + ":" + kubernetesManagementAnalysisPort +
+		encodingUrl, _ := url.Parse(cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 			"/api/v1/historicalreplicationcontrollermetrics/" + namespaces)
 		parameters := url.Values{}
 		parameters.Add("kubeapihost", kubeapiHost)

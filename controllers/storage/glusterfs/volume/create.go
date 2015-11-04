@@ -42,11 +42,11 @@ func (c *CreateController) Get() {
 	c.TplNames = "storage/glusterfs/volume/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/glusterfsvolumes/configuration"
 
 	glusterfsVolumeControl := GlusterfsVolumeControl{}
@@ -65,16 +65,16 @@ func (c *CreateController) Get() {
 func (c *CreateController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	name := c.GetString("name")
 	stripe, _ := c.GetInt("stripe")
 	replica, _ := c.GetInt("replica")
 	transport := c.GetString("transport")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/glusterfsvolumes/configuration"
 
 	glusterfsVolumeControl := GlusterfsVolumeControl{}
@@ -92,7 +92,7 @@ func (c *CreateController) Post() {
 			}
 		}
 
-		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/glusterfsvolumes/"
 
 		glusterfsVolumeInput := GlusterfsVolumeInput{

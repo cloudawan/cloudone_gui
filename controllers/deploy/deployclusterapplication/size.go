@@ -72,9 +72,9 @@ func (c *SizeController) Get() {
 	c.TplNames = "deploy/deployclusterapplication/size.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
@@ -83,7 +83,7 @@ func (c *SizeController) Get() {
 	name := c.GetString("name")
 	size := c.GetString("size")
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/" + name
 	cluster := Cluster{}
 	_, err := restclient.RequestGetWithStructure(url, &cluster)
@@ -100,7 +100,7 @@ func (c *SizeController) Get() {
 
 		// Get configured environment from the first instance
 		clusterApplicationFirstInstanceName := name + "-instance-0"
-		url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/replicationcontrollers/" + namespace + "/" + clusterApplicationFirstInstanceName +
 			"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
 		replicationController := ReplicationController{}
@@ -124,9 +124,9 @@ func (c *SizeController) Get() {
 func (c *SizeController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	kubernetesManagementProtocol := beego.AppConfig.String("kubernetesManagementProtocol")
-	kubernetesManagementHost := beego.AppConfig.String("kubernetesManagementHost")
-	kubernetesManagementPort := beego.AppConfig.String("kubernetesManagementPort")
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort := beego.AppConfig.String("kubeapiPort")
 
@@ -154,7 +154,7 @@ func (c *SizeController) Post() {
 		}
 	}
 
-	url := kubernetesManagementProtocol + "://" + kubernetesManagementHost + ":" + kubernetesManagementPort +
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
 

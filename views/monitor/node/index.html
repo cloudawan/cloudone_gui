@@ -59,7 +59,7 @@
 
 		var query = function() {
 			$.ajax({
-				url: "{{.kubernetesManagementGUIProtocol}}://{{.kubernetesManagementGUIHost}}:{{.kubernetesManagementGUIPort}}/gui/monitor/node/data",
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/monitor/node/data",
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){

@@ -122,7 +122,7 @@
 			var from = $('#datetimepickerInputFrom').val();
 
 			$.ajax({
-				url: "{{.kubernetesManagementGUIProtocol}}://{{.kubernetesManagementGUIHost}}:{{.kubernetesManagementGUIPort}}/gui/monitor/historicalcontainer/data?replicationController=" + parameter.replicationControllerName + "&from=" + from + "&to=" + to,
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/monitor/historicalcontainer/data?replicationController=" + parameter.replicationControllerName + "&from=" + from + "&to=" + to,
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){
