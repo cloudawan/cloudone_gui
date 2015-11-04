@@ -1,8 +1,8 @@
 {
-  "name": "kubernetes_management_gui",
+  "name": "cloudone_gui",
   "private": true,
   "version": "0.0.1",
-  "description": "kubernetes_management_gui",
+  "description": "cloudone_gui",
   "author": "Yu-Chen Chang <ycchang@cloudawan.com>",
   "dependencies": {
   }

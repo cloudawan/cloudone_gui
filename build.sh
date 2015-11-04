@@ -31,15 +31,15 @@ unset_temporarily_go_path() {
 
 build_and_package() {
   # Get self and dependent packagess
-  go get github.com/cloudawan/kubernetes_management_gui
+  go get github.com/cloudawan/cloudone_gui
 
   # Move static files
-  mv views docker/kubernetes_management_gui/
-  mv static docker/kubernetes_management_gui/
+  mv views docker/cloudone_gui/
+  mv static docker/cloudone_gui/
   
   # Build
   go build
-  mv kubernetes_management_gui docker/kubernetes_management_gui/
+  mv cloudone_gui docker/cloudone_gui/
   find ! -wholename './docker/*' ! -wholename './docker' ! -wholename '.' -exec rm -rf {} +
   mv docker/version version
   mv docker/environment environment
