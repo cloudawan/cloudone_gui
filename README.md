@@ -1,3 +1,3 @@
-# kubernetes_management_gui
+# cloudone_gui
 This component is used as GUI. 
-It uses kubernetes_management, kubernetes_management_analysis, and kubernetes_management_utility.
+It uses cloudone, cloudone_analysis, and cloudone_utility.
