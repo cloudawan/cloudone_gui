@@ -16,8 +16,10 @@ package deployclusterapplication
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"strconv"
 )
 
 type Cluster struct {
@@ -75,8 +77,7 @@ func (c *SizeController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -102,7 +103,7 @@ func (c *SizeController) Get() {
 		clusterApplicationFirstInstanceName := name + "-instance-0"
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/replicationcontrollers/" + namespace + "/" + clusterApplicationFirstInstanceName +
-			"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
+			"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 		replicationController := ReplicationController{}
 		_, err := restclient.RequestGetWithStructure(url, &replicationController)
 
@@ -127,8 +128,7 @@ func (c *SizeController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -156,7 +156,7 @@ func (c *SizeController) Post() {
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
 
 	_, err := restclient.RequestPut(url, environmentSlice, true)
 

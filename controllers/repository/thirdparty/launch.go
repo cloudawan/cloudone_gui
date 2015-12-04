@@ -16,8 +16,10 @@ package thirdparty
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"strconv"
 	"strings"
 )
 
@@ -72,8 +74,7 @@ func (c *LaunchController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 	name := c.GetString("name")
@@ -103,7 +104,7 @@ func (c *LaunchController) Post() {
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort + "&size=" + size
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
 	jsonMap := make(map[string]interface{})
 	nil, err := restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap)
 

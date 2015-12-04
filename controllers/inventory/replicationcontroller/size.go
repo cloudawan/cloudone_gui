@@ -16,8 +16,10 @@ package replicationcontroller
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"strconv"
 )
 
 type SizeController struct {
@@ -39,8 +41,7 @@ func (c *SizeController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -48,7 +49,7 @@ func (c *SizeController) Post() {
 	size, _ := c.GetInt("size")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/size/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
+		"/api/v1/replicationcontrollers/size/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	putBodyJsonMap := make(map[string]interface{})
 	putBodyJsonMap["Size"] = size

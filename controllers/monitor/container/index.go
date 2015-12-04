@@ -16,6 +16,7 @@ package container
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
@@ -71,8 +72,7 @@ func (c *IndexController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
 	cloudoneGUIPort := c.Ctx.Input.Port()
@@ -118,8 +118,7 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespaces, _ := c.GetSession("namespace").(string)
 

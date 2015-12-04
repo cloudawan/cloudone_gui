@@ -16,8 +16,10 @@ package deploybluegreen
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"strconv"
 )
 
 type DeleteController struct {
@@ -30,13 +32,12 @@ func (c *DeleteController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort := beego.AppConfig.String("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	imageInformation := c.GetString("imageInformation")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + kubeapiPort
+		"/api/v1/deploybluegreens/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	_, err := restclient.RequestDelete(url, nil, true)
 
 	if err != nil {

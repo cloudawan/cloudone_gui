@@ -17,6 +17,7 @@ package historicalcontainer
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"net/url"
@@ -89,8 +90,7 @@ func (c *DataController) Get() {
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
-	kubeapiHost := beego.AppConfig.String("kubeapiHost")
-	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
+	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespaces, _ := c.GetSession("namespace").(string)
 	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)
