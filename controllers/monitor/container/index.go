@@ -74,8 +74,8 @@ func (c *IndexController) Get() {
 	kubeapiHost := beego.AppConfig.String("kubeapiHost")
 	kubeapiPort, _ := beego.AppConfig.Int("kubeapiPort")
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := beego.AppConfig.String("cloudoneGUIHost")
-	cloudoneGUIPort := beego.AppConfig.String("cloudoneGUIPort")
+	cloudoneGUIHost := c.Ctx.Input.Host()
+	cloudoneGUIPort := c.Ctx.Input.Port()
 
 	namespaces, _ := c.GetSession("namespace").(string)
 

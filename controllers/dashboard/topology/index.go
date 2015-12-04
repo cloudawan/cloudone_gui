@@ -61,8 +61,8 @@ func (c *IndexController) Get() {
 	c.TplNames = "dashboard/topology/index.html"
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := beego.AppConfig.String("cloudoneGUIHost")
-	cloudoneGUIPort := beego.AppConfig.String("cloudoneGUIPort")
+	cloudoneGUIHost := c.Ctx.Input.Host()
+	cloudoneGUIPort := c.Ctx.Input.Port()
 
 	c.Data["cloudoneGUIProtocol"] = cloudoneGUIProtocol
 	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
