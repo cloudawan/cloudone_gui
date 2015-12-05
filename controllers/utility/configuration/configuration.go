@@ -20,7 +20,10 @@ import (
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 	"strings"
+	"time"
 )
+
+var KubeapiHealthCheckTimeoutInMilliSecond = 300
 
 func GetAvailableKubeapiHostAndPort() (returnedHost string, returnedPort int, returnedError error) {
 	defer func() {
@@ -33,9 +36,13 @@ func GetAvailableKubeapiHostAndPort() (returnedHost string, returnedPort int, re
 
 	kubeapiHostAndPortText := beego.AppConfig.String("kubeapiHostAndPort")
 	kubeapiHostAndPortSlice := strings.Split(kubeapiHostAndPortText, ",")
+	kubeapiHealthCheckTimeoutInMilliSecond, err := beego.AppConfig.Int("kubeapiHealthCheckTimeoutInMilliSecond")
+	if err != nil {
+		kubeapiHealthCheckTimeoutInMilliSecond = KubeapiHealthCheckTimeoutInMilliSecond
+	}
 	for _, kubeapiHostAndPort := range kubeapiHostAndPortSlice {
 		kubeapiHostAndPort = strings.TrimSpace(kubeapiHostAndPort)
-		_, err := restclient.RequestGet("http://"+kubeapiHostAndPort, false)
+		_, err := restclient.HealthCheck("http://"+kubeapiHostAndPort, time.Duration(kubeapiHealthCheckTimeoutInMilliSecond)*time.Millisecond)
 		if err == nil {
 			splitSlice := strings.Split(kubeapiHostAndPort, ":")
 			host := splitSlice[0]

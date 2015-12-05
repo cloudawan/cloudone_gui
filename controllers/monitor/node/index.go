@@ -83,7 +83,12 @@ func (c *DataController) Get() {
 		return
 	}
 
-	nodeAmount := len(nodeMetricSlice)
+	nodeAmount := 0
+	for _, nodeMetric := range nodeMetricSlice {
+		if nodeMetric.Valid {
+			nodeAmount++
+		}
+	}
 
 	// CPU usage total
 	cpuUsageTotalJsonMap := make(map[string]interface{})
@@ -129,102 +134,104 @@ func (c *DataController) Get() {
 		networkTXPacketsJsonMap["series"] = make([]interface{}, 0)
 
 		for _, nodeMetric := range nodeMetricSlice {
-			// CPU usage total
-			cpuUsageTotalDifferenceAmount := len(nodeMetric.CpuUsageTotalSlice) - 1
-			if cpuUsageTotalDifferenceAmount > cpuUsageTotalDifferenceAmountMaximum {
-				cpuUsageTotalDifferenceAmountMaximum = cpuUsageTotalDifferenceAmount
+			if nodeMetric.Valid {
+				// CPU usage total
+				cpuUsageTotalDifferenceAmount := len(nodeMetric.CpuUsageTotalSlice) - 1
+				if cpuUsageTotalDifferenceAmount > cpuUsageTotalDifferenceAmountMaximum {
+					cpuUsageTotalDifferenceAmountMaximum = cpuUsageTotalDifferenceAmount
+				}
+				cpuUsageTotalJsonMapSeries := make(map[string]interface{})
+				cpuUsageTotalJsonMapSeries["name"] = nodeMetric.KubeletHost
+				cpuUsageTotalJsonMapSeries["data"] = make([]int, cpuUsageTotalDifferenceAmount)
+				for j := 0; j < cpuUsageTotalDifferenceAmount; j++ {
+					cpuUsageTotalJsonMapSeries["data"].([]int)[j] = int(nodeMetric.CpuUsageTotalSlice[j+1]-nodeMetric.CpuUsageTotalSlice[j]) / 1000000
+				}
+				cpuUsageTotalJsonMap["series"] = append(cpuUsageTotalJsonMap["series"].([]interface{}), cpuUsageTotalJsonMapSeries)
+				// Memory usage
+				memoryUsageAmount := len(nodeMetric.MemoryUsageSlice)
+				if memoryUsageAmount > memoryUsageAmountMaximum {
+					memoryUsageAmountMaximum = memoryUsageAmount
+				}
+				memoryUsageJsonMapSeries := make(map[string]interface{})
+				memoryUsageJsonMapSeries["name"] = nodeMetric.KubeletHost
+				memoryUsageJsonMapSeries["data"] = make([]int, memoryUsageAmount)
+				for j := 0; j < memoryUsageAmount; j++ {
+					memoryUsageJsonMapSeries["data"].([]int)[j] = int(nodeMetric.MemoryUsageSlice[j]) / (1024 * 1024)
+				}
+				memoryUsageJsonMap["series"] = append(memoryUsageJsonMap["series"].([]interface{}), memoryUsageJsonMapSeries)
+				// Disk I/O byte
+				diskIOServiceBytesStatsDifferenceAmount := len(nodeMetric.DiskIOServiceBytesStatsTotalSlice) - 1
+				if diskIOServiceBytesStatsDifferenceAmount > diskIOServiceBytesStatsDifferenceAmountMaximum {
+					diskIOServiceBytesStatsDifferenceAmountMaximum = diskIOServiceBytesStatsDifferenceAmount
+				}
+				diskIOServiceBytesStatsJsonMapSeries := make(map[string]interface{})
+				diskIOServiceBytesStatsJsonMapSeries["name"] = nodeMetric.KubeletHost
+				diskIOServiceBytesStatsJsonMapSeries["data"] = make([]int, diskIOServiceBytesStatsDifferenceAmount)
+				for j := 0; j < diskIOServiceBytesStatsDifferenceAmount; j++ {
+					diskIOServiceBytesStatsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.DiskIOServiceBytesStatsTotalSlice[j+1] - nodeMetric.DiskIOServiceBytesStatsTotalSlice[j])
+				}
+				diskIOServiceBytesStatsJsonMap["series"] = append(diskIOServiceBytesStatsJsonMap["series"].([]interface{}), diskIOServiceBytesStatsJsonMapSeries)
+				// Disk I/O count
+				diskIOServicedStatsDifferenceAmount := len(nodeMetric.DiskIOServicedStatsTotalSlice) - 1
+				if diskIOServicedStatsDifferenceAmount > diskIOServicedStatsDifferenceAmountMaximum {
+					diskIOServicedStatsDifferenceAmountMaximum = diskIOServicedStatsDifferenceAmount
+				}
+				diskIOServicedStatsJsonMapSeries := make(map[string]interface{})
+				diskIOServicedStatsJsonMapSeries["name"] = nodeMetric.KubeletHost
+				diskIOServicedStatsJsonMapSeries["data"] = make([]int, diskIOServicedStatsDifferenceAmount)
+				for j := 0; j < diskIOServicedStatsDifferenceAmount; j++ {
+					diskIOServicedStatsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.DiskIOServicedStatsTotalSlice[j+1] - nodeMetric.DiskIOServicedStatsTotalSlice[j])
+				}
+				diskIOServicedStatsJsonMap["series"] = append(diskIOServicedStatsJsonMap["series"].([]interface{}), diskIOServicedStatsJsonMapSeries)
+				// Network RX Byte
+				networkRXBytesDifferenceAmount := len(nodeMetric.NetworkRXBytesSlice) - 1
+				if networkRXBytesDifferenceAmount > networkRXBytesDifferenceAmountMaximum {
+					networkRXBytesDifferenceAmountMaximum = networkRXBytesDifferenceAmount
+				}
+				networkRXBytesJsonMapSeries := make(map[string]interface{})
+				networkRXBytesJsonMapSeries["name"] = nodeMetric.KubeletHost
+				networkRXBytesJsonMapSeries["data"] = make([]int, networkRXBytesDifferenceAmount)
+				for j := 0; j < networkRXBytesDifferenceAmount; j++ {
+					networkRXBytesJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkRXBytesSlice[j+1] - nodeMetric.NetworkRXBytesSlice[j])
+				}
+				networkRXBytesJsonMap["series"] = append(networkRXBytesJsonMap["series"].([]interface{}), networkRXBytesJsonMapSeries)
+				// Network TX Byte
+				networkTXBytesDifferenceAmount := len(nodeMetric.NetworkTXBytesSlice) - 1
+				if networkTXBytesDifferenceAmount > networkTXBytesDifferenceAmountMaximum {
+					networkTXBytesDifferenceAmountMaximum = networkTXBytesDifferenceAmount
+				}
+				networkTXBytesJsonMapSeries := make(map[string]interface{})
+				networkTXBytesJsonMapSeries["name"] = nodeMetric.KubeletHost
+				networkTXBytesJsonMapSeries["data"] = make([]int, networkTXBytesDifferenceAmount)
+				for j := 0; j < networkTXBytesDifferenceAmount; j++ {
+					networkTXBytesJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkTXBytesSlice[j+1] - nodeMetric.NetworkTXBytesSlice[j])
+				}
+				networkTXBytesJsonMap["series"] = append(networkTXBytesJsonMap["series"].([]interface{}), networkTXBytesJsonMapSeries)
+				// Network RX Packet
+				networkRXPacketsDifferenceAmount := len(nodeMetric.NetworkRXPacketsSlice) - 1
+				if networkRXPacketsDifferenceAmount > networkRXPacketsDifferenceAmountMaximum {
+					networkRXPacketsDifferenceAmountMaximum = networkRXPacketsDifferenceAmount
+				}
+				networkRXPacketsJsonMapSeries := make(map[string]interface{})
+				networkRXPacketsJsonMapSeries["name"] = nodeMetric.KubeletHost
+				networkRXPacketsJsonMapSeries["data"] = make([]int, networkRXPacketsDifferenceAmount)
+				for j := 0; j < networkRXPacketsDifferenceAmount; j++ {
+					networkRXPacketsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkRXPacketsSlice[j+1] - nodeMetric.NetworkRXPacketsSlice[j])
+				}
+				networkRXPacketsJsonMap["series"] = append(networkRXPacketsJsonMap["series"].([]interface{}), networkRXPacketsJsonMapSeries)
+				// Network TX Packet
+				networkTXPacketsDifferenceAmount := len(nodeMetric.NetworkTXPacketsSlice) - 1
+				if networkTXPacketsDifferenceAmount > networkTXPacketsDifferenceAmountMaximum {
+					networkTXPacketsDifferenceAmountMaximum = networkTXPacketsDifferenceAmount
+				}
+				networkTXPacketsJsonMapSeries := make(map[string]interface{})
+				networkTXPacketsJsonMapSeries["name"] = nodeMetric.KubeletHost
+				networkTXPacketsJsonMapSeries["data"] = make([]int, networkTXPacketsDifferenceAmount)
+				for j := 0; j < networkTXPacketsDifferenceAmount; j++ {
+					networkTXPacketsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkTXPacketsSlice[j+1] - nodeMetric.NetworkTXPacketsSlice[j])
+				}
+				networkTXPacketsJsonMap["series"] = append(networkTXPacketsJsonMap["series"].([]interface{}), networkTXPacketsJsonMapSeries)
 			}
-			cpuUsageTotalJsonMapSeries := make(map[string]interface{})
-			cpuUsageTotalJsonMapSeries["name"] = nodeMetric.KubeletHost
-			cpuUsageTotalJsonMapSeries["data"] = make([]int, cpuUsageTotalDifferenceAmount)
-			for j := 0; j < cpuUsageTotalDifferenceAmount; j++ {
-				cpuUsageTotalJsonMapSeries["data"].([]int)[j] = int(nodeMetric.CpuUsageTotalSlice[j+1]-nodeMetric.CpuUsageTotalSlice[j]) / 1000000
-			}
-			cpuUsageTotalJsonMap["series"] = append(cpuUsageTotalJsonMap["series"].([]interface{}), cpuUsageTotalJsonMapSeries)
-			// Memory usage
-			memoryUsageAmount := len(nodeMetric.MemoryUsageSlice)
-			if memoryUsageAmount > memoryUsageAmountMaximum {
-				memoryUsageAmountMaximum = memoryUsageAmount
-			}
-			memoryUsageJsonMapSeries := make(map[string]interface{})
-			memoryUsageJsonMapSeries["name"] = nodeMetric.KubeletHost
-			memoryUsageJsonMapSeries["data"] = make([]int, memoryUsageAmount)
-			for j := 0; j < memoryUsageAmount; j++ {
-				memoryUsageJsonMapSeries["data"].([]int)[j] = int(nodeMetric.MemoryUsageSlice[j]) / (1024 * 1024)
-			}
-			memoryUsageJsonMap["series"] = append(memoryUsageJsonMap["series"].([]interface{}), memoryUsageJsonMapSeries)
-			// Disk I/O byte
-			diskIOServiceBytesStatsDifferenceAmount := len(nodeMetric.DiskIOServiceBytesStatsTotalSlice) - 1
-			if diskIOServiceBytesStatsDifferenceAmount > diskIOServiceBytesStatsDifferenceAmountMaximum {
-				diskIOServiceBytesStatsDifferenceAmountMaximum = diskIOServiceBytesStatsDifferenceAmount
-			}
-			diskIOServiceBytesStatsJsonMapSeries := make(map[string]interface{})
-			diskIOServiceBytesStatsJsonMapSeries["name"] = nodeMetric.KubeletHost
-			diskIOServiceBytesStatsJsonMapSeries["data"] = make([]int, diskIOServiceBytesStatsDifferenceAmount)
-			for j := 0; j < diskIOServiceBytesStatsDifferenceAmount; j++ {
-				diskIOServiceBytesStatsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.DiskIOServiceBytesStatsTotalSlice[j+1] - nodeMetric.DiskIOServiceBytesStatsTotalSlice[j])
-			}
-			diskIOServiceBytesStatsJsonMap["series"] = append(diskIOServiceBytesStatsJsonMap["series"].([]interface{}), diskIOServiceBytesStatsJsonMapSeries)
-			// Disk I/O count
-			diskIOServicedStatsDifferenceAmount := len(nodeMetric.DiskIOServicedStatsTotalSlice) - 1
-			if diskIOServicedStatsDifferenceAmount > diskIOServicedStatsDifferenceAmountMaximum {
-				diskIOServicedStatsDifferenceAmountMaximum = diskIOServicedStatsDifferenceAmount
-			}
-			diskIOServicedStatsJsonMapSeries := make(map[string]interface{})
-			diskIOServicedStatsJsonMapSeries["name"] = nodeMetric.KubeletHost
-			diskIOServicedStatsJsonMapSeries["data"] = make([]int, diskIOServicedStatsDifferenceAmount)
-			for j := 0; j < diskIOServicedStatsDifferenceAmount; j++ {
-				diskIOServicedStatsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.DiskIOServicedStatsTotalSlice[j+1] - nodeMetric.DiskIOServicedStatsTotalSlice[j])
-			}
-			diskIOServicedStatsJsonMap["series"] = append(diskIOServicedStatsJsonMap["series"].([]interface{}), diskIOServicedStatsJsonMapSeries)
-			// Network RX Byte
-			networkRXBytesDifferenceAmount := len(nodeMetric.NetworkRXBytesSlice) - 1
-			if networkRXBytesDifferenceAmount > networkRXBytesDifferenceAmountMaximum {
-				networkRXBytesDifferenceAmountMaximum = networkRXBytesDifferenceAmount
-			}
-			networkRXBytesJsonMapSeries := make(map[string]interface{})
-			networkRXBytesJsonMapSeries["name"] = nodeMetric.KubeletHost
-			networkRXBytesJsonMapSeries["data"] = make([]int, networkRXBytesDifferenceAmount)
-			for j := 0; j < networkRXBytesDifferenceAmount; j++ {
-				networkRXBytesJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkRXBytesSlice[j+1] - nodeMetric.NetworkRXBytesSlice[j])
-			}
-			networkRXBytesJsonMap["series"] = append(networkRXBytesJsonMap["series"].([]interface{}), networkRXBytesJsonMapSeries)
-			// Network TX Byte
-			networkTXBytesDifferenceAmount := len(nodeMetric.NetworkTXBytesSlice) - 1
-			if networkTXBytesDifferenceAmount > networkTXBytesDifferenceAmountMaximum {
-				networkTXBytesDifferenceAmountMaximum = networkTXBytesDifferenceAmount
-			}
-			networkTXBytesJsonMapSeries := make(map[string]interface{})
-			networkTXBytesJsonMapSeries["name"] = nodeMetric.KubeletHost
-			networkTXBytesJsonMapSeries["data"] = make([]int, networkTXBytesDifferenceAmount)
-			for j := 0; j < networkTXBytesDifferenceAmount; j++ {
-				networkTXBytesJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkTXBytesSlice[j+1] - nodeMetric.NetworkTXBytesSlice[j])
-			}
-			networkTXBytesJsonMap["series"] = append(networkTXBytesJsonMap["series"].([]interface{}), networkTXBytesJsonMapSeries)
-			// Network RX Packet
-			networkRXPacketsDifferenceAmount := len(nodeMetric.NetworkRXPacketsSlice) - 1
-			if networkRXPacketsDifferenceAmount > networkRXPacketsDifferenceAmountMaximum {
-				networkRXPacketsDifferenceAmountMaximum = networkRXPacketsDifferenceAmount
-			}
-			networkRXPacketsJsonMapSeries := make(map[string]interface{})
-			networkRXPacketsJsonMapSeries["name"] = nodeMetric.KubeletHost
-			networkRXPacketsJsonMapSeries["data"] = make([]int, networkRXPacketsDifferenceAmount)
-			for j := 0; j < networkRXPacketsDifferenceAmount; j++ {
-				networkRXPacketsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkRXPacketsSlice[j+1] - nodeMetric.NetworkRXPacketsSlice[j])
-			}
-			networkRXPacketsJsonMap["series"] = append(networkRXPacketsJsonMap["series"].([]interface{}), networkRXPacketsJsonMapSeries)
-			// Network TX Packet
-			networkTXPacketsDifferenceAmount := len(nodeMetric.NetworkTXPacketsSlice) - 1
-			if networkTXPacketsDifferenceAmount > networkTXPacketsDifferenceAmountMaximum {
-				networkTXPacketsDifferenceAmountMaximum = networkTXPacketsDifferenceAmount
-			}
-			networkTXPacketsJsonMapSeries := make(map[string]interface{})
-			networkTXPacketsJsonMapSeries["name"] = nodeMetric.KubeletHost
-			networkTXPacketsJsonMapSeries["data"] = make([]int, networkTXPacketsDifferenceAmount)
-			for j := 0; j < networkTXPacketsDifferenceAmount; j++ {
-				networkTXPacketsJsonMapSeries["data"].([]int)[j] = int(nodeMetric.NetworkTXPacketsSlice[j+1] - nodeMetric.NetworkTXPacketsSlice[j])
-			}
-			networkTXPacketsJsonMap["series"] = append(networkTXPacketsJsonMap["series"].([]interface{}), networkTXPacketsJsonMapSeries)
 		}
 
 		// CPU usage total
