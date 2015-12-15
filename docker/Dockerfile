@@ -1,11 +1,9 @@
-FROM    centos:centos6
+FROM ubuntu:14.04
 
 # Bundle app source
 COPY . /src
 
-
-
-# Priviledge
+# Privilege
 RUN chmod a+x /src/run.sh
 RUN chmod a+x /src/cloudone_gui/cloudone_gui
 

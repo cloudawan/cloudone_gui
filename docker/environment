@@ -1,8 +1,5 @@
 {
-	"NODE_HOST": "Kubernetes Node IP. Used for outside to access. Format: Hostname/IP ",
-	"NODE_PORT": "Kubernetes Node Port. Used for outside to access. Format: Number ",
-	"KUBEAPI_HOST": "Kubernetes API server Host IP. Format: Hostname/IP ",
-	"KUBEAPI_PORT": "Kubernetes API server Port. Format: Number ",
+	"KUBEAPI_CLUSTER_HOST_AND_PORT": "Kubernetes kubeapi server Host IP. Format: Hostname1:Port1, Hostname2:Port2, Hostname3:Port3 ",
 	"CLOUDONE_HOST": "Cloudone Host. Format: Hostname/IP ",
 	"CLOUDONE_PORT": "Cloudone Port. Format: Number ",
 	"CLOUDONE_ANALYSIS_HOST": "Cloudone analysis Host. Format: Hostname/IP ",
