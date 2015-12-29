@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"regexp"
 )
 
 type EditController struct {
@@ -78,6 +79,16 @@ func (c *EditController) Post() {
 
 	name := c.GetString("name")
 	description := c.GetString("description")
+
+	// Name need to be a DNS 952 label
+	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
+	if match == false {
+		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+		guimessage.RedirectMessage(c)
+		return
+	}
+
 	replicationControllerJson := c.GetString("replicationControllerJson")
 	if replicationControllerJson == "" {
 		replicationControllerJson = "{}"
