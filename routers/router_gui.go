@@ -17,6 +17,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers"
+	"github.com/cloudawan/cloudone_gui/controllers/dashboard/healthcheck"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/topology"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/autoscaler"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploy"
@@ -74,6 +75,7 @@ func init() {
 	beego.Router("/gui/system/namespace/select", &namespace.SelectController{})
 	beego.Router("/gui/dashboard/topology/", &topology.IndexController{})
 	beego.Router("/gui/dashboard/topology/data", &topology.DataController{})
+	beego.Router("/gui/dashboard/healthcheck/", &healthcheck.ListController{})
 	beego.Router("/gui/deploy/deploy/", &deploy.ListController{})
 	beego.Router("/gui/deploy/deploy/delete", &deploy.DeleteController{})
 	beego.Router("/gui/deploy/deploy/create", &deploy.CreateController{})

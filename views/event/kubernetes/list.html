@@ -55,7 +55,6 @@
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/event/kubernetes/acknowledge?namespace={{$kubernetesEvent.Namespace}}&id={{$kubernetesEvent.Id}}&acknowledge={{ .Action }}"> {{ .Button }}</a>
 						</td>
-					</thead>
 					</tr>
 				{{end}}
 			</tbody>

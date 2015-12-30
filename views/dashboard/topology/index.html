@@ -28,10 +28,19 @@
 
 {{ define "content" }}
     <div class="page-header">
-        <h1>Topology</h1>
+        <h1>Dashboard</h1>
     </div>
-    	<div id="idLogicalView">
-		<div id="idPhysicalView">
+	<div>
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#" role="tab" >Topology</a></li>
+			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
+		</ul>
+		<div class="row">
+			<div class="col-md-12">
+		    		<div id="idLogicalView">
+				<div id="idPhysicalView">
+			</div>
+		</div>
     </div>
 {{ end }}
 

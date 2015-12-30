@@ -1,0 +1,134 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+	<link rel="stylesheet" href="/static/css/jquery.treegrid.css">
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+        <h1>Dashboard</h1>
+    </div>
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation"><a href="/gui/dashboard/topology/" role="tab" >Topology</a></li>
+		<li role="presentation" class="active"><a href="#" role="tab" >Health Check</a></li>
+	</ul>
+	<div class="row">
+		<div class="col-md-12">
+			<div>
+				<h2>Cloudone</h2>
+			</div>
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<!--
+					<th>#</th>
+					-->
+					<th>Cloudone</th>
+					<th>CloudoneAnalysis</th>
+					<th>CloudoneGUI</th>
+					<th>Cassandra</th>
+					<th>ElasticSearch</th>
+					<th>Docker</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $componentStatusKey, $componentStatus := .componentStatusSlice}}
+					<tr>
+						<!--
+						<td>{{$componentStatusKey}}</td>
+						-->
+						<td>{{$componentStatus.Cloudone}}</td>
+						<td>{{$componentStatus.CloudoneAnalysis}}</td>
+						<td>{{$componentStatus.CloudoneGUI}}</td>
+						<td>{{$componentStatus.Cassandra}}</td>
+						<td>{{$componentStatus.ElasticSearch}}</td>
+						<td>{{$componentStatus.Docker}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+
+			<div>
+				<h2>Kuberenetes</h2>
+			</div>
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<!--
+					<th>#</th>
+					-->
+					<th>IP</th>
+					<th>Power/Network</th>
+					<th>Docker</th>
+					<th>Flannel</th>
+					<th>KubeProxy</th>
+					<th>Kubelet</th>
+					<th>KubeApiserver</th>
+					<th>KubeScherduler (Singleton)</th>
+					<th>KubeControllerManager (Singleton)</th>
+					<th>Docker IP</th>
+					<th>Flannel IP</th>
+					<th>Valid Docker IP</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $kubernetesStatusKey, $kubernetesStatus := .kubernetesStatusSlice}}
+					<tr>
+						<!--
+						<td>{{$kubernetesStatusKey}}</td>
+						-->
+						<td>{{$kubernetesStatus.IP}}</td>
+						<td>{{$kubernetesStatus.Active}}</td>
+						<td>{{$kubernetesStatus.Docker}}</td>
+						<td>{{$kubernetesStatus.Flannel}}</td>
+						<td>{{$kubernetesStatus.KubeProxy}}</td>
+						<td>{{$kubernetesStatus.Kubelet}}</td>
+						<td>{{$kubernetesStatus.KubeApiserver}}</td>
+						<td>{{$kubernetesStatus.KubeScherduler}}</td>
+						<td>{{$kubernetesStatus.KubeControllerManager}}</td>
+						<td>{{$kubernetesStatus.DockerIP}}</td>
+						<td>{{$kubernetesStatus.FlannelIP}}</td>
+						<td>{{$kubernetesStatus.DockerIPValid}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+
+			<div>
+				<h2>Glusterfs</h2>
+			</div>
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<!--
+					<th>#</th>
+					-->
+					<th>IP</th>
+					<th>Power/Network</th>
+					<th>Glusterfs</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $glusterfsStatusKey, $glusterfsStatus := .glusterfsStatusSlice}}
+					<tr>
+						<!--
+						<td>{{$glusterfsStatusKey}}</td>
+						-->
+						<td>{{$glusterfsStatus.IP}}</td>
+						<td>{{$glusterfsStatus.Active}}</td>
+						<td>{{$glusterfsStatus.Glusterfs}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+			
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/jquery.treegrid.min.js"></script>
+	<script type="text/javascript">
+		$('.tree').treegrid({'initialState': 'collapsed'});
+	</script>
+{{ end}}

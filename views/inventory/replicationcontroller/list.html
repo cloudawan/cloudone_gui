@@ -83,16 +83,17 @@
 							</tr>
 							
 							<thead>
-							<tr class="treegrid-parent-{{$replicationControllerAndRelatedPodKey}}-{{$podKey}}-{{$containerKey}}">
-								<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
-								<th>Name</th>
-								<th>Protocol</th>
-								<th>ContainerPort</th>
-								<th></th>
-							</tr>
+								<tr class="treegrid-parent-{{$replicationControllerAndRelatedPodKey}}-{{$podKey}}-{{$containerKey}}">
+									<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
+									<th>Name</th>
+									<th>Protocol</th>
+									<th>ContainerPort</th>
+									<th></th>
+								</tr>
+							</thead>
+							
 							{{range $portKey, $port := $container.PortSlice}}
-								</thead>
-									<tr class="treegrid-parent-{{$replicationControllerAndRelatedPodKey}}-{{$podKey}}-{{$containerKey}}">
+								<tr class="treegrid-parent-{{$replicationControllerAndRelatedPodKey}}-{{$podKey}}-{{$containerKey}}">
 									<td>{{$portKey}}</td>
 									<td>{{$port.Name}}</td>
 									<td>{{$port.Protocol}}</td>
