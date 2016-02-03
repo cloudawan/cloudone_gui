@@ -161,7 +161,7 @@ func parseComponentStatus(cloudoneJsonMap map[string]interface{}, cloudoneAnalys
 		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[cloudone] %v cloudoneJsonMap %v", cloudoneJsonMap["cloudone"], cloudoneJsonMap)
 		return nil, errors.New(errorText)
 	}
-	cassandra, ok := cloudoneStatusJsonMap["cassandra"].(bool)
+	storage, ok := cloudoneStatusJsonMap["storage"].(bool)
 	docker, ok := cloudoneStatusJsonMap["docker"].(bool)
 	cloudone, ok := cloudoneStatusJsonMap["restapi"].(bool)
 
@@ -177,7 +177,7 @@ func parseComponentStatus(cloudoneJsonMap map[string]interface{}, cloudoneAnalys
 		cloudone,
 		cloudoneAnalysis,
 		true,
-		cassandra,
+		storage,
 		elasticSearch,
 		docker,
 	}
