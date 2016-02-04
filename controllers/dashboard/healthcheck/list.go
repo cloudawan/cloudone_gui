@@ -136,21 +136,22 @@ func (c *ListController) Get() {
 		guimessage.OutputMessage(c.Data)
 		return
 	}
-
-	glusterfsStatusSlice, err := parseGlusterfsStatusSlice(cloudoneJsonMap)
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
-	}
+	/*
+		glusterfsStatusSlice, err := parseGlusterfsStatusSlice(cloudoneJsonMap)
+		if err != nil {
+			// Error
+			guimessage.AddDanger(err.Error())
+			guimessage.OutputMessage(c.Data)
+			return
+		}
+	*/
 
 	sort.Sort(SortKubernetesStatusByIP(kubernetesStatusSlice))
-	sort.Sort(SortGlusterfsStatusByIP(glusterfsStatusSlice))
+	//sort.Sort(SortGlusterfsStatusByIP(glusterfsStatusSlice))
 
 	c.Data["componentStatusSlice"] = componentStatusSlice
 	c.Data["kubernetesStatusSlice"] = kubernetesStatusSlice
-	c.Data["glusterfsStatusSlice"] = glusterfsStatusSlice
+	//c.Data["glusterfsStatusSlice"] = glusterfsStatusSlice
 
 	guimessage.OutputMessage(c.Data)
 }
@@ -284,6 +285,7 @@ func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Kuber
 	return kubernetesStatusSlice, nil
 }
 
+/*
 func parseGlusterfsStatusSlice(cloudoneJsonMap map[string]interface{}) ([]GlusterfsStatus, error) {
 	glusterfsStatusJsonMap, ok := cloudoneJsonMap["glusterfs"].(map[string]interface{})
 	if ok == false {
@@ -329,3 +331,4 @@ func parseGlusterfsStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Gluste
 
 	return glusterfsStatusSlice, nil
 }
+*/

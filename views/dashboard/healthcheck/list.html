@@ -94,15 +94,14 @@
 			</tbody>
 			</table>
 
+			<!--
 			<div>
 				<h2>Glusterfs</h2>
 			</div>
 			<table class="table table-condensed tree">
 			<thead>
 				<tr>
-					<!--
 					<th>#</th>
-					-->
 					<th>IP</th>
 					<th>Power/Network</th>
 					<th>Glusterfs</th>
@@ -111,9 +110,7 @@
 			<tbody>
 				{{range $glusterfsStatusKey, $glusterfsStatus := .glusterfsStatusSlice}}
 					<tr>
-						<!--
 						<td>{{$glusterfsStatusKey}}</td>
-						-->
 						<td>{{$glusterfsStatus.IP}}</td>
 						<td>{{$glusterfsStatus.Active}}</td>
 						<td>{{$glusterfsStatus.Glusterfs}}</td>
@@ -121,6 +118,7 @@
 				{{end}}
 			</tbody>
 			</table>
+			-->
 			
 		</div>
 	</div>
