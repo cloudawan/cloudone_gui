@@ -12,31 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package volume
+package cluster
 
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"time"
 )
 
 type ListController struct {
 	beego.Controller
 }
 
-type GlusterfsVolume struct {
-	VolumeName     string
-	Type           string
-	VolumeID       string
-	Status         string
-	NumberOfBricks string
-	TransportType  string
-	Bricks         []string
-	Size           int
+type GlusterfsCluster struct {
+	Name              string
+	HostSlice         []string
+	Path              string
+	SSHDialTimeout    time.Duration
+	SSHSessionTimeout time.Duration
+	SSHPort           int
+	SSHUser           string
+	SSHPassword       string
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "storage/glusterfs/volume/list.html"
+	c.TplNames = "filesystem/glusterfs/cluster/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -44,17 +45,17 @@ func (c *ListController) Get() {
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/glusterfsvolumes/"
+		"/api/v1/glusterfs/clusters/"
 
-	glusterfsVolumeSlice := make([]GlusterfsVolume, 0)
+	glusterfsClusterSlice := make([]GlusterfsCluster, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeSlice)
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsClusterSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["glusterfsVolumeSlice"] = glusterfsVolumeSlice
+		c.Data["glusterfsClusterSlice"] = glusterfsClusterSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

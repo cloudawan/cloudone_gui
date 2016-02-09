@@ -15,10 +15,11 @@
 package volume
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/cluster"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"strings"
 )
 
 type GlusterfsVolumeInput struct {
@@ -29,34 +30,43 @@ type GlusterfsVolumeInput struct {
 	HostSlice []string
 }
 
-type GlusterfsVolumeControl struct {
-	GlusterfsClusterHostSlice []string
-	GlusterfsPath             string
-}
-
 type CreateController struct {
 	beego.Controller
 }
 
 func (c *CreateController) Get() {
-	c.TplNames = "storage/glusterfs/volume/create.html"
+	c.TplNames = "filesystem/glusterfs/volume/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/glusterfsvolumes/configuration"
+	clusterName := c.GetString("clusterName")
 
-	glusterfsVolumeControl := GlusterfsVolumeControl{}
-	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeControl)
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/glusterfs/clusters/" + clusterName
+
+	glusterfsCluster := cluster.GlusterfsCluster{}
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsCluster)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["glusterfsClusterHostSlice"] = glusterfsVolumeControl.GlusterfsClusterHostSlice
+		hostList := ""
+		length := len(glusterfsCluster.HostSlice)
+		for index, host := range glusterfsCluster.HostSlice {
+			if index == length-1 {
+				hostList += host
+			} else {
+				hostList += host + ","
+			}
+		}
+
+		c.Data["hostSlice"] = glusterfsCluster.HostSlice
+		c.Data["clusterName"] = clusterName
+		c.Data["hostList"] = hostList
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -69,53 +79,45 @@ func (c *CreateController) Post() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
+	clusterName := c.GetString("clusterName")
+	hostList := c.GetString("hostList")
+
 	name := c.GetString("name")
 	stripe, _ := c.GetInt("stripe")
 	replica, _ := c.GetInt("replica")
 	transport := c.GetString("transport")
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/glusterfsvolumes/configuration"
+	allHostSlice := strings.Split(hostList, ",")
 
-	glusterfsVolumeControl := GlusterfsVolumeControl{}
-	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeControl)
+	hostSlice := make([]string, 0)
+	for _, host := range allHostSlice {
+		hostSelected := c.GetString(host)
+		if hostSelected == "on" {
+			hostSlice = append(hostSlice, host)
+		}
+	}
+
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/glusterfs/clusters/" + clusterName + "/volumes/"
+
+	glusterfsVolumeInput := GlusterfsVolumeInput{
+		name,
+		stripe,
+		replica,
+		transport,
+		hostSlice,
+	}
+
+	_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		hostSlice := make([]string, 0)
-		for _, host := range glusterfsVolumeControl.GlusterfsClusterHostSlice {
-			hostSelected := c.GetString(host)
-			if hostSelected == "on" {
-				hostSlice = append(hostSlice, host)
-			}
-		}
-
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/glusterfsvolumes/"
-
-		glusterfsVolumeInput := GlusterfsVolumeInput{
-			name,
-			stripe,
-			replica,
-			transport,
-			hostSlice,
-		}
-
-		fmt.Println(glusterfsVolumeInput)
-
-		_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil)
-
-		if err != nil {
-			// Error
-			guimessage.AddDanger(err.Error())
-		} else {
-			guimessage.AddSuccess("Glusterfs volume " + name + " is created and started")
-		}
+		guimessage.AddSuccess("Glusterfs volume " + name + " is created and started")
 	}
 
-	c.Ctx.Redirect(302, "/gui/storage/glusterfs/volume/")
+	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/volume?clusterName="+clusterName)
 
 	guimessage.RedirectMessage(c)
 }

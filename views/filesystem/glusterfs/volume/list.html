@@ -11,7 +11,8 @@
 		<div class="col-md-12">
 			
 			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/storage/glusterfs/volume/create">Create</a>
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/">Cancel</a>
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/create?clusterName={{.clusterName}}">Create</a>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -42,7 +43,7 @@
 							{{end}}
 						</td>
 						<td>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/storage/glusterfs/volume/delete?glusterfsVolume={{$glusterfsVolume.VolumeName}}">Delete</a>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/delete?glusterfsVolume={{$glusterfsVolume.VolumeName}}&clusterName={{$glusterfsVolume.ClusterName}}">Delete</a>
 						</td>
 					</tr>
 				{{end}}

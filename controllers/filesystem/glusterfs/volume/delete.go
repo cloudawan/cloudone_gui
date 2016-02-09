@@ -27,6 +27,8 @@ type DeleteController struct {
 func (c *DeleteController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	clusterName := c.GetString("clusterName")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -34,7 +36,7 @@ func (c *DeleteController) Get() {
 	glusterfsVolume := c.GetString("glusterfsVolume")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/glusterfsvolumes/" + glusterfsVolume
+		"/api/v1/glusterfs/clusters/" + clusterName + "/volumes/" + glusterfsVolume
 	_, err := restclient.RequestDelete(url, nil, true)
 
 	if err != nil {
@@ -45,7 +47,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/storage/glusterfs/volume/")
+	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/volume?clusterName="+clusterName)
 
 	guimessage.RedirectMessage(c)
 }

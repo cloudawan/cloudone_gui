@@ -24,6 +24,8 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploybluegreen"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deployclusterapplication"
 	"github.com/cloudawan/cloudone_gui/controllers/event/kubernetes"
+	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/cluster"
+	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/volume"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/inventory/replicationcontroller"
 	"github.com/cloudawan/cloudone_gui/controllers/inventory/service"
@@ -34,7 +36,6 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imageinformation"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imagerecord"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/thirdparty"
-	"github.com/cloudawan/cloudone_gui/controllers/storage/glusterfs/volume"
 	"github.com/cloudawan/cloudone_gui/controllers/system/namespace"
 )
 
@@ -91,7 +92,10 @@ func init() {
 	beego.Router("/gui/deploy/autoscaler/edit", &autoscaler.EditController{})
 	beego.Router("/gui/event/kubernetes/", &kubernetes.ListController{})
 	beego.Router("/gui/event/kubernetes/acknowledge", &kubernetes.AcknowledgeController{})
-	beego.Router("/gui/storage/glusterfs/volume/", &volume.ListController{})
-	beego.Router("/gui/storage/glusterfs/volume/create", &volume.CreateController{})
-	beego.Router("/gui/storage/glusterfs/volume/delete", &volume.DeleteController{})
+	beego.Router("/gui/filesystem/glusterfs/volume/", &volume.ListController{})
+	beego.Router("/gui/filesystem/glusterfs/volume/create", &volume.CreateController{})
+	beego.Router("/gui/filesystem/glusterfs/volume/delete", &volume.DeleteController{})
+	beego.Router("/gui/filesystem/glusterfs/cluster/", &cluster.ListController{})
+	beego.Router("/gui/filesystem/glusterfs/cluster/edit", &cluster.EditController{})
+	beego.Router("/gui/filesystem/glusterfs/cluster/delete", &cluster.DeleteController{})
 }

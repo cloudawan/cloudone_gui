@@ -1,0 +1,72 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="/gui/filesystem/glusterfs/cluster/edit" method="post">
+				<input id="createOrUpdate" class="form-control" type="hidden" name="createOrUpdate" value="{{ .createOrUpdate }}">
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Host List:</label>
+					<div class="col-md-9">
+						<input id="hostList" class="form-control" type="text" name="hostList" value="{{ .hostList }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="path">Path:</label>
+					<div class="col-md-9">
+						<input id="path" class="form-control" type="text" name="path" value="{{ .path }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sSHDialTimeoutInMilliSecond">SSH Dial Timeout(ms):</label>
+					<div class="col-md-9">
+						<input id="sSHDialTimeoutInMilliSecond" class="form-control" type="number" name="sSHDialTimeoutInMilliSecond" value="{{ .sSHDialTimeoutInMilliSecond }}" min="100" max="30000">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sSHSessionTimeoutInMilliSecond">SSH Session Timeout(ms):</label>
+					<div class="col-md-9">
+						<input id="sSHSessionTimeoutInMilliSecond" class="form-control" type="number" name="sSHSessionTimeoutInMilliSecond" value="{{ .sSHSessionTimeoutInMilliSecond }}" min="100" max="30000">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sSHPort">SSH Port:</label>
+					<div class="col-md-9">
+						<input id="sSHPort" class="form-control" type="number" name="sSHPort" value="{{ .sSHPort }}" min="22" max="65535">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sSHUser">SSH User:</label>
+					<div class="col-md-9">
+						<input id="sSHUser" class="form-control" type="text" name="sSHUser" value="{{ .sSHUser }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sSHPassword">SSH Password:</label>
+					<div class="col-md-9">
+						<input id="sSHPassword" class="form-control" type="text" name="sSHPassword" value="{{ .sSHPassword }}">
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="{{.actionButtonValue}}">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

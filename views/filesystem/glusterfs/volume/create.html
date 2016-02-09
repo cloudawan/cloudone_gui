@@ -9,7 +9,10 @@
 	</div>
 	<div class="row">
 		<div class="col-md-9">	
-			<form class="form-horizontal" action="/gui/storage/glusterfs/volume/create" method="post">		
+			<form class="form-horizontal" action="/gui/filesystem/glusterfs/volume/create" method="post">		
+				<input id="clusterName" class="form-control" type="hidden" name="clusterName" value="{{ .clusterName }}">
+				<input id="hostList" class="form-control" type="hidden" name="hostList" value="{{ .hostList }}">
+
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
@@ -43,7 +46,7 @@
 					<label class="col-md-3 control-label" for="">Server List:</label>
 				</div>
 
-				{{range $key, $value := .glusterfsClusterHostSlice}}
+				{{range $key, $value := .hostSlice}}
 					<div class="form-group">
 						<label class="col-md-3 control-label" for="cpu">{{$value}}:</label>
 						<div class="col-md-offset-1 col-md-6 checkbox">
@@ -52,7 +55,7 @@
 					</div>
 				{{end}}
 
-				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/storage/glusterfs/volume/">Cancel</a>
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume?clusterName={{.clusterName}}">Cancel</a>
 				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Create">
 			</form>
 		</div>
