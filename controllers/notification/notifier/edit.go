@@ -292,13 +292,15 @@ func (c *EditController) Post() {
 
 	if len(emailServerName) == 0 {
 		guimessage.AddDanger("Email server configuration name can't be empty")
-		guimessage.OutputMessage(c.Data)
+		c.Ctx.Redirect(302, "/gui/notification/notifier/")
+		guimessage.RedirectMessage(c)
 		return
 	}
 
 	if len(smsNexmoName) == 0 {
 		guimessage.AddDanger("SMS Nexom configuration name can't be empty")
-		guimessage.OutputMessage(c.Data)
+		c.Ctx.Redirect(302, "/gui/notification/notifier/")
+		guimessage.RedirectMessage(c)
 		return
 	}
 
