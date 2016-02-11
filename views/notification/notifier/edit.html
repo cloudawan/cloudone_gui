@@ -14,8 +14,8 @@
 					<label class="col-md-3 control-label" for="kind">Type:</label>
 					<div class="col-md-9">
 						<select id="kind" class="form-control" name="kind" value="{{ .kind }}" {{ .readonly }}>
-							<option value="selector">Selector</option>
-							<option value="replicationController">ReplicationController</option>
+							<option value="selector" {{ .selectorSelected }}>Selector</option>
+							<option value="replicationController" {{ .replicationControllerSelected }}>ReplicationController</option>
 						</select>
 					</div>
 				</div>
@@ -26,9 +26,29 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="col-md-3 control-label" for="emailServerName">Email Server Configuration:</label>
+					<div class="col-md-9">
+						<select id="emailServerName" class="form-control" name="emailServerName" value="{{ .emailServerName }}">
+						{{range $emailServerSMTPKey, $emailServerSMTP := .emailServerSMTPSlice}}
+							<option value="{{$emailServerSMTP.Name}}" {{$emailServerSMTP.Selected}}>{{$emailServerSMTP.Name}}</option>
+						{{end}}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="col-md-3 control-label" for="email">Email:</label>
 					<div class="col-md-9">
 						<input id="email" class="form-control" type="text" name="email" value="{{ .email }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="smsNexmoName">SMS Configuration:</label>
+					<div class="col-md-9">
+						<select id="smsNexmoName" class="form-control" name="smsNexmoName" value="{{ .smsNexmoName }}">
+						{{range $smsNexmoKey, $smsNexmo := .smsNexmoSlice}}
+							<option value="{{$smsNexmo.Name}}" {{$smsNexmo.Selected}}>{{$smsNexmo.Name}}</option>
+						{{end}}
+						</select>
 					</div>
 				</div>
 				<div class="form-group">

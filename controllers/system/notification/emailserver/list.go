@@ -12,60 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package notifier
+package emailserver
 
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"time"
 )
 
 type ListController struct {
 	beego.Controller
 }
 
-type ReplicationControllerNotifier struct {
-	Check             bool
-	CoolDownDuration  time.Duration
-	RemainingCoolDown time.Duration
-	KubeapiHost       string
-	KubeapiPort       int
-	Namespace         string
-	Kind              string
-	Name              string
-	NotifierSlice     []Notifier
-	IndicatorSlice    []Indicator
-}
-
-type Notifier struct {
-	Kind string
-	Data string
-}
-
-type NotifierSMSNexmo struct {
-	Destination         string
-	Sender              string
-	ReceiverNumberSlice []string
-}
-
-type NotifierEmail struct {
-	Destination          string
-	ReceiverAccountSlice []string
-}
-
-type Indicator struct {
-	Type                  string
-	AboveAllOrOne         bool
-	AbovePercentageOfData float64
-	AboveThreshold        int64
-	BelowAllOrOne         bool
-	BelowPercentageOfData float64
-	BelowThreshold        int64
+type EmailServerSMTP struct {
+	Name     string
+	Account  string
+	Password string
+	Host     string
+	Port     int
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "notification/notifier/list.html"
+	c.TplNames = "system/notification/emailserver/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -73,17 +41,17 @@ func (c *ListController) Get() {
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/notifiers/"
+		"/api/v1/notifiers/emailserversmtp/"
 
-	replicationControllerNotifierSlice := make([]ReplicationControllerNotifier, 0)
+	emailServerSMTPSlice := make([]EmailServerSMTP, 0)
 
-	returnedReplicationControllerNotifierSlice, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice)
+	_, err := restclient.RequestGetWithStructure(url, &emailServerSMTPSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["replicationControllerNotifierSlice"] = returnedReplicationControllerNotifierSlice
+		c.Data["emailServerSMTPSlice"] = emailServerSMTPSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

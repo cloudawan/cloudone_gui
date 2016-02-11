@@ -1,0 +1,52 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Create Email Server</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+			<form class="form-horizontal" action="/gui/system/notification/emailserver/create" method="post">
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="account">Account:</label>
+					<div class="col-md-9">
+						<input id="account" class="form-control" type="text" name="account">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="password">Password:</label>
+					<div class="col-md-9">
+						<input id="password" class="form-control" type="text" name="password">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="host">Host:</label>
+					<div class="col-md-9">
+						<input id="host" class="form-control" type="text" name="host">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="port">Port:</label>
+					<div class="col-md-9">
+						<input id="port" class="form-control" type="number" name="port" value="587" min="1" max="65535">
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/emailserver/">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Create">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

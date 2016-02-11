@@ -28,6 +28,23 @@ type EditController struct {
 	beego.Controller
 }
 
+type EmailServerSMTP struct {
+	Name     string
+	Account  string
+	Password string
+	Host     string
+	Port     int
+	Selected string
+}
+
+type SMSNexmo struct {
+	Name      string
+	Url       string
+	APIKey    string
+	APISecret string
+	Selected  string
+}
+
 func (c *EditController) Get() {
 	c.TplNames = "notification/notifier/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -38,18 +55,47 @@ func (c *EditController) Get() {
 	c.Data["cpuHidden"] = "hidden"
 	c.Data["memoryHidden"] = "hidden"
 
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/notifiers/emailserversmtp"
+	emailServerSMTPSlice := make([]EmailServerSMTP, 0)
+	_, err := restclient.RequestGetWithStructure(url, &emailServerSMTPSlice)
+	if err != nil {
+		guimessage.AddDanger(err.Error())
+	}
+
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/notifiers/smsnexmo"
+	smsNexmoSlice := make([]SMSNexmo, 0)
+	_, err = restclient.RequestGetWithStructure(url, &smsNexmoSlice)
+	if err != nil {
+		guimessage.AddDanger(err.Error())
+	}
+
+	c.Data["emailServerSMTPSlice"] = emailServerSMTPSlice
+	c.Data["smsNexmoSlice"] = smsNexmoSlice
+
+	if len(emailServerSMTPSlice) == 0 {
+		guimessage.AddDanger("No Email server is configured")
+	}
+
+	if len(smsNexmoSlice) == 0 {
+		guimessage.AddDanger("No SMS server is configured")
+	}
+
 	if kind == "" || name == "" {
 		c.Data["actionButtonValue"] = "Create"
 		c.Data["pageHeader"] = "Create Notifier"
 		c.Data["kind"] = ""
 		c.Data["name"] = ""
 		c.Data["readonly"] = ""
+		c.Data["selectorSelected"] = ""
+		c.Data["replicationControllerSelected"] = ""
 	} else {
 		namespace, _ := c.GetSession("namespace").(string)
-
-		cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
-		cloudoneHost := beego.AppConfig.String("cloudoneHost")
-		cloudonePort := beego.AppConfig.String("cloudonePort")
 
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/notifiers/" + namespace + "/" + kind + "/" + name
@@ -62,22 +108,55 @@ func (c *EditController) Get() {
 			// Error
 			guimessage.AddDanger(err.Error())
 		} else {
-
 			for _, notifier := range replicationControllerNotifier.NotifierSlice {
 				switch notifier.Kind {
 				case "email":
-					email := strings.TrimSuffix(notifier.Data, ",")
-					c.Data["email"] = email
-				case "smsNexmo":
-					jsonMap := make(map[string]interface{})
-					err := json.Unmarshal([]byte(notifier.Data), &jsonMap)
+					notifierEmail := NotifierEmail{}
+					err := json.Unmarshal([]byte(notifier.Data), &notifierEmail)
 					if err != nil {
 						guimessage.AddDanger(err.Error())
 					} else {
-						smsNexmoSender := jsonMap["Sender"]
-						smsNexmoPhone := jsonMap["ReceiverNumberSlice"].([]interface{})[0]
-						c.Data["smsNexmoSender"] = smsNexmoSender
-						c.Data["smsNexmoPhone"] = smsNexmoPhone
+						receiverAccountList := ""
+						length := len(notifierEmail.ReceiverAccountSlice)
+						for i := 0; i < length; i++ {
+							if i == length-1 {
+								receiverAccountList += notifierEmail.ReceiverAccountSlice[i]
+							} else {
+								receiverAccountList += notifierEmail.ReceiverAccountSlice[i] + ", "
+							}
+						}
+						c.Data["email"] = receiverAccountList
+						c.Data["emailServerName"] = notifierEmail.Destination
+
+						for i := 0; i < len(emailServerSMTPSlice); i++ {
+							if emailServerSMTPSlice[i].Name == notifierEmail.Destination {
+								emailServerSMTPSlice[i].Selected = "selected"
+							}
+						}
+					}
+				case "smsNexmo":
+					notifierSMSNexmo := NotifierSMSNexmo{}
+					if err != nil {
+						guimessage.AddDanger(err.Error())
+					} else {
+						receiverNumberList := ""
+						length := len(notifierSMSNexmo.ReceiverNumberSlice)
+						for i := 0; i < length; i++ {
+							if i == length-1 {
+								receiverNumberList += notifierSMSNexmo.ReceiverNumberSlice[i]
+							} else {
+								receiverNumberList += notifierSMSNexmo.ReceiverNumberSlice[i] + ", "
+							}
+						}
+						c.Data["smsNexmoSender"] = notifierSMSNexmo.Sender
+						c.Data["smsNexmoPhone"] = receiverNumberList
+						c.Data["smsNexmoName"] = notifierSMSNexmo.Destination
+
+						for i := 0; i < len(smsNexmoSlice); i++ {
+							if smsNexmoSlice[i].Name == notifierSMSNexmo.Destination {
+								smsNexmoSlice[i].Selected = "selected"
+							}
+						}
 					}
 				}
 			}
@@ -129,6 +208,14 @@ func (c *EditController) Get() {
 		c.Data["name"] = name
 		c.Data["actionButtonValue"] = "Update"
 		c.Data["pageHeader"] = "Update Notifier"
+		c.Data["selectorSelected"] = ""
+		c.Data["replicationControllerSelected"] = ""
+		switch kind {
+		case "selector":
+			c.Data["selectorSelected"] = "selected"
+		case "replicationController":
+			c.Data["replicationControllerSelected"] = "selected"
+		}
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -197,19 +284,67 @@ func (c *EditController) Post() {
 	kind := c.GetString("kind")
 	name := c.GetString("name")
 	coolDownDuration, _ := c.GetInt("coolDownDuration")
-	email := c.GetString("email")
+	emailField := c.GetString("email")
+	emailServerName := c.GetString("emailServerName")
 	smsNexmoSender := c.GetString("smsNexmoSender")
-	smsNexmoPhone := c.GetString("smsNexmoPhone")
+	smsNexmoPhoneField := c.GetString("smsNexmoPhone")
+	smsNexmoName := c.GetString("smsNexmoName")
+
+	if len(emailServerName) == 0 {
+		guimessage.AddDanger("Email server configuration name can't be empty")
+		guimessage.OutputMessage(c.Data)
+		return
+	}
+
+	if len(smsNexmoName) == 0 {
+		guimessage.AddDanger("SMS Nexom configuration name can't be empty")
+		guimessage.OutputMessage(c.Data)
+		return
+	}
 
 	notifierSlice := make([]Notifier, 0)
-	if email != "" {
-		notifierSlice = append(notifierSlice, Notifier{"email", email})
+	if emailField != "" {
+		emailSlice := make([]string, 0)
+		for _, email := range strings.Split(emailField, ",") {
+			value := strings.TrimSpace(email)
+			if len(value) > 0 {
+				emailSlice = append(emailSlice, value)
+			}
+		}
+		notifierEmail := NotifierEmail{
+			emailServerName,
+			emailSlice,
+		}
+		byteSlice, err := json.Marshal(notifierEmail)
+		if err != nil {
+			guimessage.AddDanger(err.Error())
+			guimessage.OutputMessage(c.Data)
+			return
+		}
+
+		notifierSlice = append(notifierSlice, Notifier{"email", string(byteSlice)})
 	}
-	if smsNexmoSender != "" && smsNexmoPhone != "" {
-		notifierSlice = append(notifierSlice, Notifier{
-			"smsNexmo",
-			`{"Sender":"` + smsNexmoSender + `","ReceiverNumberSlice":["` + smsNexmoPhone + `"]}`,
-		})
+	if smsNexmoSender != "" && smsNexmoPhoneField != "" {
+		smsNexmoPhoneSlice := make([]string, 0)
+		for _, smsNexmoPhone := range strings.Split(smsNexmoPhoneField, ",") {
+			value := strings.TrimSpace(smsNexmoPhone)
+			if len(value) > 0 {
+				smsNexmoPhoneSlice = append(smsNexmoPhoneSlice, value)
+			}
+		}
+		notifierSMSNexmo := NotifierSMSNexmo{
+			smsNexmoName,
+			smsNexmoSender,
+			smsNexmoPhoneSlice,
+		}
+		byteSlice, err := json.Marshal(notifierSMSNexmo)
+		if err != nil {
+			guimessage.AddDanger(err.Error())
+			guimessage.OutputMessage(c.Data)
+			return
+		}
+
+		notifierSlice = append(notifierSlice, Notifier{"smsNexmo", string(byteSlice)})
 	}
 
 	replicationControllerNotifier := ReplicationControllerNotifier{

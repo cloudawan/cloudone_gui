@@ -1,0 +1,50 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Email Server List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="">
+				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/emailserver/create">Create</a>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Account</th>
+					<th>Password</th>
+					<th>Host</th>
+					<th>Port</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $emailServerSMTPKey, $emailServerSMTP := .emailServerSMTPSlice}}
+					<tr>
+						<td>{{$emailServerSMTPKey}}</td>
+						<td>{{$emailServerSMTP.Name}}</td>
+						<td>{{$emailServerSMTP.Account}}</td>
+						<td>{{$emailServerSMTP.Password}}</td>
+						<td>{{$emailServerSMTP.Host}}</td>
+						<td>{{$emailServerSMTP.Port}}</td>
+						<td>
+							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/emailserver/delete?name={{$emailServerSMTP.Name}}">Delete</a>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}
