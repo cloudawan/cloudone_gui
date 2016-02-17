@@ -95,31 +95,60 @@ func (c *SizeController) Get() {
 		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
 
 		guimessage.RedirectMessage(c)
-	} else {
-		c.Data["name"] = name
-		c.Data["size"] = size
-
-		// Get configured environment from the first instance
-		clusterApplicationFirstInstanceName := name + "-instance-0"
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollers/" + namespace + "/" + clusterApplicationFirstInstanceName +
-			"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
-		replicationController := ReplicationController{}
-		_, err := restclient.RequestGetWithStructure(url, &replicationController)
-
-		// Cluster application
-		if err == nil {
-			for _, container := range replicationController.ContainerSlice {
-				for _, environment := range container.EnvironmentSlice {
-					cluster.Environment[environment.Name] = environment.Value
-				}
-			}
-
-			c.Data["environment"] = cluster.Environment
-		}
-
-		guimessage.OutputMessage(c.Data)
+		return
 	}
+
+	c.Data["name"] = name
+	c.Data["size"] = size
+
+	// Get configured environment from any one of replication controller belonging to this cluster application
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/deployclusterapplications/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	deployClusterApplication := DeployClusterApplication{}
+	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplication)
+	if err != nil {
+		guimessage.AddDanger("Fail to get cluster application deployment with error" + err.Error())
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+
+		guimessage.RedirectMessage(c)
+		return
+	}
+
+	if len(deployClusterApplication.ReplicationControllerNameSlice) == 0 {
+		guimessage.AddDanger("The replication controller name slice is emptyfor the cluster application deployment with name " + name)
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+
+		guimessage.RedirectMessage(c)
+		return
+	}
+
+	replicationControllerName := deployClusterApplication.ReplicationControllerNameSlice[0]
+
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	replicationController := ReplicationController{}
+	_, err = restclient.RequestGetWithStructure(url, &replicationController)
+
+	if err != nil {
+		guimessage.AddDanger("Fail to get the replication controller with name " + replicationControllerName)
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+
+		guimessage.RedirectMessage(c)
+		return
+	}
+
+	for _, container := range replicationController.ContainerSlice {
+		for _, environment := range container.EnvironmentSlice {
+			cluster.Environment[environment.Name] = environment.Value
+		}
+	}
+
+	c.Data["environment"] = cluster.Environment
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *SizeController) Post() {
