@@ -47,7 +47,7 @@ func (c *PodLogController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["log"] = jsonMap["Log"]
+		c.Data["logJsonMap"] = jsonMap
 	}
 
 	guimessage.OutputMessage(c.Data)
