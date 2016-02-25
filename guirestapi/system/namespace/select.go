@@ -12,20 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package namespace
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	_ "github.com/cloudawan/cloudone_gui/docs" // Import document generation
-	restapiidentity "github.com/cloudawan/cloudone_gui/restapi/v1/identity"
-	_ "github.com/cloudawan/cloudone_gui/routers"
 )
 
-func main() {
-	beego.InsertFilter("/gui/*", beego.BeforeRouter, identity.FilterUser)
-	beego.InsertFilter("/api/v1/*", beego.BeforeRouter, restapiidentity.FilterToken)
-	beego.InsertFilter("/guirestapi/v1/*", beego.BeforeRouter, identity.FilterUser)
+type SelectController struct {
+	beego.Controller
+}
 
-	beego.Run()
+// @Title select
+// @Description select the current namespace
+// @Param name path string true "The name of namespace"
+// @Success 200 {string} {}
+// @Failure 404 error reason
+// @router /select/:name [put]
+func (c *SelectController) Put() {
+	name := c.GetString(":name")
+
+	c.SetSession("namespace", name)
+
+	c.Data["json"] = make(map[string]interface{})
+	c.ServeJson()
 }

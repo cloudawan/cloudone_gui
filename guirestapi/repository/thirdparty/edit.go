@@ -1,0 +1,89 @@
+package thirdparty
+
+import (
+	"encoding/json"
+	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_utility/restclient"
+)
+
+type EditController struct {
+	beego.Controller
+}
+
+// @Title get
+// @Description get the cluster application template
+// @Param name path string true "The name of cluster application template"
+// @Success 200 {object} guirestapi.repository.thirdparty.Cluster
+// @Failure 404 error reason
+// @router /:name [get]
+func (c *EditController) Get() {
+	name := c.GetString("name")
+
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/clusterapplications/" + name
+	cluster := Cluster{}
+	_, err := restclient.RequestGetWithStructure(url, &cluster)
+	if err != nil {
+		// Error
+		c.Data["json"] = make(map[string]interface{})
+		c.Data["json"].(map[string]interface{})["error"] = err.Error()
+		c.Ctx.Output.Status = 404
+		c.ServeJson()
+		return
+	} else {
+		c.Data["json"] = cluster
+		c.ServeJson()
+	}
+}
+
+// @Title create
+// @Description create the cluster application template
+// @Param body body guirestapi.repository.thirdparty.Cluster true "body for cluster application template"
+// @Success 200 {string} {}
+// @Failure 404 error reason
+// @router / [post]
+func (c *EditController) Post() {
+	inputBody := c.Ctx.Input.RequestBody
+	cluster := Cluster{}
+	err := json.Unmarshal(inputBody, &cluster)
+	if err != nil {
+		// Error
+		c.Data["json"] = make(map[string]interface{})
+		c.Data["json"].(map[string]interface{})["error"] = err.Error()
+		c.Ctx.Output.Status = 404
+		c.ServeJson()
+		return
+	}
+
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	if cluster.ReplicationControllerJson == "" {
+		cluster.ReplicationControllerJson = "{}"
+	}
+	if cluster.ServiceJson == "" {
+		cluster.ServiceJson = "{}"
+	}
+
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/clusterapplications/"
+
+	_, err = restclient.RequestPost(url, cluster, true)
+
+	if err != nil {
+		// Error
+		c.Data["json"] = make(map[string]interface{})
+		c.Data["json"].(map[string]interface{})["error"] = err.Error()
+		c.Ctx.Output.Status = 404
+		c.ServeJson()
+		return
+	} else {
+		c.Data["json"] = make(map[string]interface{})
+		c.ServeJson()
+	}
+}
