@@ -21,8 +21,8 @@
 					<label class="col-md-3 control-label" for="version">Version:</label>
 					<div class="col-md-9">
 						<select id="version" class="form-control" name="version" onchange="moduleDeployDeployCreate.hideAll();moduleDeployDeployCreate.show(this.value);">
-							{{ range $versionKey, $version := .versionSlice}}
-							<option value="{{ $version }}">{{ $version }}</option>
+							{{ range $imageRecordKey, $imageRecord := .imageRecordSlice}}
+							<option value="{{ $imageRecord.Version }}">{{ $imageRecord.Version }} {{ $imageRecord.Description }}</option>
 							{{end}}
 						</select>
 					</div>
@@ -59,13 +59,13 @@
 					<label class="col-md-3 control-label" >Environment Value:</label>
 				</div>
 				
-				{{ range $version, $environmentMap := .versionEnvironmentMap}}
-				<div id="{{ $version }}_specific">
-					{{ range $environment, $description := $environmentMap}}
+				{{ range $imageRecordKey, $imageRecord := .imageRecordSlice}}
+				<div id="{{ $imageRecord.Version }}_specific">
+					{{ range $environment, $description := $imageRecord.Environment}}
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="{{ $version }}_{{ $environment }}">{{ $environment }}:</label>
+						<label class="col-md-3 control-label" for="{{ $imageRecord.Version }}_{{ $environment }}">{{ $environment }}:</label>
 						<div class="col-md-9">
-							<input id="{{ $version }}_{{ $environment }}" class="form-control" type="text" name="{{ $version }}_{{ $environment }}">
+							<input id="{{ $imageRecord.Version }}_{{ $environment }}" class="form-control" type="text" name="{{ $imageRecord.Version }}_{{ $environment }}">
 						</div>
 					</div>
 					{{end}}
@@ -86,10 +86,9 @@
 	var moduleDeployDeployCreate = (function(){
 		
 		var hideAll = function() {
-			{{ range $versionKey, $version := .versionSlice}}
-			$("#{{ $version }}_specific").hide()
+			{{ range $imageRecordKey, $imageRecord := .imageRecordSlice}}
+			$("#{{ $imageRecord.Version }}_specific").hide()
 			{{end}}
-			
 		}
 		
 		var show = function(version) {

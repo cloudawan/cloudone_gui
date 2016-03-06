@@ -76,16 +76,8 @@ func (c *CreateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		versionEnvironmentMap := make(map[string]map[string]string)
-		versionSlice := make([]string, 0)
-		for _, imageRecord := range imageRecordSlice {
-			versionSlice = append(versionSlice, imageRecord.Version)
-			versionEnvironmentMap[imageRecord.Version] = imageRecord.Environment
-		}
-
 		c.Data["imageInformationName"] = name
-		c.Data["versionSlice"] = versionSlice
-		c.Data["versionEnvironmentMap"] = versionEnvironmentMap
+		c.Data["imageRecordSlice"] = imageRecordSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

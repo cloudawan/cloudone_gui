@@ -55,18 +55,15 @@ func (c *UpdateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		versionEnvironmentMap := make(map[string]map[string]string)
-		versionSlice := make([]string, 0)
+		filteredImageRecordSlice := make([]ImageRecord, 0)
 		for _, imageRecord := range imageRecordSlice {
 			if imageRecord.Version != oldVersion {
-				versionSlice = append(versionSlice, imageRecord.Version)
-				versionEnvironmentMap[imageRecord.Version] = imageRecord.Environment
+				filteredImageRecordSlice = append(filteredImageRecordSlice, imageRecord)
 			}
 		}
 
 		c.Data["name"] = name
-		c.Data["versionSlice"] = versionSlice
-		c.Data["versionEnvironmentMap"] = versionEnvironmentMap
+		c.Data["imageRecordSlice"] = filteredImageRecordSlice
 	}
 
 	guimessage.OutputMessage(c.Data)
