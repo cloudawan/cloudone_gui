@@ -33,7 +33,7 @@ type EmailServerSMTP struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "system/notification/emailserver/list.html"
+	c.TplName = "system/notification/emailserver/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

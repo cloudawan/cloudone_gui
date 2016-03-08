@@ -27,7 +27,7 @@ type PodLogController struct {
 }
 
 func (c *PodLogController) Get() {
-	c.TplNames = "inventory/replicationcontroller/pod_log.html"
+	c.TplName = "inventory/replicationcontroller/pod_log.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

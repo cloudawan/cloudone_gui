@@ -101,7 +101,7 @@ func (c *SizeController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = "Fail to get cluster application with error" + err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -117,7 +117,7 @@ func (c *SizeController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = "Fail to get cluster application deployment with error" + err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -126,7 +126,7 @@ func (c *SizeController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = "The replication controller name slice is emptyfor the cluster application deployment with name " + name
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -143,7 +143,7 @@ func (c *SizeController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = "Fail to get the replication controller with name " + replicationControllerName
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -155,7 +155,7 @@ func (c *SizeController) Get() {
 
 	c.Data["json"] = make(map[string]interface{})
 	c.Data["json"].(map[string]interface{})["environment"] = cluster.Environment
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 // @Title resize
@@ -175,7 +175,7 @@ func (c *SizeController) Put() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -200,10 +200,10 @@ func (c *SizeController) Put() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		c.Data["json"] = make(map[string]interface{})
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

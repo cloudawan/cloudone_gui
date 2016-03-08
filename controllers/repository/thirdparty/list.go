@@ -30,7 +30,7 @@ type ThirdPartyApplication struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "repository/thirdparty/list.html"
+	c.TplName = "repository/thirdparty/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

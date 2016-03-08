@@ -60,7 +60,7 @@ func (c *IndexController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		nameSlice := make([]string, 0)
@@ -77,7 +77,7 @@ func (c *IndexController) Get() {
 		c.Data["json"].(map[string]interface{})["cloudoneGUIHost"] = cloudoneGUIHost
 		c.Data["json"].(map[string]interface{})["cloudoneGUIPort"] = cloudoneGUIPort
 		c.Data["json"].(map[string]interface{})["replicationControllerNameSlice"] = nameSlice
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }
 
@@ -119,7 +119,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "From time is not selected."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 		/*
 			from = current.Add(-1 * time.Hour)
@@ -143,7 +143,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "To time is not selected."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 		/*
 			to = current
@@ -167,7 +167,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "From need to be before to."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -191,7 +191,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		allHistoricalReplicationControllerMetricJsonMap[replicationControllerName] = historicalReplicationControllerMetricJsonMap
@@ -214,7 +214,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 	}
@@ -236,7 +236,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = "Insufficient data"
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -499,7 +499,7 @@ func (c *DataController) Get() {
 
 	c.Data["json"] = chartSlice
 
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 func getAllKeyFromJsonMap(jsonMap map[string]interface{}) []string {

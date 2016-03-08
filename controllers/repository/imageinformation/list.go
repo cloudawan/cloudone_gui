@@ -33,7 +33,7 @@ type ImageInformation struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "repository/imageinformation/list.html"
+	c.TplName = "repository/imageinformation/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

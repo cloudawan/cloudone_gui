@@ -67,7 +67,7 @@ const (
 func (c *IndexController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplNames = "monitor/container/index.html"
+	c.TplName = "monitor/container/index.html"
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -137,7 +137,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		replicationControllerMetricSlice = append(replicationControllerMetricSlice, replicationControllerMetric)
@@ -152,7 +152,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		replicationControllerMetricSlice = replicationControllerMetricList.(*ReplicationControllerMetricList).ReplicationControllerMetricSlice
@@ -554,5 +554,5 @@ func (c *DataController) Get() {
 
 	c.Data["json"] = chartSlice
 
-	c.ServeJson()
+	c.ServeJSON()
 }

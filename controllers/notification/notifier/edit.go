@@ -46,7 +46,7 @@ type SMSNexmo struct {
 }
 
 func (c *EditController) Get() {
-	c.TplNames = "notification/notifier/edit.html"
+	c.TplName = "notification/notifier/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	kind := c.GetString("kind")

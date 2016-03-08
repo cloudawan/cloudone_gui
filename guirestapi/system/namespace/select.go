@@ -34,5 +34,5 @@ func (c *SelectController) Put() {
 	c.SetSession("namespace", name)
 
 	c.Data["json"] = make(map[string]interface{})
-	c.ServeJson()
+	c.ServeJSON()
 }

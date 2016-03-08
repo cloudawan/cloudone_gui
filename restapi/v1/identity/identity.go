@@ -24,7 +24,7 @@ const (
 )
 
 func FilterToken(ctx *context.Context) {
-	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.Url() == loginURL {
+	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginURL {
 		// Don't redirect itself to prevent the circle
 	} else {
 		token := ctx.Input.Header("token")

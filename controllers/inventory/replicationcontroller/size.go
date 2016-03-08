@@ -27,7 +27,7 @@ type SizeController struct {
 }
 
 func (c *SizeController) Get() {
-	c.TplNames = "inventory/replicationcontroller/size.html"
+	c.TplName = "inventory/replicationcontroller/size.html"
 
 	name := c.GetString("name")
 	size := c.GetString("size")

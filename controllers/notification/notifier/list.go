@@ -65,7 +65,7 @@ type Indicator struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "notification/notifier/list.html"
+	c.TplName = "notification/notifier/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

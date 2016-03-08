@@ -27,7 +27,7 @@ type SelectController struct {
 }
 
 func (c *SelectController) Get() {
-	c.TplNames = "deploy/deploybluegreen/select.html"
+	c.TplName = "deploy/deploybluegreen/select.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

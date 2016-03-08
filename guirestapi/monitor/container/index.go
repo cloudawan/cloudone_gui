@@ -91,7 +91,7 @@ func (c *IndexController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		replicationControllerNameSlice := make([]string, 0)
@@ -109,7 +109,7 @@ func (c *IndexController) Get() {
 		c.Data["json"].(map[string]interface{})["cloudoneGUIHost"] = cloudoneGUIHost
 		c.Data["json"].(map[string]interface{})["cloudoneGUIPort"] = cloudoneGUIPort
 		c.Data["json"].(map[string]interface{})["replicationControllerNameSlice"] = replicationControllerNameSlice
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }
 
@@ -146,7 +146,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		replicationControllerMetricSlice = append(replicationControllerMetricSlice, replicationControllerMetric)
@@ -161,7 +161,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		replicationControllerMetricSlice = replicationControllerMetricList.(*ReplicationControllerMetricList).ReplicationControllerMetricSlice
@@ -563,5 +563,5 @@ func (c *DataController) Get() {
 
 	c.Data["json"] = chartSlice
 
-	c.ServeJson()
+	c.ServeJSON()
 }

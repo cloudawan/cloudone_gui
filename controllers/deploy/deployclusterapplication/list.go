@@ -34,7 +34,7 @@ type DeployClusterApplication struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "deploy/deployclusterapplication/list.html"
+	c.TplName = "deploy/deployclusterapplication/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

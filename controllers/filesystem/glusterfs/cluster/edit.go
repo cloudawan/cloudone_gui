@@ -28,7 +28,7 @@ type EditController struct {
 
 func (c *EditController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
-	c.TplNames = "filesystem/glusterfs/cluster/edit.html"
+	c.TplName = "filesystem/glusterfs/cluster/edit.html"
 
 	clusterName := c.GetString("clusterName")
 

@@ -53,7 +53,7 @@ func (c *IndexController) Get() {
 	c.Data["json"].(map[string]interface{})["cloudoneGUIProtocol"] = cloudoneGUIProtocol
 	c.Data["json"].(map[string]interface{})["cloudoneGUIHost"] = cloudoneGUIHost
 	c.Data["json"].(map[string]interface{})["cloudoneGUIPort"] = cloudoneGUIPort
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 type DataController struct {
@@ -83,7 +83,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -479,5 +479,5 @@ func (c *DataController) Get() {
 
 	c.Data["json"] = chartJsonMap
 
-	c.ServeJson()
+	c.ServeJSON()
 }

@@ -42,7 +42,7 @@ func (c *UpdateController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
@@ -56,12 +56,12 @@ func (c *UpdateController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
 
 	jsonMap := make(map[string]interface{})
 	c.Data["json"] = jsonMap
-	c.ServeJson()
+	c.ServeJSON()
 }

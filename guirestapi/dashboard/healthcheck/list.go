@@ -92,7 +92,7 @@ func (c *ListController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -107,7 +107,7 @@ func (c *ListController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -117,7 +117,7 @@ func (c *ListController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 	componentStatusSlice := make([]ComponentStatus, 0)
@@ -129,7 +129,7 @@ func (c *ListController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 	sortKubernetesStatusByIP := SortKubernetesStatusByIP(kubernetesStatusSlice)
@@ -138,7 +138,7 @@ func (c *ListController) Get() {
 	c.Data["json"] = make(map[string]interface{})
 	c.Data["json"].(map[string]interface{})["componentStatusSlice"] = componentStatusSlice
 	c.Data["json"].(map[string]interface{})["kubernetesStatusSlice"] = kubernetesStatusSlice
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 func parseComponentStatus(cloudoneJsonMap map[string]interface{}, cloudoneAnalysisJsonMap map[string]interface{}) (*ComponentStatus, error) {

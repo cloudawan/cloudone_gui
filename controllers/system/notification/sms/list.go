@@ -32,7 +32,7 @@ type SMSNexmo struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "system/notification/sms/list.html"
+	c.TplName = "system/notification/sms/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

@@ -50,7 +50,7 @@ type Indicator struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "deploy/autoscaler/list.html"
+	c.TplName = "deploy/autoscaler/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

@@ -27,7 +27,7 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	c.TplNames = "deploy/autoscaler/edit.html"
+	c.TplName = "deploy/autoscaler/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	kind := c.GetString("kind")

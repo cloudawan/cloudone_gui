@@ -60,11 +60,11 @@ func (c *LaunchController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		c.Data["json"] = cluster
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }
 
@@ -88,7 +88,7 @@ func (c *LaunchController) Post() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -113,18 +113,18 @@ func (c *LaunchController) Post() {
 			c.Data["json"] = make(map[string]interface{})
 			c.Data["json"].(map[string]interface{})["error"] = "Replication controller " + name + " already exists"
 			c.Ctx.Output.Status = 404
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		} else {
 			// Error
 			c.Data["json"] = make(map[string]interface{})
 			c.Data["json"].(map[string]interface{})["error"] = err.Error()
 			c.Ctx.Output.Status = 404
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 	} else {
 		c.Data["json"] = make(map[string]interface{})
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

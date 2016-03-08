@@ -59,7 +59,7 @@ type IndexController struct {
 func (c *IndexController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplNames = "dashboard/topology/index.html"
+	c.TplName = "dashboard/topology/index.html"
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
@@ -96,7 +96,7 @@ func (c *DataController) Get() {
 		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
 		if err != nil {
 			c.Data["json"].(map[string]interface{})["error"] = err.Error()
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 	} else {
@@ -215,5 +215,5 @@ func (c *DataController) Get() {
 		}
 	}
 
-	c.ServeJson()
+	c.ServeJSON()
 }

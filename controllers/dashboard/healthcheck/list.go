@@ -83,7 +83,7 @@ func (sortGlusterfsStatusByIP SortGlusterfsStatusByIP) Less(i, j int) bool {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "dashboard/healthcheck/list.html"
+	c.TplName = "dashboard/healthcheck/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

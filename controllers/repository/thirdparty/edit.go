@@ -13,7 +13,7 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	c.TplNames = "repository/thirdparty/edit.html"
+	c.TplName = "repository/thirdparty/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

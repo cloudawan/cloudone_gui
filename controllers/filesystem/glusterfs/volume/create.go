@@ -35,7 +35,7 @@ type CreateController struct {
 }
 
 func (c *CreateController) Get() {
-	c.TplNames = "filesystem/glusterfs/volume/create.html"
+	c.TplName = "filesystem/glusterfs/volume/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

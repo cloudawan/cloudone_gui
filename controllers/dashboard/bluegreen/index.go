@@ -45,7 +45,7 @@ type IndexController struct {
 func (c *IndexController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplNames = "dashboard/bluegreen/index.html"
+	c.TplName = "dashboard/bluegreen/index.html"
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
@@ -77,7 +77,7 @@ func (c *DataController) Get() {
 	if err != nil {
 		// Error
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -90,7 +90,7 @@ func (c *DataController) Get() {
 	if err != nil {
 		// Error
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -143,5 +143,5 @@ func (c *DataController) Get() {
 		}
 	}
 
-	c.ServeJson()
+	c.ServeJSON()
 }

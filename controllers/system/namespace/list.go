@@ -37,7 +37,7 @@ var displayMap map[string]string = map[string]string{
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "system/namespace/list.html"
+	c.TplName = "system/namespace/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

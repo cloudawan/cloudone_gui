@@ -35,7 +35,7 @@ type ImageRecord struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "repository/imagerecord/list.html"
+	c.TplName = "repository/imagerecord/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

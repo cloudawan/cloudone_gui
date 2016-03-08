@@ -59,7 +59,7 @@ func (c *UpdateController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		versionEnvironmentMap := make(map[string]map[string]string)
@@ -75,7 +75,7 @@ func (c *UpdateController) Get() {
 		c.Data["json"].(map[string]interface{})["name"] = name
 		c.Data["json"].(map[string]interface{})["versionSlice"] = versionSlice
 		c.Data["json"].(map[string]interface{})["versionEnvironmentMap"] = versionEnvironmentMap
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }
 
@@ -94,7 +94,7 @@ func (c *UpdateController) Put() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -115,10 +115,10 @@ func (c *UpdateController) Put() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		c.Data["json"] = make(map[string]interface{})
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

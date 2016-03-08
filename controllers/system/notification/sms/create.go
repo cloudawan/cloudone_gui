@@ -25,7 +25,7 @@ type CreateController struct {
 }
 
 func (c *CreateController) Get() {
-	c.TplNames = "system/notification/sms/create.html"
+	c.TplName = "system/notification/sms/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	guimessage.OutputMessage(c.Data)

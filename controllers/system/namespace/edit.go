@@ -27,7 +27,7 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	c.TplNames = "system/namespace/edit.html"
+	c.TplName = "system/namespace/edit.html"
 
 	namespace := c.GetString("namespace")
 	if namespace == "" {

@@ -50,7 +50,7 @@ func (c *DeleteController) Delete() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		selectedNamespace := c.GetSession("namespace")
@@ -61,6 +61,6 @@ func (c *DeleteController) Delete() {
 		time.Sleep(1000 * time.Millisecond)
 
 		c.Data["json"] = make(map[string]interface{})
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

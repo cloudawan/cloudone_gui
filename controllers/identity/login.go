@@ -25,7 +25,7 @@ type LoginController struct {
 }
 
 func (c *LoginController) Get() {
-	c.TplNames = "identity/login.html"
+	c.TplName = "identity/login.html"
 }
 
 func (c *LoginController) Post() {

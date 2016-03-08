@@ -38,7 +38,7 @@ type LaunchController struct {
 }
 
 func (c *LaunchController) Get() {
-	c.TplNames = "repository/thirdparty/launch.html"
+	c.TplName = "repository/thirdparty/launch.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

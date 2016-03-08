@@ -27,7 +27,7 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	c.TplNames = "inventory/replicationcontroller/edit.html"
+	c.TplName = "inventory/replicationcontroller/edit.html"
 
 	replicationcontroller := c.GetString("replicationcontroller")
 	if replicationcontroller == "" {

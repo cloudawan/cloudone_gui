@@ -35,7 +35,7 @@ type DeployUpdateInput struct {
 }
 
 func (c *UpdateController) Get() {
-	c.TplNames = "deploy/deploy/update.html"
+	c.TplName = "deploy/deploy/update.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

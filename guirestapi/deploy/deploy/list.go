@@ -54,7 +54,7 @@ func (c *ListController) Get() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		// Only show those belonging to this namespace
@@ -66,6 +66,6 @@ func (c *ListController) Get() {
 		}
 
 		c.Data["json"] = filteredDeployInformationSlice
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

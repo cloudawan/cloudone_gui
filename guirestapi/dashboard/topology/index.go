@@ -149,5 +149,5 @@ func (c *IndexController) Get() {
 		c.Data["json"].(map[string]interface{})["physicalView"] = append(c.Data["json"].(map[string]interface{})["physicalView"].([]interface{}), physicalTopologyJsonMap)
 	}
 
-	c.ServeJson()
+	c.ServeJSON()
 }

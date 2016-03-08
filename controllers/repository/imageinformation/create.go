@@ -27,7 +27,7 @@ type CreateController struct {
 }
 
 func (c *CreateController) Get() {
-	c.TplNames = "repository/imageinformation/create.html"
+	c.TplName = "repository/imageinformation/create.html"
 }
 
 func (c *CreateController) Post() {

@@ -37,7 +37,7 @@ const (
 func (c *IndexController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplNames = "monitor/historicalcontainer/index.html"
+	c.TplName = "monitor/historicalcontainer/index.html"
 
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
@@ -108,7 +108,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "From time is not selected."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 		/*
 			from = current.Add(-1 * time.Hour)
@@ -132,7 +132,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "To time is not selected."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 		/*
 			to = current
@@ -156,7 +156,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["warning"] = "From need to be before to."
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -180,7 +180,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 		allHistoricalReplicationControllerMetricJsonMap[replicationControllerName] = historicalReplicationControllerMetricJsonMap
@@ -203,7 +203,7 @@ func (c *DataController) Get() {
 			errorJsonMap := make(map[string]interface{})
 			errorJsonMap["error"] = err.Error()
 			c.Data["json"] = errorJsonMap
-			c.ServeJson()
+			c.ServeJSON()
 			return
 		}
 	}
@@ -225,7 +225,7 @@ func (c *DataController) Get() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = "Insufficient data"
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -488,7 +488,7 @@ func (c *DataController) Get() {
 
 	c.Data["json"] = chartSlice
 
-	c.ServeJson()
+	c.ServeJSON()
 }
 
 func getAllKeyFromJsonMap(jsonMap map[string]interface{}) []string {

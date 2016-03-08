@@ -37,7 +37,7 @@ type GlusterfsVolume struct {
 }
 
 func (c *ListController) Get() {
-	c.TplNames = "filesystem/glusterfs/volume/list.html"
+	c.TplName = "filesystem/glusterfs/volume/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

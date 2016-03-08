@@ -30,7 +30,7 @@ type DeployUpgradeInput struct {
 }
 
 func (c *UpgradeController) Get() {
-	c.TplNames = "repository/imageinformation/upgrade.html"
+	c.TplName = "repository/imageinformation/upgrade.html"
 	name := c.GetString("name")
 	c.Data["name"] = name
 }

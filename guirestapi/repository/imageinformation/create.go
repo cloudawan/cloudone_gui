@@ -39,7 +39,7 @@ func (c *CreateController) Post() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	}
 
@@ -57,10 +57,10 @@ func (c *CreateController) Post() {
 		c.Data["json"] = make(map[string]interface{})
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.Ctx.Output.Status = 404
-		c.ServeJson()
+		c.ServeJSON()
 		return
 	} else {
 		c.Data["json"] = make(map[string]interface{})
-		c.ServeJson()
+		c.ServeJSON()
 	}
 }

@@ -47,7 +47,7 @@ const (
 )
 
 func (c *ListController) Get() {
-	c.TplNames = "event/kubernetes/list.html"
+	c.TplName = "event/kubernetes/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")

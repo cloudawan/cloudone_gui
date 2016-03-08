@@ -23,7 +23,7 @@ const (
 )
 
 func FilterUser(ctx *context.Context) {
-	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.Url() == loginPageURL {
+	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginPageURL {
 		// Don't redirect itself to prevent the circle
 	} else {
 		_, ok := ctx.Input.Session("username").(string)

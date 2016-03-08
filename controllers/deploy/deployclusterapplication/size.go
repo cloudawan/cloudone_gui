@@ -71,7 +71,7 @@ type SizeController struct {
 }
 
 func (c *SizeController) Get() {
-	c.TplNames = "deploy/deployclusterapplication/size.html"
+	c.TplName = "deploy/deployclusterapplication/size.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")

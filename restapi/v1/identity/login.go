@@ -32,7 +32,7 @@ func (c *LoginController) Get() {
 	errorJsonMap := make(map[string]interface{})
 	errorJsonMap["error"] = "Unauthorized"
 	c.Data["json"] = errorJsonMap
-	c.ServeJson()
+	c.ServeJSON()
 	c.Abort("401")
 }
 
@@ -44,7 +44,7 @@ func (c *LoginController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
@@ -56,7 +56,7 @@ func (c *LoginController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.ServeJson()
+		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
@@ -65,5 +65,5 @@ func (c *LoginController) Post() {
 	jsonMap["token"] = tokenString
 	c.Data["json"] = jsonMap
 
-	c.ServeJson()
+	c.ServeJSON()
 }
