@@ -72,6 +72,10 @@ func (c *IndexController) Get() {
 	guimessage.OutputMessage(c.Data)
 }
 
+const (
+	allKeyword = "All"
+)
+
 type DataController struct {
 	beego.Controller
 }
@@ -81,87 +85,134 @@ func (c *DataController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
-	namespace, _ := c.GetSession("namespace").(string)
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	scope := c.GetString("scope")
 
-	replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
-	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
-	if err != nil {
-		c.Data["json"] = `{"error": "` + err.Error() + `"}`
+	namespaceSlice := make([]string, 0)
+	if scope == allKeyword {
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+			"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+
+		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
+		if err != nil {
+			c.Data["json"].(map[string]interface{})["error"] = err.Error()
+			c.ServeJson()
+			return
+		}
 	} else {
-		// Logical view
-		logicalTopologyJsonMap := make(map[string]interface{})
-		logicalTopologyJsonMap["name"] = "Logical View"
-		logicalTopologyJsonMap["children"] = make([]interface{}, 0)
-		for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
-			replicationControllerJsonMap := make(map[string]interface{})
-			replicationControllerJsonMap["name"] = replicationControllerAndRelatedPod.Name
-			replicationControllerJsonMap["children"] = make([]interface{}, 0)
-			for _, pod := range replicationControllerAndRelatedPod.PodSlice {
-				podJsonMap := make(map[string]interface{})
-				podJsonMap["name"] = pod.Name
-				podJsonMap["children"] = make([]interface{}, 0)
-				for _, container := range pod.ContainerSlice {
-					containerJsonMap := make(map[string]interface{})
-					containerJsonMap["name"] = container.Name
-					containerJsonMap["children"] = make([]interface{}, 0)
-					for _, port := range container.PortSlice {
-						portJsonMap := make(map[string]interface{})
-						portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
-						containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
+		namespace, _ := c.GetSession("namespace").(string)
+		namespaceSlice = append(namespaceSlice, namespace)
+	}
+
+	// Json
+	c.Data["json"] = make(map[string]interface{})
+	c.Data["json"].(map[string]interface{})["logicalView"] = make([]interface{}, 0)
+	c.Data["json"].(map[string]interface{})["physicalView"] = make([]interface{}, 0)
+	c.Data["json"].(map[string]interface{})["errorMap"] = make(map[string]interface{})
+
+	// Logical view
+	logicalTopologyJsonMap := make(map[string]interface{})
+	logicalTopologyJsonMap["name"] = "Logical View"
+	logicalTopologyJsonMap["children"] = make([]interface{}, 0)
+	c.Data["json"].(map[string]interface{})["logicalView"] = append(c.Data["json"].(map[string]interface{})["logicalView"].([]interface{}), logicalTopologyJsonMap)
+
+	// Physical view
+	physicalTopologyJsonMap := make(map[string]interface{})
+	physicalTopologyJsonMap["name"] = "Physical View"
+	physicalTopologyJsonMap["children"] = make([]interface{}, 0)
+	c.Data["json"].(map[string]interface{})["physicalView"] = append(c.Data["json"].(map[string]interface{})["physicalView"].([]interface{}), physicalTopologyJsonMap)
+
+	//namespaceSlice := make([]string, 0)
+	//namespaceSlice = append(namespaceSlice, namespace)
+	for _, namespace := range namespaceSlice {
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+			"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+
+		replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
+		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
+		if err != nil {
+			c.Data["json"].(map[string]interface{})["error"] = "Get replication controller data error"
+			c.Data["json"].(map[string]interface{})["errorMap"].(map[string]interface{})[namespace] = err.Error()
+		} else {
+			// Logical view
+			logicalTopologyNamespaceJsonMap := make(map[string]interface{})
+			logicalTopologyNamespaceJsonMap["name"] = namespace
+			logicalTopologyNamespaceJsonMap["children"] = make([]interface{}, 0)
+			for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
+				replicationControllerJsonMap := make(map[string]interface{})
+				replicationControllerJsonMap["name"] = replicationControllerAndRelatedPod.Name
+				replicationControllerJsonMap["children"] = make([]interface{}, 0)
+				for _, pod := range replicationControllerAndRelatedPod.PodSlice {
+					podJsonMap := make(map[string]interface{})
+					podJsonMap["name"] = pod.Name
+					podJsonMap["children"] = make([]interface{}, 0)
+					for _, container := range pod.ContainerSlice {
+						containerJsonMap := make(map[string]interface{})
+						containerJsonMap["name"] = container.Name
+						containerJsonMap["children"] = make([]interface{}, 0)
+						for _, port := range container.PortSlice {
+							portJsonMap := make(map[string]interface{})
+							portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
+							containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
+						}
+						podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)
 					}
-					podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)
+					replicationControllerJsonMap["children"] = append(replicationControllerJsonMap["children"].([]interface{}), podJsonMap)
 				}
-				replicationControllerJsonMap["children"] = append(replicationControllerJsonMap["children"].([]interface{}), podJsonMap)
+				logicalTopologyNamespaceJsonMap["children"] = append(logicalTopologyNamespaceJsonMap["children"].([]interface{}), replicationControllerJsonMap)
 			}
-			logicalTopologyJsonMap["children"] = append(logicalTopologyJsonMap["children"].([]interface{}), replicationControllerJsonMap)
-		}
-		// Collect all nodes
-		nodeMap := make(map[string]bool)
-		for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
-			for _, pod := range replicationControllerAndRelatedPod.PodSlice {
-				nodeMap[pod.HostIP] = true
-			}
-		}
-		// Physical view
-		physicalTopologyJsonMap := make(map[string]interface{})
-		physicalTopologyJsonMap["name"] = "Physical View"
-		physicalTopologyJsonMap["children"] = make([]interface{}, 0)
-		for node, _ := range nodeMap {
-			nodeJsonMap := make(map[string]interface{})
-			nodeJsonMap["name"] = node
-			nodeJsonMap["children"] = make([]interface{}, 0)
+			// Collect all nodes
+			nodeMap := make(map[string]bool)
 			for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
 				for _, pod := range replicationControllerAndRelatedPod.PodSlice {
-					if pod.HostIP == node {
-						podJsonMap := make(map[string]interface{})
-						podJsonMap["name"] = pod.Name
-						podJsonMap["children"] = make([]interface{}, 0)
-						for _, container := range pod.ContainerSlice {
-							containerJsonMap := make(map[string]interface{})
-							containerJsonMap["name"] = container.Name
-							containerJsonMap["children"] = make([]interface{}, 0)
-							for _, port := range container.PortSlice {
-								portJsonMap := make(map[string]interface{})
-								portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
-								containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
-							}
-							podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)
-						}
-						nodeJsonMap["children"] = append(nodeJsonMap["children"].([]interface{}), podJsonMap)
-					}
+					nodeMap[pod.HostIP] = true
 				}
 			}
-			physicalTopologyJsonMap["children"] = append(physicalTopologyJsonMap["children"].([]interface{}), nodeJsonMap)
+			// Physical view
+			for node, _ := range nodeMap {
+				exist := false
+				nodeJsonMap := make(map[string]interface{})
+				for _, existingNodeJsonMap := range physicalTopologyJsonMap["children"].([]interface{}) {
+					if existingNodeJsonMap.(map[string]interface{})["name"] == node {
+						nodeJsonMap = existingNodeJsonMap.(map[string]interface{})
+						exist = true
+						break
+					}
+				}
+
+				if exist == false {
+					nodeJsonMap["name"] = node
+					nodeJsonMap["children"] = make([]interface{}, 0)
+				}
+
+				for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
+					for _, pod := range replicationControllerAndRelatedPod.PodSlice {
+						if pod.HostIP == node {
+							podJsonMap := make(map[string]interface{})
+							podJsonMap["name"] = pod.Name
+							podJsonMap["children"] = make([]interface{}, 0)
+							for _, container := range pod.ContainerSlice {
+								containerJsonMap := make(map[string]interface{})
+								containerJsonMap["name"] = container.Name
+								containerJsonMap["children"] = make([]interface{}, 0)
+								for _, port := range container.PortSlice {
+									portJsonMap := make(map[string]interface{})
+									portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
+									containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
+								}
+								podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)
+							}
+							nodeJsonMap["children"] = append(nodeJsonMap["children"].([]interface{}), podJsonMap)
+						}
+					}
+				}
+				if exist == false {
+					physicalTopologyJsonMap["children"] = append(physicalTopologyJsonMap["children"].([]interface{}), nodeJsonMap)
+				}
+			}
+
+			logicalTopologyJsonMap["children"] = append(logicalTopologyJsonMap["children"].([]interface{}), logicalTopologyNamespaceJsonMap)
 		}
-		// Json
-		c.Data["json"] = make(map[string]interface{})
-		c.Data["json"].(map[string]interface{})["logicalView"] = make([]interface{}, 0)
-		c.Data["json"].(map[string]interface{})["logicalView"] = append(c.Data["json"].(map[string]interface{})["logicalView"].([]interface{}), logicalTopologyJsonMap)
-		c.Data["json"].(map[string]interface{})["physicalView"] = make([]interface{}, 0)
-		c.Data["json"].(map[string]interface{})["physicalView"] = append(c.Data["json"].(map[string]interface{})["physicalView"].([]interface{}), physicalTopologyJsonMap)
 	}
 
 	c.ServeJson()

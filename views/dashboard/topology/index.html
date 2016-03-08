@@ -35,10 +35,18 @@
 			<li role="presentation" class="active"><a href="#" role="tab" >Topology</a></li>
 			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
 		</ul>
+
+		<div class="row">
+			<div class="col-md-2 pull-right">
+				<input id="scope" type="checkbox" name="scope" onclick="if(this.checked){moduleDashboardTopologyIndex.query('All')}else{moduleDashboardTopologyIndex.query('')};">
+			</div>
+			<label class="col-md-0 pull-right" for="scope">All:</label>
+		</div>
+
 		<div class="row">
 			<div class="col-md-12">
-		    		<div id="idLogicalView">
-				<div id="idPhysicalView">
+				<div id="idLogicalView"></div>
+				<div id="idPhysicalView"></div>
 			</div>
 		</div>
     </div>
@@ -49,12 +57,16 @@
     
     var moduleDashboardTopologyIndex = (function(){
 
-		var query = function() {
+		var query = function(scope) {
 			$.ajax({
-				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/topology/data",
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/topology/data?scope="+scope,
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){
+					// Clean the previous graph
+					d3.select("#idLogicalView").select("svg").remove();
+					d3.select("#idPhysicalView").select("svg").remove();
+					// Render
 					render(returnedData.logicalView, "#idLogicalView");
 					render(returnedData.physicalView, "#idPhysicalView");
 				},
@@ -65,12 +77,11 @@
 				}
 			});
 		};
-		query();
-        
+		
 		var render = function(treeData, id) {
 			// ************** Generate the tree diagram     *****************
-		    var margin = {top: 20, right: 120, bottom: 20, left: 120},
-		        width = 1000 - margin.right - margin.left,
+		    var margin = {top: 20, right: 100, bottom: 20, left: 100},
+		        width = 1100 - margin.right - margin.left,
 		        height = 500 - margin.top - margin.bottom;
 		        
 		    var i = 0,
@@ -82,7 +93,7 @@
 		    
 		    var diagonal = d3.svg.diagonal()
 		        .projection(function(d) { return [d.y, d.x]; });
-		    
+
 		    var svg = d3.select(id).append("svg")
 		        .attr("width", width + margin.right + margin.left)
 		        .attr("height", height + margin.top + margin.bottom)
@@ -196,8 +207,11 @@
 		        update(d);
 		    }
 		}
-		
+
+		return {query: query}
     })();
+
+	moduleDashboardTopologyIndex.query("");
 
     </script>
 {{ end}}
