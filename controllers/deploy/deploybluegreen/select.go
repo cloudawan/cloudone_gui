@@ -39,6 +39,7 @@ func (c *SelectController) Get() {
 	currentEnvironment := c.GetString("currentEnvironment")
 	nodePort := c.GetString("nodePort")
 	description := c.GetString("description")
+	action := c.GetString("action")
 
 	c.Data["actionButtonValue"] = "Update"
 	c.Data["pageHeader"] = "Update Blue Green Deployment"
@@ -51,14 +52,36 @@ func (c *SelectController) Get() {
 	_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
 	if err != nil {
 		guimessage.AddDanger("Fail to get deployable namespace")
-	} else {
-		c.Data["namespaceSlice"] = namespaceSlice
-		c.Data["currentEnvironment"] = currentEnvironment
-		c.Data["nodePort"] = nodePort
-		c.Data["description"] = description
-	}
 
-	guimessage.OutputMessage(c.Data)
+		// Redirect to list
+		if action == "create" {
+			c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+		} else {
+			c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/")
+		}
+
+		guimessage.RedirectMessage(c)
+	} else {
+		if len(namespaceSlice) == 0 {
+			guimessage.AddDanger("No deployed application is detected so there is no namespace to select for blue green deployment")
+
+			// Redirect to list
+			if action == "create" {
+				c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+			} else {
+				c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/")
+			}
+
+			guimessage.RedirectMessage(c)
+		} else {
+			c.Data["namespaceSlice"] = namespaceSlice
+			c.Data["currentEnvironment"] = currentEnvironment
+			c.Data["nodePort"] = nodePort
+			c.Data["description"] = description
+
+			guimessage.OutputMessage(c.Data)
+		}
+	}
 }
 
 func (c *SelectController) Post() {
