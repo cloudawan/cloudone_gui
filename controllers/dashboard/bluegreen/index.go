@@ -104,6 +104,11 @@ func (c *DataController) Get() {
 	c.Data["json"].(map[string]interface{})["bluegreenView"] = make([]interface{}, 0)
 	c.Data["json"].(map[string]interface{})["errorMap"] = make(map[string]interface{})
 
+	bluegreenJsonMap := make(map[string]interface{})
+	bluegreenJsonMap["name"] = "B/G View"
+	bluegreenJsonMap["children"] = make([]interface{}, 0)
+	c.Data["json"].(map[string]interface{})["bluegreenView"] = append(c.Data["json"].(map[string]interface{})["bluegreenView"].([]interface{}), bluegreenJsonMap)
+
 	for _, deployBlueGreen := range deployBlueGreenSlice {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/deploybluegreens/deployable/" + deployBlueGreen.ImageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
@@ -139,7 +144,7 @@ func (c *DataController) Get() {
 					blueGreenJsonMap["children"] = append(blueGreenJsonMap["children"].([]interface{}), namespaceJsonMap)
 				}
 			}
-			c.Data["json"].(map[string]interface{})["bluegreenView"] = append(c.Data["json"].(map[string]interface{})["bluegreenView"].([]interface{}), blueGreenJsonMap)
+			bluegreenJsonMap["children"] = append(bluegreenJsonMap["children"].([]interface{}), blueGreenJsonMap)
 		}
 	}
 
