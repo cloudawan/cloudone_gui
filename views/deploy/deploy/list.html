@@ -16,6 +16,7 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>CurrentVersion</th>
+					<th>CurrentVersionDescription</th>
 					<th>Description</th>
 					<th>Action</th>
 				</tr>
@@ -26,6 +27,7 @@
 						<td>{{$deployInformationKey}}</td>
 						<td>{{$deployInformation.ImageInformationName}}</td>
 						<td>{{$deployInformation.CurrentVersion}}</td>
+						<td>{{$deployInformation.CurrentVersionDescription}}</td>
 						<td>{{$deployInformation.Description}}</td>
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/update?name={{$deployInformation.ImageInformationName}}&oldVersion={{$deployInformation.CurrentVersion}}">Update/Rollback</a>

@@ -25,10 +25,11 @@ type ListController struct {
 }
 
 type DeployInformation struct {
-	Namespace            string
-	ImageInformationName string
-	CurrentVersion       string
-	Description          string
+	Namespace                 string
+	ImageInformationName      string
+	CurrentVersion            string
+	CurrentVersionDescription string
+	Description               string
 }
 
 func (c *ListController) Get() {
