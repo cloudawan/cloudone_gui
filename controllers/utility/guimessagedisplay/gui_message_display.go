@@ -17,10 +17,11 @@ package guimessagedisplay
 import ()
 
 type GUIMessage struct {
-	successSlice []string
-	infoSlice    []string
-	warningSlice []string
-	dangerSlice  []string
+	sessionUtility SessionUtility
+	successSlice   []string
+	infoSlice      []string
+	warningSlice   []string
+	dangerSlice    []string
 }
 
 const (
@@ -31,6 +32,7 @@ func GetGUIMessage(sessionUtility SessionUtility) *GUIMessage {
 	guiMessage := sessionUtility.GetSession(sessionNameGUIMessage)
 	if guiMessage == nil {
 		guiMessage = new(GUIMessage)
+		guiMessage.(*GUIMessage).sessionUtility = sessionUtility
 		guiMessage.(*GUIMessage).successSlice = make([]string, 0)
 		guiMessage.(*GUIMessage).infoSlice = make([]string, 0)
 		guiMessage.(*GUIMessage).warningSlice = make([]string, 0)
@@ -73,6 +75,9 @@ func (guiMessage *GUIMessage) RedirectMessage(sessionUtility SessionUtility) {
 }
 
 func (guiMessage *GUIMessage) OutputMessage(data map[interface{}]interface{}) bool {
+	// Show global data
+	data["currentNamespace"] = guiMessage.sessionUtility.GetSession("namespace")
+
 	if data == nil {
 		return false
 	} else {
