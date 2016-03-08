@@ -32,22 +32,14 @@
     </div>
 	<div>
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#" role="tab" >Topology</a></li>
+			<li role="presentation"><a href="/gui/dashboard/topology/" role="tab" >Topology</a></li>
 			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
-			<li role="presentation"><a href="/gui/dashboard/bluegreen/" role="tab" >BlueGreen</a></li>
+			<li role="presentation" class="active"><a href="#" role="tab" >BlueGreen</a></li>
 		</ul>
 
 		<div class="row">
-			<div class="col-md-2 pull-right">
-				<input id="scope" type="checkbox" name="scope" onclick="if(this.checked){moduleDashboardTopologyIndex.query('All')}else{moduleDashboardTopologyIndex.query('')};">
-			</div>
-			<label class="col-md-0 pull-right" for="scope">All:</label>
-		</div>
-
-		<div class="row">
 			<div class="col-md-12">
-				<div id="idLogicalView"></div>
-				<div id="idPhysicalView"></div>
+				<div id="idBluegreenView"></div>
 			</div>
 		</div>
     </div>
@@ -56,20 +48,16 @@
 {{ define "js" }}
     <script type="text/javascript">
     
-    var moduleDashboardTopologyIndex = (function(){
+    var moduleDashboardBlueGreenIndex = (function(){
 
-		var query = function(scope) {
+		var query = function() {
 			$.ajax({
-				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/topology/data?scope="+scope,
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/bluegreen/data",
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){
-					// Clean the previous graph
-					d3.select("#idLogicalView").select("svg").remove();
-					d3.select("#idPhysicalView").select("svg").remove();
 					// Render
-					render(returnedData.logicalView, "#idLogicalView");
-					render(returnedData.physicalView, "#idPhysicalView");
+					render(returnedData.bluegreenView, "#idBluegreenView");
 				},
 				error:function(xhr, ajaxOptions, thrownError){ 
 					//alert(xhr.status); 
@@ -212,7 +200,7 @@
 		return {query: query}
     })();
 
-	moduleDashboardTopologyIndex.query("");
+	moduleDashboardBlueGreenIndex.query();
 
     </script>
 {{ end}}
