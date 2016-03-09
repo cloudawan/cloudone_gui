@@ -204,6 +204,9 @@ func (c *DataController) Get() {
 						for _, service := range serviceSlice {
 							if deployInformation.ImageInformationName == service.Name {
 								serviceName = service.Name
+								for _, port := range service.PortSlice {
+									serviceName += " " + port.Port + "/" + port.NodePort
+								}
 							}
 						}
 
@@ -256,8 +259,18 @@ func (c *DataController) Get() {
 			c.Data["json"].(map[string]interface{})["errorMap"].(map[string]interface{})[namespace] = err.Error()
 		} else {
 			for _, deployClusterApplication := range deployClusterApplicationSlice {
+
+				serviceName := deployClusterApplication.ServiceName
+				for _, service := range serviceSlice {
+					if service.Name == deployClusterApplication.ServiceName {
+						for _, port := range service.PortSlice {
+							serviceName += " " + port.Port + "/" + port.NodePort
+						}
+					}
+				}
+
 				serviceJsonMap := make(map[string]interface{})
-				serviceJsonMap["name"] = deployClusterApplication.ServiceName
+				serviceJsonMap["name"] = serviceName
 				serviceJsonMap["children"] = make([]interface{}, 0)
 
 				thirdpartyNameJsonMap := make(map[string]interface{})
