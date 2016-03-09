@@ -138,7 +138,7 @@ func (c *DataController) Get() {
 					if namespace == deployBlueGreen.Namespace {
 						deployInformationJsonMap["children"] = make([]interface{}, 0)
 						nodePortJsonMap := make(map[string]interface{})
-						nodePortJsonMap["name"] = deployBlueGreen.NodePort
+						nodePortJsonMap["name"] = "bg_" + deployBlueGreen.ImageInformation + " " + strconv.Itoa(deployBlueGreen.NodePort)
 						deployInformationJsonMap["children"] = append(deployInformationJsonMap["children"].([]interface{}), nodePortJsonMap)
 					}
 					namespaceJsonMap["children"] = append(namespaceJsonMap["children"].([]interface{}), deployInformationJsonMap)
