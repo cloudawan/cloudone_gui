@@ -35,6 +35,7 @@
 			<li role="presentation"><a href="/gui/dashboard/topology/" role="tab" >Topology</a></li>
 			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
 			<li role="presentation" class="active"><a href="#" role="tab" >BlueGreen</a></li>
+			<li role="presentation"><a href="/gui/dashboard/appservice/" role="tab" >AppService</a></li>
 		</ul>
 
 		<div class="row">
@@ -71,7 +72,7 @@
 			// ************** Generate the tree diagram     *****************
 		    var margin = {top: 20, right: 100, bottom: 20, left: 100},
 		        width = 1200 - margin.right - margin.left,
-		        height = 40*leafAmount - margin.top - margin.bottom;
+		        height = 100 + 40*leafAmount - margin.top - margin.bottom;
 		        
 		    var i = 0,
 		        duration = 750,

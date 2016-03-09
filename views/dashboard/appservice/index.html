@@ -32,23 +32,23 @@
     </div>
 	<div>
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#" role="tab" >Topology</a></li>
+			<li role="presentation"><a href="/gui/dashboard/topology/" role="tab" >Topology</a></li>
 			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
 			<li role="presentation"><a href="/gui/dashboard/bluegreen/" role="tab" >BlueGreen</a></li>
-			<li role="presentation"><a href="/gui/dashboard/appservice/" role="tab" >AppService</a></li>
+			<li role="presentation" class="active"><a href="#" role="tab" >AppService</a></li>
 		</ul>
 
 		<div class="row">
 			<div class="col-md-2 pull-right">
-				<input id="scope" type="checkbox" name="scope" onclick="if(this.checked){moduleDashboardTopologyIndex.query('All')}else{moduleDashboardTopologyIndex.query('')};">
+				<input id="scope" type="checkbox" name="scope" onclick="if(this.checked){moduleDashboardServiceIndex.query('All')}else{moduleDashboardServiceIndex.query('')};">
 			</div>
 			<label class="col-md-0 pull-right" for="scope">All:</label>
 		</div>
 
 		<div class="row">
 			<div class="col-md-12">
-				<div id="idLogicalView"></div>
-				<div id="idPhysicalView"></div>
+				<div id="idApplicationView"></div>
+				<div id="idThirdPartyView"></div>
 			</div>
 		</div>
     </div>
@@ -57,20 +57,20 @@
 {{ define "js" }}
     <script type="text/javascript">
     
-    var moduleDashboardTopologyIndex = (function(){
+    var moduleDashboardServiceIndex = (function(){
 
 		var query = function(scope) {
 			$.ajax({
-				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/topology/data?scope="+scope,
+				url: "{{.cloudoneGUIProtocol}}://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/dashboard/appservice/data?scope="+scope,
 				type:"GET",
 				dataType:'json',
 				success: function(returnedData){
 					// Clean the previous graph
-					d3.select("#idLogicalView").select("svg").remove();
-					d3.select("#idPhysicalView").select("svg").remove();
+					d3.select("#idApplicationView").select("svg").remove();
+					d3.select("#idThirdPartyView").select("svg").remove();
 					// Render
-					render(returnedData.logicalView, "#idLogicalView", returnedData.leafAmount);
-					render(returnedData.physicalView, "#idPhysicalView", returnedData.leafAmount);
+					render(returnedData.applicationlView, "#idApplicationView", returnedData.applicationViewLeafAmount);
+					render(returnedData.thirdpartyView, "#idThirdPartyView", returnedData.thirdpartyViewLeafAmount);
 				},
 				error:function(xhr, ajaxOptions, thrownError){ 
 					//alert(xhr.status); 
@@ -213,7 +213,7 @@
 		return {query: query}
     })();
 
-	moduleDashboardTopologyIndex.query("");
+	moduleDashboardServiceIndex.query("");
 
     </script>
 {{ end}}
