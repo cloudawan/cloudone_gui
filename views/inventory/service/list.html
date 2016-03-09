@@ -34,7 +34,11 @@
 						<td>{{$serviceKey}}</td>
 						<td>{{$service.Name}}</td>
 						<td>{{$service.Namespace}}</td>
-						<td>{{$service.Selector}}</td>
+						<td>
+							{{range $selectorKey, $selectorValue := $service.Selector}}
+								{{$selectorKey}}: {{$selectorValue}}<br/>
+							{{end}}
+						</td>
 						<td>{{$service.ClusterIP}}</td>
 						<td>
 							{{range $labelKey, $labelValue := $service.LabelMap}}
