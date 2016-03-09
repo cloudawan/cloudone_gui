@@ -109,6 +109,7 @@ func (c *DataController) Get() {
 	bluegreenJsonMap["children"] = make([]interface{}, 0)
 	c.Data["json"].(map[string]interface{})["bluegreenView"] = append(c.Data["json"].(map[string]interface{})["bluegreenView"].([]interface{}), bluegreenJsonMap)
 
+	leafAmount := 0
 	for _, deployBlueGreen := range deployBlueGreenSlice {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/deploybluegreens/deployable/" + deployBlueGreen.ImageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
@@ -143,10 +144,12 @@ func (c *DataController) Get() {
 					namespaceJsonMap["children"] = append(namespaceJsonMap["children"].([]interface{}), deployInformationJsonMap)
 					blueGreenJsonMap["children"] = append(blueGreenJsonMap["children"].([]interface{}), namespaceJsonMap)
 				}
+				leafAmount++
 			}
 			bluegreenJsonMap["children"] = append(bluegreenJsonMap["children"].([]interface{}), blueGreenJsonMap)
 		}
 	}
+	c.Data["json"].(map[string]interface{})["leafAmount"] = leafAmount
 
 	c.ServeJSON()
 }

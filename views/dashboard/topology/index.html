@@ -68,8 +68,8 @@
 					d3.select("#idLogicalView").select("svg").remove();
 					d3.select("#idPhysicalView").select("svg").remove();
 					// Render
-					render(returnedData.logicalView, "#idLogicalView");
-					render(returnedData.physicalView, "#idPhysicalView");
+					render(returnedData.logicalView, "#idLogicalView", returnedData.leafAmount);
+					render(returnedData.physicalView, "#idPhysicalView", returnedData.leafAmount);
 				},
 				error:function(xhr, ajaxOptions, thrownError){ 
 					//alert(xhr.status); 
@@ -79,11 +79,11 @@
 			});
 		};
 		
-		var render = function(treeData, id) {
+		var render = function(treeData, id, leafAmount) {
 			// ************** Generate the tree diagram     *****************
 		    var margin = {top: 20, right: 100, bottom: 20, left: 100},
 		        width = 1200 - margin.right - margin.left,
-		        height = 500 - margin.top - margin.bottom;
+		        height = 40*leafAmount - margin.top - margin.bottom;
 		        
 		    var i = 0,
 		        duration = 750,

@@ -122,8 +122,7 @@ func (c *DataController) Get() {
 	physicalTopologyJsonMap["children"] = make([]interface{}, 0)
 	c.Data["json"].(map[string]interface{})["physicalView"] = append(c.Data["json"].(map[string]interface{})["physicalView"].([]interface{}), physicalTopologyJsonMap)
 
-	//namespaceSlice := make([]string, 0)
-	//namespaceSlice = append(namespaceSlice, namespace)
+	leafAmount := 0
 	for _, namespace := range namespaceSlice {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
@@ -154,6 +153,7 @@ func (c *DataController) Get() {
 							portJsonMap := make(map[string]interface{})
 							portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
 							containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
+							leafAmount++
 						}
 						podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)
 					}
@@ -214,6 +214,7 @@ func (c *DataController) Get() {
 			logicalTopologyJsonMap["children"] = append(logicalTopologyJsonMap["children"].([]interface{}), logicalTopologyNamespaceJsonMap)
 		}
 	}
+	c.Data["json"].(map[string]interface{})["leafAmount"] = leafAmount
 
 	c.ServeJSON()
 }
