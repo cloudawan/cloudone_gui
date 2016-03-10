@@ -33,7 +33,8 @@ type Namespace struct {
 }
 
 var displayMap map[string]string = map[string]string{
-	"default": "disabled",
+	"default":     "disabled",
+	"kube-system": "disabled",
 }
 
 func (c *ListController) Get() {
