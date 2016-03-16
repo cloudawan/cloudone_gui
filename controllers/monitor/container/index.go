@@ -106,7 +106,7 @@ func (c *IndexController) Get() {
 		c.Data["replicationControllerNameSlice"] = replicationControllerNameSlice
 	}
 
-	guimessage.RedirectMessage(c)
+	guimessage.OutputMessage(c.Data)
 }
 
 type DataController struct {

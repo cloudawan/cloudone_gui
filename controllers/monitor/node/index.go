@@ -53,7 +53,7 @@ func (c *IndexController) Get() {
 	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
 	c.Data["cloudoneGUIPort"] = cloudoneGUIPort
 
-	guimessage.RedirectMessage(c)
+	guimessage.OutputMessage(c.Data)
 }
 
 type DataController struct {
