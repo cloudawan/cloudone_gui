@@ -38,6 +38,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imageinformation"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imagerecord"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/thirdparty"
+	"github.com/cloudawan/cloudone_gui/controllers/system/host/credential"
 	"github.com/cloudawan/cloudone_gui/controllers/system/namespace"
 	"github.com/cloudawan/cloudone_gui/controllers/system/notification/emailserver"
 	"github.com/cloudawan/cloudone_gui/controllers/system/notification/sms"
@@ -84,6 +85,9 @@ func init() {
 	beego.Router("/gui/system/notification/sms/", &sms.ListController{})
 	beego.Router("/gui/system/notification/sms/create", &sms.CreateController{})
 	beego.Router("/gui/system/notification/sms/delete", &sms.DeleteController{})
+	beego.Router("/gui/system/host/credential/", &credential.ListController{})
+	beego.Router("/gui/system/host/credential/delete", &credential.DeleteController{})
+	beego.Router("/gui/system/host/credential/edit", &credential.EditController{})
 	beego.Router("/gui/dashboard/topology/", &topology.IndexController{})
 	beego.Router("/gui/dashboard/topology/data", &topology.DataController{})
 	beego.Router("/gui/dashboard/healthcheck/", &healthcheck.ListController{})
