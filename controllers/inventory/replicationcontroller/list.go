@@ -46,9 +46,10 @@ type Pod struct {
 }
 
 type PodContainer struct {
-	Name      string
-	Image     string
-	PortSlice []PodContainerPort
+	Name        string
+	Image       string
+	ContainerID string
+	PortSlice   []PodContainerPort
 }
 
 type PodContainerPort struct {
