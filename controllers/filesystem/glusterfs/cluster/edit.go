@@ -81,7 +81,7 @@ func (c *EditController) Get() {
 		c.Data["sSHUser"] = glusterfsCluster.SSHUser
 		c.Data["sSHPassword"] = glusterfsCluster.SSHPassword
 
-		c.Data["nameFieldDisabled"] = "disabled"
+		c.Data["nameFieldReadOnly"] = "readonly"
 	}
 
 	guimessage.OutputMessage(c.Data)

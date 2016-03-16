@@ -15,6 +15,7 @@
 package credential
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -63,7 +64,7 @@ func (c *EditController) Get() {
 		c.Data["sshUser"] = credential.SSH.User
 		c.Data["sshPassword"] = credential.SSH.Password
 
-		c.Data["ipFieldDisabled"] = "disabled"
+		c.Data["ipFieldReadOnly"] = "readonly"
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -106,7 +107,7 @@ func (c *EditController) Post() {
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/hosts/credentials/" + ip
-
+		fmt.Println(url)
 		_, err := restclient.RequestPutWithStructure(url, credential, nil)
 
 		if err != nil {
