@@ -35,7 +35,6 @@ func (c *EditController) Get() {
 	if clusterName == "" {
 		c.Data["actionButtonValue"] = "Create"
 		c.Data["pageHeader"] = "Create Cluster Configuration"
-		c.Data["clusterName"] = ""
 		c.Data["createOrUpdate"] = "create"
 
 		c.Data["sSHDialTimeoutInMilliSecond"] = 1000
@@ -71,7 +70,6 @@ func (c *EditController) Get() {
 
 		c.Data["actionButtonValue"] = "Update"
 		c.Data["pageHeader"] = "Update Cluster Configuration"
-		c.Data["clusterName"] = clusterName
 		c.Data["createOrUpdate"] = "update"
 
 		c.Data["name"] = glusterfsCluster.Name
@@ -82,6 +80,8 @@ func (c *EditController) Get() {
 		c.Data["sSHPort"] = glusterfsCluster.SSHPort
 		c.Data["sSHUser"] = glusterfsCluster.SSHUser
 		c.Data["sSHPassword"] = glusterfsCluster.SSHPassword
+
+		c.Data["nameFieldDisabled"] = "disabled"
 	}
 }
 
@@ -142,7 +142,7 @@ func (c *EditController) Post() {
 			// Error
 			guimessage.AddDanger(err.Error())
 		} else {
-			guimessage.AddSuccess("Replication Controller " + name + " is created")
+			guimessage.AddSuccess("Glusterfs cluster " + name + " is created")
 		}
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -154,7 +154,7 @@ func (c *EditController) Post() {
 			// Error
 			guimessage.AddDanger(err.Error())
 		} else {
-			guimessage.AddSuccess("Replication Controller " + name + " is updated")
+			guimessage.AddSuccess("Glusterfs cluster " + name + " is updated")
 		}
 	}
 
