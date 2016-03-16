@@ -28,6 +28,7 @@ type EditController struct {
 
 func (c *EditController) Get() {
 	c.TplName = "system/namespace/edit.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	namespace := c.GetString("namespace")
 	if namespace == "" {
@@ -39,6 +40,8 @@ func (c *EditController) Get() {
 		c.Data["pageHeader"] = "Update Namespace"
 		c.Data["namespace"] = namespace
 	}
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *EditController) Post() {

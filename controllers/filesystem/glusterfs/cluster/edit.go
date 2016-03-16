@@ -27,8 +27,8 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	guimessage := guimessagedisplay.GetGUIMessage(c)
 	c.TplName = "filesystem/glusterfs/cluster/edit.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	clusterName := c.GetString("clusterName")
 
@@ -83,6 +83,8 @@ func (c *EditController) Get() {
 
 		c.Data["nameFieldDisabled"] = "disabled"
 	}
+
+	guimessage.OutputMessage(c.Data)
 }
 
 type GlusterfsClusterInput struct {

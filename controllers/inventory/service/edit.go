@@ -29,6 +29,7 @@ type EditController struct {
 
 func (c *EditController) Get() {
 	c.TplName = "inventory/service/edit.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	service := c.GetString("service")
 	if service == "" {
@@ -40,6 +41,8 @@ func (c *EditController) Get() {
 		c.Data["pageHeader"] = "Update Service"
 		c.Data["serviceName"] = service
 	}
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *EditController) Post() {

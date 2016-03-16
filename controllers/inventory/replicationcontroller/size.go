@@ -28,11 +28,14 @@ type SizeController struct {
 
 func (c *SizeController) Get() {
 	c.TplName = "inventory/replicationcontroller/size.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	name := c.GetString("name")
 	size := c.GetString("size")
 	c.Data["name"] = name
 	c.Data["size"] = size
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *SizeController) Post() {

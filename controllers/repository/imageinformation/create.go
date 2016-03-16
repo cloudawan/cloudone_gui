@@ -28,6 +28,9 @@ type CreateController struct {
 
 func (c *CreateController) Get() {
 	c.TplName = "repository/imageinformation/create.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *CreateController) Post() {

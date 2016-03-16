@@ -28,6 +28,7 @@ type EditController struct {
 
 func (c *EditController) Get() {
 	c.TplName = "inventory/replicationcontroller/edit.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	replicationcontroller := c.GetString("replicationcontroller")
 	if replicationcontroller == "" {
@@ -39,6 +40,8 @@ func (c *EditController) Get() {
 		c.Data["pageHeader"] = "Update Replication Controller"
 		c.Data["replicationControllerName"] = replicationcontroller
 	}
+
+	guimessage.OutputMessage(c.Data)
 }
 
 type ReplicationController struct {

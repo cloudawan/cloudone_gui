@@ -25,8 +25,8 @@ type EditController struct {
 }
 
 func (c *EditController) Get() {
-	guimessage := guimessagedisplay.GetGUIMessage(c)
 	c.TplName = "system/host/credential/edit.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	ip := c.GetString("ip")
 
@@ -65,6 +65,8 @@ func (c *EditController) Get() {
 
 		c.Data["ipFieldDisabled"] = "disabled"
 	}
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *EditController) Post() {

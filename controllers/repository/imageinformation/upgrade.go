@@ -31,8 +31,12 @@ type DeployUpgradeInput struct {
 
 func (c *UpgradeController) Get() {
 	c.TplName = "repository/imageinformation/upgrade.html"
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
 	name := c.GetString("name")
 	c.Data["name"] = name
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *UpgradeController) Post() {
