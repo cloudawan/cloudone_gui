@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -28,6 +29,12 @@ type ThirdPartyApplication struct {
 	Name        string
 	Description string
 }
+
+type ByThirdPartyApplication []ThirdPartyApplication
+
+func (b ByThirdPartyApplication) Len() int           { return len(b) }
+func (b ByThirdPartyApplication) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByThirdPartyApplication) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "repository/thirdparty/list.html"
@@ -48,6 +55,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByThirdPartyApplication(thirdPartyApplicationSlice))
 		c.Data["thirdPartyApplicationSlice"] = thirdPartyApplicationSlice
 	}
 

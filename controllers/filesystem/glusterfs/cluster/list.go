@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"time"
 )
 
@@ -35,6 +36,12 @@ type GlusterfsCluster struct {
 	SSHUser           string
 	SSHPassword       string
 }
+
+type ByGlusterfsCluster []GlusterfsCluster
+
+func (b ByGlusterfsCluster) Len() int           { return len(b) }
+func (b ByGlusterfsCluster) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByGlusterfsCluster) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "filesystem/glusterfs/cluster/list.html"
@@ -55,6 +62,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByGlusterfsCluster(glusterfsClusterSlice))
 		c.Data["glusterfsClusterSlice"] = glusterfsClusterSlice
 	}
 

@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -30,6 +31,12 @@ type SMSNexmo struct {
 	APIKey    string
 	APISecret string
 }
+
+type BySMSNexmo []SMSNexmo
+
+func (b BySMSNexmo) Len() int           { return len(b) }
+func (b BySMSNexmo) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b BySMSNexmo) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "system/notification/sms/list.html"
@@ -50,6 +57,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(BySMSNexmo(smsNexmoSlice))
 		c.Data["smsNexmoSlice"] = smsNexmoSlice
 	}
 

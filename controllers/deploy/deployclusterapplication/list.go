@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"strconv"
 )
 
@@ -32,6 +33,12 @@ type DeployClusterApplication struct {
 	ServiceName                    string
 	ReplicationControllerNameSlice []string
 }
+
+type ByDeployClusterApplication []DeployClusterApplication
+
+func (b ByDeployClusterApplication) Len() int           { return len(b) }
+func (b ByDeployClusterApplication) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByDeployClusterApplication) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "deploy/deployclusterapplication/list.html"
@@ -54,6 +61,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByDeployClusterApplication(deployClusterApplicationSlice))
 		c.Data["deployClusterApplicationSlice"] = deployClusterApplicationSlice
 	}
 

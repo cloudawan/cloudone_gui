@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"strconv"
 )
 
@@ -36,6 +37,12 @@ var displayMap map[string]string = map[string]string{
 	"default":     "disabled",
 	"kube-system": "disabled",
 }
+
+type ByNamespace []Namespace
+
+func (b ByNamespace) Len() int           { return len(b) }
+func (b ByNamespace) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByNamespace) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "system/namespace/list.html"
@@ -70,6 +77,7 @@ func (c *ListController) Get() {
 			namespaceSlice = append(namespaceSlice, namespace)
 		}
 
+		sort.Sort(ByNamespace(namespaceSlice))
 		c.Data["namespaceSlice"] = namespaceSlice
 	}
 

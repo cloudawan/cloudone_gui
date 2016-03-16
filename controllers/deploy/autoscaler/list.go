@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"time"
 )
 
@@ -49,6 +50,12 @@ type Indicator struct {
 	BelowThreshold        int64
 }
 
+type ByReplicationControllerAutoScaler []ReplicationControllerAutoScaler
+
+func (b ByReplicationControllerAutoScaler) Len() int           { return len(b) }
+func (b ByReplicationControllerAutoScaler) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByReplicationControllerAutoScaler) Less(i, j int) bool { return b[i].Name < b[j].Name }
+
 func (c *ListController) Get() {
 	c.TplName = "deploy/autoscaler/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -62,13 +69,14 @@ func (c *ListController) Get() {
 
 	replicationControllerAutoScalerSlice := make([]ReplicationControllerAutoScaler, 0)
 
-	returnedReplicationControllerAutoScalerSlice, err := restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice)
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["replicationControllerAutoScalerSlice"] = returnedReplicationControllerAutoScalerSlice
+		sort.Sort(ByReplicationControllerAutoScaler(replicationControllerAutoScalerSlice))
+		c.Data["replicationControllerAutoScalerSlice"] = replicationControllerAutoScalerSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

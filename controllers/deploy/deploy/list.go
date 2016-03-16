@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -30,6 +31,15 @@ type DeployInformation struct {
 	CurrentVersion            string
 	CurrentVersionDescription string
 	Description               string
+}
+
+type ByDeployInformation []DeployInformation
+
+func (b ByDeployInformation) Len() int           { return len(b) }
+func (b ByDeployInformation) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByDeployInformation) Less(i, j int) bool { return b.getIdentifier(i) < b.getIdentifier(j) }
+func (b ByDeployInformation) getIdentifier(i int) string {
+	return b[i].Namespace + "_" + b[i].ImageInformationName + "_" + b[i].CurrentVersion
 }
 
 func (c *ListController) Get() {
@@ -61,6 +71,7 @@ func (c *ListController) Get() {
 			}
 		}
 
+		sort.Sort(ByDeployInformation(filteredDeployInformationSlice))
 		c.Data["deployInformationSlice"] = filteredDeployInformationSlice
 	}
 

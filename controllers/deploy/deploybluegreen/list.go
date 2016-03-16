@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -30,6 +31,15 @@ type DeployBlueGreen struct {
 	NodePort         int
 	Description      string
 	SessionAffinity  string
+}
+
+type ByDeployBlueGreen []DeployBlueGreen
+
+func (b ByDeployBlueGreen) Len() int           { return len(b) }
+func (b ByDeployBlueGreen) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByDeployBlueGreen) Less(i, j int) bool { return b.getIdentifier(i) < b.getIdentifier(j) }
+func (b ByDeployBlueGreen) getIdentifier(i int) string {
+	return b[i].Namespace + "_" + b[i].ImageInformation
 }
 
 func (c *ListController) Get() {
@@ -51,6 +61,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByDeployBlueGreen(deployBlueGreenSlice))
 		c.Data["deployBlueGreenSlice"] = deployBlueGreenSlice
 	}
 

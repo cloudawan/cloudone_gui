@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"time"
 )
 
@@ -64,6 +65,12 @@ type Indicator struct {
 	BelowThreshold        int64
 }
 
+type ByReplicationControllerNotifier []ReplicationControllerNotifier
+
+func (b ByReplicationControllerNotifier) Len() int           { return len(b) }
+func (b ByReplicationControllerNotifier) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByReplicationControllerNotifier) Less(i, j int) bool { return b[i].Name < b[j].Name }
+
 func (c *ListController) Get() {
 	c.TplName = "notification/notifier/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -77,13 +84,14 @@ func (c *ListController) Get() {
 
 	replicationControllerNotifierSlice := make([]ReplicationControllerNotifier, 0)
 
-	returnedReplicationControllerNotifierSlice, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice)
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["replicationControllerNotifierSlice"] = returnedReplicationControllerNotifierSlice
+		sort.Sort(ByReplicationControllerNotifier(replicationControllerNotifierSlice))
+		c.Data["replicationControllerNotifierSlice"] = replicationControllerNotifierSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

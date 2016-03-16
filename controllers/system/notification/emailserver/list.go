@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -31,6 +32,12 @@ type EmailServerSMTP struct {
 	Host     string
 	Port     int
 }
+
+type ByEmailServerSMTP []EmailServerSMTP
+
+func (b ByEmailServerSMTP) Len() int           { return len(b) }
+func (b ByEmailServerSMTP) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByEmailServerSMTP) Less(i, j int) bool { return b[i].Name < b[j].Name }
 
 func (c *ListController) Get() {
 	c.TplName = "system/notification/emailserver/list.html"
@@ -51,6 +58,7 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByEmailServerSMTP(emailServerSMTPSlice))
 		c.Data["emailServerSMTPSlice"] = emailServerSMTPSlice
 	}
 

@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -32,6 +33,12 @@ type ImageInformation struct {
 	BuildParameter map[string]string
 }
 
+type ByImageInformation []ImageInformation
+
+func (b ByImageInformation) Len() int           { return len(b) }
+func (b ByImageInformation) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByImageInformation) Less(i, j int) bool { return b[i].Name < b[j].Name }
+
 func (c *ListController) Get() {
 	c.TplName = "repository/imageinformation/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -45,13 +52,14 @@ func (c *ListController) Get() {
 
 	imageInformationSlice := make([]ImageInformation, 0)
 
-	returnedImageInformationSlice, err := restclient.RequestGetWithStructure(url, &imageInformationSlice)
+	_, err := restclient.RequestGetWithStructure(url, &imageInformationSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["imageInformationSlice"] = returnedImageInformationSlice
+		sort.Sort(ByImageInformation(imageInformationSlice))
+		c.Data["imageInformationSlice"] = imageInformationSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

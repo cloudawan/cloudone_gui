@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 )
 
 type ListController struct {
@@ -32,6 +33,15 @@ type ImageRecord struct {
 	Environment      map[string]string
 	Description      string
 	CreatedTime      string
+}
+
+type ByImageRecord []ImageRecord
+
+func (b ByImageRecord) Len() int           { return len(b) }
+func (b ByImageRecord) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByImageRecord) Less(i, j int) bool { return b.getIdentifier(i) < b.getIdentifier(j) }
+func (b ByImageRecord) getIdentifier(i int) string {
+	return b[i].ImageInformation + "_" + b[i].Version
 }
 
 func (c *ListController) Get() {
@@ -49,13 +59,14 @@ func (c *ListController) Get() {
 
 	imageRecordSlice := make([]ImageRecord, 0)
 
-	returnedImageRecordSlice, err := restclient.RequestGetWithStructure(url, &imageRecordSlice)
+	_, err := restclient.RequestGetWithStructure(url, &imageRecordSlice)
 
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["imageRecordSlice"] = returnedImageRecordSlice
+		sort.Sort(ByImageRecord(imageRecordSlice))
+		c.Data["imageRecordSlice"] = imageRecordSlice
 	}
 
 	guimessage.OutputMessage(c.Data)
