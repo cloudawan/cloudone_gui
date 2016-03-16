@@ -69,7 +69,7 @@
 								<th>Name</th>
 								<th>Image</th>
 								<th></th>
-								<th></th>
+								<th>Action</th>
 							</tr>
 						</thead>
 						
@@ -79,7 +79,9 @@
 								<td>{{$container.Name}}</td>
 								<td>{{$container.Image}}</td>
 								<td></td>
-								<td></td>
+								<td>
+									<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/dockerterminal?hostIP={{$pod.HostIP}}&containerID={{$container.ContainerID}}">Terminal</a>
+								</td>
 							</tr>
 							
 							<thead>

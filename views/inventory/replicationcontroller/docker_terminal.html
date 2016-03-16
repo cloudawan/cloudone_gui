@@ -1,0 +1,75 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Container Terminal</h1>
+	</div>
+	
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div class="">
+			<iframe id="iframeTerminal" width="1145" height="700"></iframe>
+		</div>
+		<div class="">
+			<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/">Cancel</a>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript" src="/static/js/term.js"></script>
+
+	<script type="text/javascript">
+	
+	var moduleContainerTerminal = (function(){
+		var screenWidth = 169;
+		var screenHeight = 48;
+		var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/inventory/replicationcontroller/dockerterminal/websocket?hostIP={{.hostIP}}&containerID={{.containerID}}&width=" + screenWidth + "&height=" + screenHeight;
+
+		var websocket = new WebSocket(wsUri);
+		websocket.onopen = function(evt) { onOpen(evt) };
+		websocket.onclose = function(evt) { onClose(evt) };
+		websocket.onmessage = function(evt) { onMessage(evt) };
+		websocket.onerror = function(evt) { onError(evt) };
+		
+		function onOpen(evt)
+		{
+		}
+	
+		function onClose(evt)
+		{
+			//term.destroy();
+		}
+		
+		function onMessage(evt)
+		{
+			term.write(evt.data);
+		}
+	
+		function onError(evt)
+		{
+			//alert(evt);
+		}
+		
+		var term = new Terminal({
+			cols: screenWidth,
+			rows: screenHeight,
+			convertEol: true,
+			useStyle: true,
+			screenKeys: true,
+			cursorBlink: true
+		});
+		
+		term.on('data', function(data) {
+			websocket.send(data);
+		});
+		
+		term.open(document.getElementById('iframeTerminal').contentDocument.body);
+		
+	})();
+
+	</script>
+{{ end}}

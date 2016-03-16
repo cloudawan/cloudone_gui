@@ -53,6 +53,8 @@ func init() {
 	beego.Router("/gui/inventory/replicationcontroller/edit", &replicationcontroller.EditController{})
 	beego.Router("/gui/inventory/replicationcontroller/podlog", &replicationcontroller.PodLogController{})
 	beego.Router("/gui/inventory/replicationcontroller/size", &replicationcontroller.SizeController{})
+	beego.Router("/gui/inventory/replicationcontroller/dockerterminal", &replicationcontroller.TerminalController{})
+	beego.Router("/gui/inventory/replicationcontroller/dockerterminal/websocket", &replicationcontroller.WebSocketController{})
 	beego.Router("/gui/inventory/service/", &service.ListController{})
 	beego.Router("/gui/inventory/service/delete", &service.DeleteController{})
 	beego.Router("/gui/inventory/service/edit", &service.EditController{})
