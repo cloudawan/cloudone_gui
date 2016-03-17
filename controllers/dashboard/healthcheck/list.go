@@ -15,7 +15,6 @@
 package healthcheck
 
 import (
-	"errors"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
@@ -32,7 +31,7 @@ type ComponentStatus struct {
 	Cloudone         bool
 	CloudoneAnalysis bool
 	CloudoneGUI      bool
-	Cassandra        bool
+	Storage          bool
 	ElasticSearch    bool
 	Docker           bool
 }
@@ -45,7 +44,7 @@ type KubernetesStatus struct {
 	KubeProxy             bool
 	Kubelet               bool
 	KubeApiserver         bool
-	KubeScherduler        bool
+	KubeScheduler         bool
 	KubeControllerManager bool
 	DockerIP              string
 	FlannelIP             string
@@ -93,6 +92,8 @@ func (c *ListController) Get() {
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
+	allErrorMessageSlice := make([]string, 0)
+
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/healthchecks/"
 
@@ -101,9 +102,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
+		allErrorMessageSlice = append(allErrorMessageSlice, err.Error())
 	}
 
 	url = cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
@@ -114,121 +113,153 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
+		allErrorMessageSlice = append(allErrorMessageSlice, err.Error())
 	}
 
-	componentStatus, err := parseComponentStatus(cloudoneJsonMap, cloudoneAnalysisJsonMap)
-	if err != nil {
+	componentStatus, errorMessageSlice := parseComponentStatus(cloudoneJsonMap, cloudoneAnalysisJsonMap)
+	if len(errorMessageSlice) > 0 {
 		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
+		allErrorMessageSlice = append(allErrorMessageSlice, errorMessageSlice...)
 	}
+
 	componentStatusSlice := make([]ComponentStatus, 0)
 	componentStatusSlice = append(componentStatusSlice, *componentStatus)
 
-	kubernetesStatusSlice, err := parseKubernetesStatusSlice(cloudoneJsonMap)
-	if err != nil {
+	kubernetesStatusSlice, errorMessageSlice := parseKubernetesStatusSlice(cloudoneJsonMap)
+	if len(errorMessageSlice) > 0 {
 		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
+		allErrorMessageSlice = append(allErrorMessageSlice, errorMessageSlice...)
 	}
-	/*
-		glusterfsStatusSlice, err := parseGlusterfsStatusSlice(cloudoneJsonMap)
-		if err != nil {
-			// Error
-			guimessage.AddDanger(err.Error())
-			guimessage.OutputMessage(c.Data)
-			return
-		}
-	*/
 
 	sort.Sort(SortKubernetesStatusByIP(kubernetesStatusSlice))
-	//sort.Sort(SortGlusterfsStatusByIP(glusterfsStatusSlice))
 
 	c.Data["componentStatusSlice"] = componentStatusSlice
 	c.Data["kubernetesStatusSlice"] = kubernetesStatusSlice
-	//c.Data["glusterfsStatusSlice"] = glusterfsStatusSlice
+
+	if len(allErrorMessageSlice) > 0 {
+		errorText := fmt.Sprintf("%v", allErrorMessageSlice)
+		guimessage.AddDanger(errorText)
+	}
 
 	guimessage.OutputMessage(c.Data)
 }
 
-func parseComponentStatus(cloudoneJsonMap map[string]interface{}, cloudoneAnalysisJsonMap map[string]interface{}) (*ComponentStatus, error) {
+func parseComponentStatus(cloudoneJsonMap map[string]interface{}, cloudoneAnalysisJsonMap map[string]interface{}) (*ComponentStatus, []string) {
+	componentStatus := &ComponentStatus{}
+	componentStatus.CloudoneGUI = true
+
+	errorMessageSlice := make([]string, 0)
+
 	cloudoneStatusJsonMap, ok := cloudoneJsonMap["cloudone"].(map[string]interface{})
 	if ok == false {
 		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[cloudone] %v cloudoneJsonMap %v", cloudoneJsonMap["cloudone"], cloudoneJsonMap)
-		return nil, errors.New(errorText)
+		errorMessageSlice = append(errorMessageSlice, errorText)
+	} else {
+		if componentStatus.Storage, ok = cloudoneStatusJsonMap["storage"].(bool); ok == false {
+			errorText := fmt.Sprintf("Fail to convert field storage in cloudoneJsonMap[cloudone] %v cloudoneJsonMap %v", cloudoneJsonMap["cloudone"], cloudoneJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		}
+		if componentStatus.Docker, ok = cloudoneStatusJsonMap["docker"].(bool); ok == false {
+			errorText := fmt.Sprintf("Fail to convert field docker in cloudoneJsonMap[cloudone] %v cloudoneJsonMap %v", cloudoneJsonMap["cloudone"], cloudoneJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		}
+		if componentStatus.Cloudone, ok = cloudoneStatusJsonMap["restapi"].(bool); ok == false {
+			errorText := fmt.Sprintf("Fail to convert field restapi in cloudoneJsonMap[cloudone] %v cloudoneJsonMap %v", cloudoneJsonMap["cloudone"], cloudoneJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		}
 	}
-	storage, ok := cloudoneStatusJsonMap["storage"].(bool)
-	docker, ok := cloudoneStatusJsonMap["docker"].(bool)
-	cloudone, ok := cloudoneStatusJsonMap["restapi"].(bool)
 
 	cloudoneAnalysisStatusJsonMap, ok := cloudoneAnalysisJsonMap["cloudone_analysis"].(map[string]interface{})
 	if ok == false {
 		errorText := fmt.Sprintf("Fail to parse cloudoneAnalysisJsonMap[cloudone_analysis] %v cloudoneJsonMap %v", cloudoneAnalysisJsonMap["cloudone_analysis"], cloudoneAnalysisJsonMap)
-		return nil, errors.New(errorText)
+		errorMessageSlice = append(errorMessageSlice, errorText)
+	} else {
+		if componentStatus.ElasticSearch, ok = cloudoneAnalysisStatusJsonMap["elasticsearch"].(bool); ok == false {
+			errorText := fmt.Sprintf("Fail to convert field elasticsearch in cloudoneAnalysisJsonMap[cloudone_analysis] %v cloudoneAnalysisJsonMap %v", cloudoneAnalysisJsonMap["cloudone_analysis"], cloudoneAnalysisJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		}
+		if componentStatus.CloudoneAnalysis, ok = cloudoneAnalysisStatusJsonMap["restapi"].(bool); ok == false {
+			errorText := fmt.Sprintf("Fail to convert field restapi in cloudoneAnalysisJsonMap[cloudone_analysis] %v cloudoneAnalysisJsonMap %v", cloudoneAnalysisJsonMap["cloudone_analysis"], cloudoneAnalysisJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		}
 	}
-	elasticSearch, ok := cloudoneAnalysisStatusJsonMap["elasticsearch"].(bool)
-	cloudoneAnalysis, ok := cloudoneAnalysisStatusJsonMap["restapi"].(bool)
 
-	componentStatus := &ComponentStatus{
-		cloudone,
-		cloudoneAnalysis,
-		true,
-		storage,
-		elasticSearch,
-		docker,
-	}
-	return componentStatus, nil
+	return componentStatus, errorMessageSlice
 }
 
-func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]KubernetesStatus, error) {
+func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]KubernetesStatus, []string) {
+	kubernetesStatusSlice := make([]KubernetesStatus, 0)
+
+	errorMessageSlice := make([]string, 0)
+
 	kubernetesStatusJsonMap, ok := cloudoneJsonMap["kubernetes"].(map[string]interface{})
 	if ok == false {
 		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[kubernetes] %v cloudoneJsonMap %v", cloudoneJsonMap["kubernetes"], cloudoneJsonMap)
-		return nil, errors.New(errorText)
+		errorMessageSlice = append(errorMessageSlice, errorText)
 	}
 
-	kubernetesStatusSlice := make([]KubernetesStatus, 0)
 	for key, value := range kubernetesStatusJsonMap {
 		nodeStatusJsonMap, ok := value.(map[string]interface{})
 		if ok == false {
 			errorText := fmt.Sprintf("Fail to parse value %v cloudoneJsonMap %v", value, cloudoneJsonMap)
-			return nil, errors.New(errorText)
+			errorMessageSlice = append(errorMessageSlice, errorText)
 		}
 		active, ok := nodeStatusJsonMap["active"].(bool)
 		if ok == false {
 			errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[active] %v cloudoneJsonMap %v", nodeStatusJsonMap["active"], cloudoneJsonMap)
-			return nil, errors.New(errorText)
+			errorMessageSlice = append(errorMessageSlice, errorText)
 		}
 		if active {
+			kubernetesStatus := KubernetesStatus{}
+			kubernetesStatus.IP = key
+			kubernetesStatus.Active = active
+
 			serviceJsonMap, ok := nodeStatusJsonMap["service"].(map[string]interface{})
 			if ok == false {
 				errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[service] %v cloudoneJsonMap %v", nodeStatusJsonMap["service"], cloudoneJsonMap)
-				return nil, errors.New(errorText)
+				errorMessageSlice = append(errorMessageSlice, errorText)
+			} else {
+				if kubernetesStatus.Docker, _ = serviceJsonMap["docker"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field docker in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["docker"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.Flannel, _ = serviceJsonMap["flanneld"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field flanneld in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["flanneld"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.KubeApiserver, _ = serviceJsonMap["kube-apiserver"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field kube-apiserver in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-apiserver"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.KubeControllerManager, _ = serviceJsonMap["kube-controller-manager"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field kube-controller-manager in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-controller-manager"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.KubeProxy, _ = serviceJsonMap["kube-proxy"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field kube-proxy in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-proxy"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.KubeScheduler, _ = serviceJsonMap["kube-scheduler"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field kube-scheduler in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-scheduler"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
+				if kubernetesStatus.Kubelet, _ = serviceJsonMap["kubelet"].(bool); ok == false {
+					errorText := fmt.Sprintf("Fail to convert field kubelet in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kubelet"], cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				}
 			}
-			docker, _ := serviceJsonMap["docker"].(bool)
-			flanneld, _ := serviceJsonMap["flanneld"].(bool)
-			kubeApiserver, _ := serviceJsonMap["kube-apiserver"].(bool)
-			kubeControllerManager, _ := serviceJsonMap["kube-controller-manager"].(bool)
-			kubeProxy, _ := serviceJsonMap["kube-proxy"].(bool)
-			kubeScheduler, _ := serviceJsonMap["kube-scheduler"].(bool)
-			kubelet, _ := serviceJsonMap["kubelet"].(bool)
 
 			dockerJsonMap, ok := nodeStatusJsonMap["docker"].(map[string]interface{})
 			if ok == false {
 				errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[docker] %v cloudoneJsonMap %v", nodeStatusJsonMap["docker"], cloudoneJsonMap)
-				return nil, errors.New(errorText)
+				errorMessageSlice = append(errorMessageSlice, errorText)
 			}
 			dockerIP, dockerIPOk := dockerJsonMap["ip"].(string)
 
 			flannelJsonMap, ok := nodeStatusJsonMap["flannel"].(map[string]interface{})
 			if ok == false {
 				errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[flannel] %v cloudoneJsonMap %v", nodeStatusJsonMap["flannel"], cloudoneJsonMap)
-				return nil, errors.New(errorText)
+				errorMessageSlice = append(errorMessageSlice, errorText)
 			}
 			flannelIP, flannelIPOk := flannelJsonMap["ip"].(string)
 
@@ -249,20 +280,10 @@ func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Kuber
 				}
 			}
 
-			kubernetesStatus := KubernetesStatus{
-				key,
-				active,
-				docker,
-				flanneld,
-				kubeProxy,
-				kubelet,
-				kubeApiserver,
-				kubeScheduler,
-				kubeControllerManager,
-				dockerIP,
-				flannelIP,
-				dockerIPValid,
-			}
+			kubernetesStatus.DockerIP = dockerIP
+			kubernetesStatus.FlannelIP = flannelIP
+			kubernetesStatus.DockerIPValid = dockerIPValid
+
 			kubernetesStatusSlice = append(kubernetesStatusSlice, kubernetesStatus)
 		} else {
 			kubernetesStatus := KubernetesStatus{
@@ -282,53 +303,6 @@ func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Kuber
 			kubernetesStatusSlice = append(kubernetesStatusSlice, kubernetesStatus)
 		}
 	}
-	return kubernetesStatusSlice, nil
+
+	return kubernetesStatusSlice, errorMessageSlice
 }
-
-/*
-func parseGlusterfsStatusSlice(cloudoneJsonMap map[string]interface{}) ([]GlusterfsStatus, error) {
-	glusterfsStatusJsonMap, ok := cloudoneJsonMap["glusterfs"].(map[string]interface{})
-	if ok == false {
-		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[glusterfs] %v cloudoneJsonMap %v", cloudoneJsonMap["glusterfs"], cloudoneJsonMap)
-		return nil, errors.New(errorText)
-	}
-
-	glusterfsStatusSlice := make([]GlusterfsStatus, 0)
-	for key, value := range glusterfsStatusJsonMap {
-		nodeStatusJsonMap, ok := value.(map[string]interface{})
-		if ok == false {
-			errorText := fmt.Sprintf("Fail to parse value %v cloudoneJsonMap %v", value, cloudoneJsonMap)
-			return nil, errors.New(errorText)
-		}
-		active, ok := nodeStatusJsonMap["active"].(bool)
-		if ok == false {
-			errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[active] %v cloudoneJsonMap %v", nodeStatusJsonMap["active"], cloudoneJsonMap)
-			return nil, errors.New(errorText)
-		}
-		if active {
-			serviceJsonMap, ok := nodeStatusJsonMap["service"].(map[string]interface{})
-			if ok == false {
-				errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[service] %v cloudoneJsonMap %v", nodeStatusJsonMap["service"], cloudoneJsonMap)
-				return nil, errors.New(errorText)
-			}
-			glusterfs, _ := serviceJsonMap["glusterfs"].(bool)
-
-			glusterfsStatus := GlusterfsStatus{
-				key,
-				active,
-				glusterfs,
-			}
-			glusterfsStatusSlice = append(glusterfsStatusSlice, glusterfsStatus)
-		} else {
-			glusterfsStatus := GlusterfsStatus{
-				key,
-				active,
-				false,
-			}
-			glusterfsStatusSlice = append(glusterfsStatusSlice, glusterfsStatus)
-		}
-	}
-
-	return glusterfsStatusSlice, nil
-}
-*/
