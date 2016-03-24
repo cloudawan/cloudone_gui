@@ -14,9 +14,7 @@
 
 					{{range $logKey, $log := .logJsonMap}}
 						<label class="col-md-2">{{$logKey}}:</label>
-						<textarea class="col-md-10" readonly rows="30" >
-							{{ $log }}
-						</textarea>
+						<textarea class="col-md-10" readonly rows="30" >{{ $log }}</textarea>
 					{{end}}
 					
 				</div>
