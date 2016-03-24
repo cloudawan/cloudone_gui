@@ -1,0 +1,181 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>System Upgrade</h1>
+	</div>
+	<div id="outputData" class="" hidden="hidden">
+		<textarea id="outputTextarea" class="col-md-12" readonly rows="35" ></textarea>
+	</div>
+	<div id="inputData" class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" action="#" method="post">
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="upgradeCloudone">CloudOne:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="upgradeCloudone" type="checkbox" name="upgradeCloudone" onclick="$('#upgradeCloudoneDetail').toggle();" >
+					</div>
+				</div>
+				<div id="upgradeCloudoneDetail" hidden="hidden">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneImagePath">Image:</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneImagePath" class="form-control" type="text" name="upgradeCloudoneImagePath" value="cloudawan/cloudone">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneVersion">Version(empty for latest):</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneVersion" class="form-control" type="text" name="upgradeCloudoneVersion" value="">
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="upgradeCloudoneGUI">CloudOneGUI:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="upgradeCloudoneGUI" type="checkbox" name="upgradeCloudoneGUI" onclick="$('#upgradeCloudoneGUIDetail').toggle();" >
+					</div>
+				</div>
+				<div id="upgradeCloudoneGUIDetail" hidden="hidden">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneGUIImagePath">Image:</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneGUIImagePath" class="form-control" type="text" name="upgradeCloudoneGUIImagePath" value="cloudawan/cloudone_gui">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneGUIVersion">Version(empty for latest):</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneGUIVersion" class="form-control" type="text" name="upgradeCloudoneGUIVersion" value="">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="upgradeCloudoneAnalysis">CloudOneAnalysis:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="upgradeCloudoneAnalysis" type="checkbox" name="upgradeCloudoneAnalysis" onclick="$('#upgradeCloudoneAnalysisDetail').toggle();" >
+					</div>
+				</div>
+				<div id="upgradeCloudoneAnalysisDetail" hidden="hidden">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneAnalysisImagePath">Image:</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneAnalysisImagePath" class="form-control" type="text" name="upgradeCloudoneAnalysisImagePath" value="cloudawan/cloudone_analysis">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeCloudoneAnalysisVersion">Version(empty for latest):</label>
+						<div class="col-md-9">
+							<input id="upgradeCloudoneAnalysisVersion" class="form-control" type="text" name="upgradeCloudoneAnalysisVersion" value="">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="upgradeTopologyConfiguration">Topology & Configuration:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="upgradeTopologyConfiguration" type="checkbox" name="upgradeTopologyConfiguration" onclick="$('#upgradeTopologyConfigurationDetail').toggle();" >
+					</div>
+				</div>
+				<div id="upgradeTopologyConfigurationDetail" hidden="hidden">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeNamespace">Namespace:</label>
+						<div class="col-md-9">
+							<input id="upgradeNamespace" class="form-control" type="text" name="upgradeNamespace" value="default">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeReplicationControllerName">Replication Controller Name:</label>
+						<div class="col-md-9">
+							<input id="upgradeReplicationControllerName" class="form-control" type="text" name="upgradeReplicationControllerName" value="cloudone-all">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeReplicationControllerContent">Replication Controller Content:</label>
+						<div class="col-md-9">
+							<textarea id="upgradeReplicationControllerContent" class="form-control" name="upgradeReplicationControllerContent" rows="20"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeServiceName">Service Name:</label>
+						<div class="col-md-9">
+							<input id="upgradeServiceName" class="form-control" type="text" name="upgradeServiceName" value="cloudone-all">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="upgradeServiceContent">Service Content:</label>
+						<div class="col-md-9">
+							<textarea id="upgradeServiceContent" class="form-control" name="upgradeServiceContent" rows="20"></textarea>
+						</div>
+					</div>
+				</div>
+				
+				<input class="btn btn-md btn-info pull-right" onclick="$('#inputData').toggle();$('#outputData').toggle();moduleSystemUpgrade.query(moduleSystemUpgrade.parameter)" value="Upgrade">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+	<script type="text/javascript">
+	
+	var moduleSystemUpgrade = (function(){
+		var parameter = {}
+		
+		var query = function(parameter) {
+			var encodedParameter = "upgradeCloudone=" + encodeURIComponent($("#upgradeCloudone").is(':checked')) + "&" +
+				"upgradeCloudoneImagePath=" + encodeURIComponent($("#upgradeCloudoneImagePath").val()) + "&" +
+				"upgradeCloudoneVersion=" + encodeURIComponent($("#upgradeCloudoneVersion").val()) + "&" +
+				"upgradeCloudoneGUI=" + encodeURIComponent($("#upgradeCloudoneGUI").is(':checked')) + "&" +
+				"upgradeCloudoneGUIImagePath=" + encodeURIComponent($("#upgradeCloudoneGUIImagePath").val()) + "&" +
+				"upgradeCloudoneGUIVersion=" + encodeURIComponent($("#upgradeCloudoneGUIVersion").val()) + "&" +
+				"upgradeCloudoneAnalysis=" + encodeURIComponent($("#upgradeCloudoneAnalysis").is(':checked')) + "&" +
+				"upgradeCloudoneAnalysisImagePath=" + encodeURIComponent($("#upgradeCloudoneAnalysisImagePath").val()) + "&" +
+				"upgradeCloudoneAnalysisVersion=" + encodeURIComponent($("#upgradeCloudoneAnalysisVersion").val()) + "&" +
+				"upgradeTopologyConfiguration=" + encodeURIComponent($("#upgradeTopologyConfiguration").is(':checked')) + "&" +
+				"upgradeNamespace=" + encodeURIComponent($("#upgradeNamespace").val()) + "&" +
+				"upgradeReplicationControllerName=" + encodeURIComponent($("#upgradeReplicationControllerName").val()) + "&" +
+				"upgradeReplicationControllerContent=" + encodeURIComponent($("#upgradeReplicationControllerContent").val()) + "&" +
+				"upgradeServiceName=" + encodeURIComponent($("#upgradeServiceName").val()) + "&" +
+				"upgradeServiceContent=" + encodeURIComponent($("#upgradeServiceContent").val());
+
+			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/system/upgrade/websocket?" + encodedParameter;
+	
+			parameter.websocket = new WebSocket(wsUri);
+			parameter.websocket.onopen = function(evt) { onOpen(evt) };
+			parameter.websocket.onclose = function(evt) { onClose(evt) };
+			parameter.websocket.onmessage = function(evt) { onMessage(evt) };
+			parameter.websocket.onerror = function(evt) { onError(evt) };
+			
+			function onOpen(evt)
+			{
+			}
+		
+			function onClose(evt)
+			{
+			}
+			
+			function onMessage(evt)
+			{
+				$("#outputTextarea").val($("#outputTextarea").val() + evt.data);
+			}
+		
+			function onError(evt)
+			{
+				//alert(evt);
+			}
+		};
+		
+		return {
+			query:query,
+			parameter:parameter,
+		}
+	})();
+
+	</script>
+{{ end}}
