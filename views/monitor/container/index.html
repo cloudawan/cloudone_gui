@@ -11,7 +11,7 @@
 
 	<div class="row">
 		<div class="col-md-2 pull-right">
-			<select id="replicationControllerName" class="form-control" onchange="moduleMonitorNodeIndex.parameter.replicationControllerName=$('#replicationControllerName').val();">
+			<select id="replicationControllerName" class="form-control" onchange="moduleMonitorContainerIndex.parameter.replicationControllerName=$('#replicationControllerName').val();">
 			{{ range $replicationControllerNameKey, $replicationControllerName := .replicationControllerNameSlice}}
 				<option value="{{$replicationControllerName}}">{{$replicationControllerName}}</option>
 			{{ end }}
@@ -73,7 +73,7 @@
 	
 	<script type="text/javascript">
 
-	var moduleMonitorNodeIndex = (function(){
+	var moduleMonitorContainerIndex = (function(){
 		
 		var parameter = {
 			replicationControllerName: "",
