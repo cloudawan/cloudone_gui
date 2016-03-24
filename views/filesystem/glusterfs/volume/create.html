@@ -56,7 +56,7 @@
 				{{end}}
 
 				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume?clusterName={{.clusterName}}">Cancel</a>
-				<input class="btn btn-md btn-info pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Create">
+				<input class="btn btn-md btn-info pull-right" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" type="submit" value="Create">
 			</form>
 		</div>
 	</div>

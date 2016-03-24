@@ -102,7 +102,7 @@
 	</nav>
 
 	<div class="container">
-		<div class="theme-showcase">
+		<div class="theme-showcase .has-error .has-success .has-warning">
 			<div {{ .messageDisplay }} id="messageDisplay">
 				{{range $key, $guiMessageSuccess := .guiMessageSuccessSlice}}
 					<p class="bg-success">{{ $guiMessageSuccess }}</p>
