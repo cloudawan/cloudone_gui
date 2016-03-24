@@ -124,7 +124,7 @@ func (c *SizeController) Get() {
 	if len(deployClusterApplication.ReplicationControllerNameSlice) == 0 {
 		// Error
 		c.Data["json"] = make(map[string]interface{})
-		c.Data["json"].(map[string]interface{})["error"] = "The replication controller name slice is emptyfor the cluster application deployment with name " + name
+		c.Data["json"].(map[string]interface{})["error"] = "The replication controller name slice is empty for the cluster application deployment with name " + name
 		c.Ctx.Output.Status = 404
 		c.ServeJSON()
 		return

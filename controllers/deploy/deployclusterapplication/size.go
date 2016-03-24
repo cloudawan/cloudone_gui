@@ -116,7 +116,7 @@ func (c *SizeController) Get() {
 	}
 
 	if len(deployClusterApplication.ReplicationControllerNameSlice) == 0 {
-		guimessage.AddDanger("The replication controller name slice is emptyfor the cluster application deployment with name " + name)
+		guimessage.AddDanger("The replication controller name slice is empty for the cluster application deployment with name " + name)
 		// Redirect to list
 		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
 
