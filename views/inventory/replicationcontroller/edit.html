@@ -13,25 +13,25 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
-						<input id="name" class="form-control" type="text" name="name" value="{{ .replicationcontroller }}">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .replicationcontroller }}" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="replicaAmount">Replica Amount:</label>
 					<div class="col-md-9">
-						<input id="replicaAmount" class="form-control" type="number" name="replicaAmount" value="1" min="1" max="10">
+						<input id="replicaAmount" class="form-control" type="number" name="replicaAmount" value="1" min="1" max="10" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="image">Image:</label>
 					<div class="col-md-9">
-						<input id="image" class="form-control" type="text" name="image">
+						<input id="image" class="form-control" type="text" name="image" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="containerPort">Container Port:</label>
 					<div class="col-md-9">
-						<input id="containerPort" class="form-control" type="number" name="containerPort" value="1000" min="1000" max="65535">
+						<input id="containerPort" class="form-control" type="number" name="containerPort" value="1000" min="1000" max="65535" required>
 					</div>
 				</div>
 

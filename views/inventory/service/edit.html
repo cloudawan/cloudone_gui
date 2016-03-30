@@ -13,13 +13,13 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
-						<input id="name" class="form-control" type="text" name="name" value="{{ .service }}">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .service }}" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="selectorName">Selector:</label>
 					<div class="col-md-9">
-						<input id="selectorName" class="form-control" type="text" name="selectorName">
+						<input id="selectorName" class="form-control" type="text" name="selectorName" required>
 					</div>
 				</div>
 				<!--
@@ -49,13 +49,13 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="port">Port:</label>
 					<div class="col-md-9">
-						<input id="port" class="form-control" type="number" name="port" min="1" max="65535">
+						<input id="port" class="form-control" type="number" name="port" min="1" max="65535" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="targetPort">Target Port:</label>
 					<div class="col-md-9">
-						<input id="targetPort" class="form-control" type="number" name="targetPort" min="1" max="65535">
+						<input id="targetPort" class="form-control" type="number" name="targetPort" min="1" max="65535" required>
 					</div>
 				</div>
 

@@ -13,7 +13,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="kind">Type:</label>
 					<div class="col-md-9">
-						<select id="kind" class="form-control" name="kind" value="{{ .kind }}" {{ .readonly }}>
+						<select id="kind" class="form-control" name="kind" value="{{ .kind }}" {{ .readonly }} required>
 							<option value="selector" {{ .selectorSelected }}>Selector</option>
 							<option value="replicationController" {{ .replicationControllerSelected }}>ReplicationController</option>
 						</select>
@@ -66,7 +66,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="coolDownDuration">Cool Down Duration (second):</label>
 					<div class="col-md-9">
-						<input id="coolDownDuration" class="form-control" type="number" name="coolDownDuration" min="10" max="3600" value="{{ .coolDownDuration }}">
+						<input id="coolDownDuration" class="form-control" type="number" name="coolDownDuration" min="10" max="3600" value="{{ .coolDownDuration }}" required>
 					</div>
 				</div>
 

@@ -15,49 +15,49 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
-						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" {{ .nameFieldReadOnly }}>
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" {{ .nameFieldReadOnly }} required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Host List:</label>
 					<div class="col-md-9">
-						<input id="hostList" class="form-control" type="text" name="hostList" value="{{ .hostList }}">
+						<input id="hostList" class="form-control" type="text" name="hostList" value="{{ .hostList }}" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="path">Path:</label>
 					<div class="col-md-9">
-						<input id="path" class="form-control" type="text" name="path" value="{{ .path }}">
+						<input id="path" class="form-control" type="text" name="path" value="{{ .path }}" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sSHDialTimeoutInMilliSecond">SSH Dial Timeout(ms):</label>
 					<div class="col-md-9">
-						<input id="sSHDialTimeoutInMilliSecond" class="form-control" type="number" name="sSHDialTimeoutInMilliSecond" value="{{ .sSHDialTimeoutInMilliSecond }}" min="100" max="30000">
+						<input id="sSHDialTimeoutInMilliSecond" class="form-control" type="number" name="sSHDialTimeoutInMilliSecond" value="{{ .sSHDialTimeoutInMilliSecond }}" min="100" max="30000" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sSHSessionTimeoutInMilliSecond">SSH Session Timeout(ms):</label>
 					<div class="col-md-9">
-						<input id="sSHSessionTimeoutInMilliSecond" class="form-control" type="number" name="sSHSessionTimeoutInMilliSecond" value="{{ .sSHSessionTimeoutInMilliSecond }}" min="100" max="30000">
+						<input id="sSHSessionTimeoutInMilliSecond" class="form-control" type="number" name="sSHSessionTimeoutInMilliSecond" value="{{ .sSHSessionTimeoutInMilliSecond }}" min="100" max="30000" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sSHPort">SSH Port:</label>
 					<div class="col-md-9">
-						<input id="sSHPort" class="form-control" type="number" name="sSHPort" value="{{ .sSHPort }}" min="22" max="65535">
+						<input id="sSHPort" class="form-control" type="number" name="sSHPort" value="{{ .sSHPort }}" min="22" max="65535" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sSHUser">SSH User:</label>
 					<div class="col-md-9">
-						<input id="sSHUser" class="form-control" type="text" name="sSHUser" value="{{ .sSHUser }}">
+						<input id="sSHUser" class="form-control" type="text" name="sSHUser" value="{{ .sSHUser }}" required>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sSHPassword">SSH Password:</label>
 					<div class="col-md-9">
-						<input id="sSHPassword" class="form-control" type="text" name="sSHPassword" value="{{ .sSHPassword }}">
+						<input id="sSHPassword" class="form-control" type="text" name="sSHPassword" value="{{ .sSHPassword }}" required>
 					</div>
 				</div>
 
