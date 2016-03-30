@@ -17,6 +17,7 @@ package identity
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"math"
 	"strconv"
 )
 
@@ -38,11 +39,12 @@ func (c *LoginController) Post() {
 		guimessage.AddDanger("Fail to get browser time zone offset. Use UTC instead")
 	} else {
 		hourOffset := float64(timeZoneOffset) / 60.0
+		// Since it is time offset, it needs to multiple -1 to get the UTC format
 		sign := "-"
 		if hourOffset < 0 {
 			sign = "+"
 		}
-		guimessage.AddSuccess("Browser time zone is " + sign + strconv.FormatFloat(hourOffset, 'f', -1, 64) + " from UTC")
+		guimessage.AddSuccess("Browser time zone is UTC " + sign + strconv.FormatFloat(math.Abs(hourOffset), 'f', -1, 64) + "")
 		c.SetSession("timeZoneOffset", timeZoneOffset)
 	}
 
