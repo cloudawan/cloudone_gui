@@ -42,7 +42,7 @@
 						<td>{{$replicationControllerAutoScaler.RemainingCoolDown}}</td>
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit?kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Update</a>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/delete?namespace={{$replicationControllerAutoScaler.Namespace}}&kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAutoScaler.Name}}" data-color="btn-danger" data-herf="/gui/deploy/autoscaler/delete?namespace={{$replicationControllerAutoScaler.Namespace}}&kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Delete</button>
 						</td>
 					</tr>
 				

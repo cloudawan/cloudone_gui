@@ -33,7 +33,7 @@
 						<td>
 							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/launch?name={{$thirdPartyApplication.Name}}">Launch</a>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit?name={{$thirdPartyApplication.Name}}">Update</a>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/delete?name={{$thirdPartyApplication.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$thirdPartyApplication.Name}}" data-color="btn-danger" data-herf="/gui/repository/thirdparty/delete?name={{$thirdPartyApplication.Name}}">Delete</button>
 						</td>
 						<td></td>
 					</tr>

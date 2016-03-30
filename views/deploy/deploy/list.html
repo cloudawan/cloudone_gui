@@ -31,7 +31,7 @@
 						<td>{{$deployInformation.Description}}</td>
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/update?name={{$deployInformation.ImageInformationName}}&oldVersion={{$deployInformation.CurrentVersion}}">Update/Rollback</a>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/delete?name={{$deployInformation.ImageInformationName}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$deployInformation.ImageInformationName}}" data-color="btn-danger" data-herf="/gui/deploy/deploy/delete?name={{$deployInformation.ImageInformationName}}">Delete</button>
 						</td>
 					</thead>
 					</tr>

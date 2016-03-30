@@ -47,7 +47,7 @@
 						</td>
 						<td>{{$service.SessionAffinity}}</td>
 						<td>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/delete?namespace={{$service.Namespace}}&service={{$service.Name}}" {{$service.Display}}>Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$service.Name}}" data-color="btn-danger" data-herf="/gui/inventory/service/delete?namespace={{$service.Namespace}}&service={{$service.Name}}" {{$service.Display}}>Delete</button>
 						</td>
 					</tr>
 				

@@ -49,7 +49,7 @@
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume?clusterName={{$glusterfsCluster.Name}}">Volume</a>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/edit?clusterName={{$glusterfsCluster.Name}}">Update</a>	
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/delete?clusterName={{$glusterfsCluster.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$glusterfsCluster.Name}}" data-color="btn-danger" data-herf="/gui/filesystem/glusterfs/cluster/delete?clusterName={{$glusterfsCluster.Name}}">Delete</button>
 						</td>
 					</tr>
 				{{end}}

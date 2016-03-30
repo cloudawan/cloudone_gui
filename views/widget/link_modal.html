@@ -1,0 +1,37 @@
+<div class="modal fade" id="linkModal" tabindex="-1" role="dialog" aria-labelledby="linkModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 id="linkModalLabel" class="modal-title">Are you sure?</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<h4 id="linkModalActionLabel" class="modal-title"></h4>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a id="linkModalLink" class="btn " onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="">Confirm</a>
+				<button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var moduleWidgetLinkModal = (function(){
+	$('#linkModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var action = button.data('action');
+		var color = button.data('color');
+		var herf = button.data('herf');
+		var modal = $(this);
+		modal.find('#linkModalActionLabel').text(action);
+		modal.find('#linkModalLink').addClass(color);
+		modal.find('#linkModalLink').attr("href", herf);
+	})
+})();
+	
+</script>

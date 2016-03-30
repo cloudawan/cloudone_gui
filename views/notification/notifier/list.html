@@ -40,7 +40,7 @@
 						<td>{{$replicationControllerNotifier.RemainingCoolDown}}</td>
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit?&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Update</a>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/delete?namespace={{$replicationControllerNotifier.Namespace}}&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerNotifier.Name}}" data-color="btn-danger" data-herf="/gui/notification/notifier/delete?namespace={{$replicationControllerNotifier.Namespace}}&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Delete</button>
 						</td>
 					</tr>
 				

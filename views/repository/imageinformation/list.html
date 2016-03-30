@@ -45,7 +45,7 @@
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/upgrade?name={{$imageInformation.Name}}">Upgrade</a><br/>
 							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/create?name={{$imageInformation.Name}}">Deploy</a><br/>
 							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$imageInformation.Name}}&action=create">B/G deployment</a><br/>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/delete?name={{$imageInformation.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$imageInformation.Name}}" data-color="btn-danger" data-herf="/gui/repository/imageinformation/delete?name={{$imageInformation.Name}}">Delete</button>
 						</td>
 					</tr>
 				{{end}}

@@ -38,7 +38,7 @@
 						<td>{{$replicationControllerAndRelatedPod.AliveReplicaAmount}}/{{$replicationControllerAndRelatedPod.ReplicaAmount}}</td>
 						<td>
 							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/size?name={{$replicationControllerAndRelatedPod.Name}}&size={{$replicationControllerAndRelatedPod.ReplicaAmount}}" >Resize</a>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/delete?namespace={{$replicationControllerAndRelatedPod.Namespace}}&replicationcontroller={{$replicationControllerAndRelatedPod.Name}}" {{$replicationControllerAndRelatedPod.Display}} >Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAndRelatedPod.Name}}" data-color="btn-danger" data-herf="/gui/inventory/replicationcontroller/delete?namespace={{$replicationControllerAndRelatedPod.Namespace}}&replicationcontroller={{$replicationControllerAndRelatedPod.Name}}" {{$replicationControllerAndRelatedPod.Display}}>Delete</button>
 						</td>
 					</tr>
 				

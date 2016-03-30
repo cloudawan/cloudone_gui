@@ -40,7 +40,7 @@
 						<td>{{$smsNexmo.APIKey}}</td>
 						<td>{{$smsNexmo.APISecret}}</td>
 						<td>
-							<a class="btn btn-xs btn-danger" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/sms/delete?name={{$smsNexmo.Name}}">Delete</a>
+							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$smsNexmo.Name}}" data-color="btn-danger" data-herf="/gui/system/notification/sms/delete?name={{$smsNexmo.Name}}">Delete</button>
 						</td>
 					</tr>
 				{{end}}
