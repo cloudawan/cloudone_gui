@@ -1,0 +1,30 @@
+	<div class="container">
+	<!-- Display message -->
+	<div {{ .messageDisplay }} id="messageDisplay">
+		<p></p>
+		{{range $key, $guiMessageSuccess := .guiMessageSuccessSlice}}
+			<div class="alert alert-success fade in">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Success!</strong> {{ $guiMessageSuccess }}
+			</div>
+		{{end}}
+		{{range $key, $guiMessageInfo := .guiMessageInfoSlice}}
+			<div class="alert alert-info fade in">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Info!</strong> {{ $guiMessageInfo }}
+			</div>
+		{{end}}
+		{{range $key, $guiMessageWarning := .guiMessageWarningSlice}}
+			<div class="alert alert-warning fade in">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Warning!</strong> {{ $guiMessageWarning }}
+			</div>
+		{{end}}
+		{{range $key, $guiMessageDanger := .guiMessageDangerSlice}}
+			<div class="alert alert-danger fade in">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Danger!</strong> {{ $guiMessageDanger }}
+			</div>
+		{{end}}
+	</div>
+	</div>

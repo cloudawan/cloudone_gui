@@ -101,49 +101,22 @@
 		</div>
 	</nav>
 
+	<!-- Display message -->
+	{{ template "widget/message.html" . }}
+
 	<div class="container">
 		<div class="theme-showcase .has-error .has-success .has-warning">
-			<div {{ .messageDisplay }} id="messageDisplay">
-				{{range $key, $guiMessageSuccess := .guiMessageSuccessSlice}}
-					<p class="bg-success">{{ $guiMessageSuccess }}</p>
-				{{end}}
-				{{range $key, $guiMessageInfo := .guiMessageInfoSlice}}
-					<p class="bg-info">{{ $guiMessageInfo }}</p>
-				{{end}}
-				{{range $key, $guiMessageWarning := .guiMessageWarningSlice}}
-					<p class="bg-warning">{{ $guiMessageWarning }}</p>
-				{{end}}
-				{{range $key, $guiMessageDanger := .guiMessageDangerSlice}}
-					<p class="bg-danger">{{ $guiMessageDanger }}</p>
-				{{end}}
-			</div>
 			{{ template "content" . }}
 		</div>
 	</div><!-- /.container -->
 
 	<!-- Waiting Panel-->
-	<!-- Modal -->
-	<div class="modal fade" id="idWaitingPanel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Executing</h4>
-				</div>
-				<div class="modal-body">
-					Please wait...
-				</div>
-			</div>
-		</div>
-	</div>
+	{{ template "widget/waitting_modal.html" . }}
 
 	<script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/static/js/d3.min.js"></script>
 	<!-- Bootstrap Datetimepicker -->
-	<!-- Duplicated
-	<script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-	-->
 	<script type="text/javascript" src="/static/js/moment.min.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
 	
