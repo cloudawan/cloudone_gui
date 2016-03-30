@@ -85,11 +85,12 @@ func (c *EditController) Post() {
 	selectorName := c.GetString("name")
 	replicaAmount, _ := c.GetInt("replicaAmount")
 	image := c.GetString("image")
-	portName := c.GetString("portName")
 	containerPort, err := c.GetInt("containerPort")
 
 	version := ""
 	name := selectorName + version
+
+	portName := "generated"
 
 	replicationControllerContainerPortSlice := make([]ReplicationControllerContainerPort, 0)
 	replicationControllerContainerPortSlice = append(replicationControllerContainerPortSlice, ReplicationControllerContainerPort{portName, containerPort})
