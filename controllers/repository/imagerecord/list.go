@@ -39,10 +39,7 @@ type ByImageRecord []ImageRecord
 
 func (b ByImageRecord) Len() int           { return len(b) }
 func (b ByImageRecord) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
-func (b ByImageRecord) Less(i, j int) bool { return b.getIdentifier(i) < b.getIdentifier(j) }
-func (b ByImageRecord) getIdentifier(i int) string {
-	return b[i].ImageInformation + "_" + b[i].Version
-}
+func (b ByImageRecord) Less(i, j int) bool { return b[i].Version > b[j].Version } // Use > to list from latest to oldest
 
 func (c *ListController) Get() {
 	c.TplName = "repository/imagerecord/list.html"

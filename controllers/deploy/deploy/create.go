@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -57,6 +58,12 @@ type ImageRecord struct {
 	CreatedTime      string
 }
 
+type ByImageRecord []ImageRecord
+
+func (b ByImageRecord) Len() int           { return len(b) }
+func (b ByImageRecord) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByImageRecord) Less(i, j int) bool { return b[i].Version > b[j].Version } // Use > to list from latest to oldest
+
 func (c *CreateController) Get() {
 	c.TplName = "deploy/deploy/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -77,6 +84,8 @@ func (c *CreateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		sort.Sort(ByImageRecord(imageRecordSlice))
+
 		c.Data["imageInformationName"] = name
 		c.Data["imageRecordSlice"] = imageRecordSlice
 	}

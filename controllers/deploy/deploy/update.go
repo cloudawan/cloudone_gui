@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -127,6 +128,8 @@ func (c *UpdateController) Get() {
 				filteredImageRecordSlice = append(filteredImageRecordSlice, imageRecord)
 			}
 		}
+
+		sort.Sort(ByImageRecord(filteredImageRecordSlice))
 
 		c.Data["name"] = name
 		c.Data["imageRecordSlice"] = filteredImageRecordSlice
