@@ -34,6 +34,30 @@ type DeployUpdateInput struct {
 	EnvironmentSlice     []ReplicationControllerContainerEnvironment
 }
 
+type ReplicationController struct {
+	Name           string
+	ReplicaAmount  int
+	Selector       ReplicationControllerSelector
+	Label          ReplicationControllerLabel
+	ContainerSlice []ReplicationControllerContainer
+}
+
+type ReplicationControllerSelector struct {
+	Name    string
+	Version string
+}
+
+type ReplicationControllerLabel struct {
+	Name string
+}
+
+type ReplicationControllerContainer struct {
+	Name             string
+	Image            string
+	PortSlice        []ReplicationControllerContainerPort
+	EnvironmentSlice []ReplicationControllerContainerEnvironment
+}
+
 func (c *UpdateController) Get() {
 	c.TplName = "deploy/deploy/update.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -42,15 +66,47 @@ func (c *UpdateController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
+	namespace, _ := c.GetSession("namespace").(string)
+
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		return
+	}
+
 	name := c.GetString("name")
 	oldVersion := c.GetString("oldVersion")
 
+	replicationControllerName := name + oldVersion
+
+	// Retrieve the current environment setting
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	replicationController := ReplicationController{}
+	_, err = restclient.RequestGetWithStructure(url, &replicationController)
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		return
+	}
+
+	// Application only uses single container
+	environmentSlice := replicationController.ContainerSlice[0].EnvironmentSlice
+
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imagerecords/" + name
 
 	imageRecordSlice := make([]ImageRecord, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &imageRecordSlice)
+	_, err = restclient.RequestGetWithStructure(url, &imageRecordSlice)
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -58,6 +114,16 @@ func (c *UpdateController) Get() {
 		filteredImageRecordSlice := make([]ImageRecord, 0)
 		for _, imageRecord := range imageRecordSlice {
 			if imageRecord.Version != oldVersion {
+				for key, _ := range imageRecord.Environment {
+					// clean all environment field
+					imageRecord.Environment[key] = ""
+				}
+
+				for _, environment := range environmentSlice {
+					// Replace environment description with the current used environment value
+					imageRecord.Environment[environment.Name] = environment.Value
+				}
+
 				filteredImageRecordSlice = append(filteredImageRecordSlice, imageRecord)
 			}
 		}
