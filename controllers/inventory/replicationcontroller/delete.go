@@ -32,14 +32,21 @@ func (c *DeleteController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/")
+		return
+	}
 
 	namespace := c.GetString("namespace")
 	replicationcontroller := c.GetString("replicationcontroller")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationcontroller + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
-	_, err := restclient.RequestDelete(url, nil, true)
+	_, err = restclient.RequestDelete(url, nil, true)
 
 	if err != nil {
 		// Error

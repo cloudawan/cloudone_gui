@@ -90,7 +90,15 @@ func (c *DataController) Get() {
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		errorJsonMap := make(map[string]interface{})
+		errorJsonMap["error"] = err.Error()
+		c.Data["json"] = errorJsonMap
+		c.ServeJSON()
+		return
+	}
 
 	namespaces, _ := c.GetSession("namespace").(string)
 	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)

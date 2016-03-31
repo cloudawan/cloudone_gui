@@ -50,7 +50,15 @@ func (c *EditController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		errorJsonMap := make(map[string]interface{})
+		errorJsonMap["error"] = err.Error()
+		c.Data["json"] = errorJsonMap
+		c.ServeJSON()
+		return
+	}
 
 	name := c.GetString("name")
 
@@ -59,7 +67,7 @@ func (c *EditController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-	_, err := restclient.RequestPostWithStructure(url, namespace, nil)
+	_, err = restclient.RequestPostWithStructure(url, namespace, nil)
 
 	if err != nil {
 		// Error

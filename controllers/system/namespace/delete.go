@@ -39,14 +39,22 @@ func (c *DeleteController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		errorJsonMap := make(map[string]interface{})
+		errorJsonMap["error"] = err.Error()
+		c.Data["json"] = errorJsonMap
+		c.ServeJSON()
+		return
+	}
 
 	// Delete deploy
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploys/"
 
 	deployInformationSlice := make([]deploy.DeployInformation, 0)
-	_, err := restclient.RequestGetWithStructure(url, &deployInformationSlice)
+	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice)
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())

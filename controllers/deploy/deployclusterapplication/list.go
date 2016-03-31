@@ -47,7 +47,14 @@ func (c *ListController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.OutputMessage(c.Data)
+		return
+	}
+
 	namespace := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -55,7 +62,7 @@ func (c *ListController) Get() {
 
 	deployClusterApplicationSlice := make([]DeployClusterApplication, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice)
+	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice)
 
 	if err != nil {
 		// Error

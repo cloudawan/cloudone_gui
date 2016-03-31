@@ -77,7 +77,14 @@ func (c *SizeController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		return
+	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -87,7 +94,7 @@ func (c *SizeController) Get() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/" + name
 	cluster := Cluster{}
-	_, err := restclient.RequestGetWithStructure(url, &cluster)
+	_, err = restclient.RequestGetWithStructure(url, &cluster)
 
 	if err != nil {
 		guimessage.AddDanger("Fail to get cluster application with error" + err.Error())
@@ -157,7 +164,14 @@ func (c *SizeController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		return
+	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -187,7 +201,7 @@ func (c *SizeController) Post() {
 		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
 
-	_, err := restclient.RequestPut(url, environmentSlice, true)
+	_, err = restclient.RequestPut(url, environmentSlice, true)
 
 	if err != nil {
 		// Error

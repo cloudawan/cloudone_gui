@@ -30,16 +30,30 @@ func (c *SelectController) Get() {
 	c.TplName = "deploy/deploybluegreen/select.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
-	cloudoneHost := beego.AppConfig.String("cloudoneHost")
-	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
-
 	imageInformation := c.GetString("imageInformation")
 	currentEnvironment := c.GetString("currentEnvironment")
 	nodePort := c.GetString("nodePort")
 	description := c.GetString("description")
 	action := c.GetString("action")
+
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger("Fail to get deployable namespace")
+		guimessage.RedirectMessage(c)
+
+		// Redirect to list
+		if action == "create" {
+			c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+		} else {
+			c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/")
+		}
+
+		return
+	}
 
 	c.Data["actionButtonValue"] = "Update"
 	c.Data["pageHeader"] = "Update Blue Green Deployment"
@@ -49,7 +63,7 @@ func (c *SelectController) Get() {
 		"/api/v1/deploybluegreens/deployable/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	namespaceSlice := make([]string, 0)
-	_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
+	_, err = restclient.RequestGetWithStructure(url, &namespaceSlice)
 	if err != nil {
 		guimessage.AddDanger("Fail to get deployable namespace")
 
@@ -90,7 +104,14 @@ func (c *SelectController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/")
+		return
+	}
 
 	imageInformation := c.GetString("imageInformation")
 	namespace := c.GetString("namespace")
@@ -109,7 +130,7 @@ func (c *SelectController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploybluegreens/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-	_, err := restclient.RequestPutWithStructure(url, deployBlueGreen, nil)
+	_, err = restclient.RequestPutWithStructure(url, deployBlueGreen, nil)
 
 	if err != nil {
 		// Error

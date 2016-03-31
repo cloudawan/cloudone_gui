@@ -72,7 +72,14 @@ func (c *IndexController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.OutputMessage(c.Data)
+		return
+	}
+
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
 	cloudoneGUIPort := c.Ctx.Input.Port()
@@ -84,7 +91,7 @@ func (c *IndexController) Get() {
 
 	jsonMapSlice := make([]interface{}, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &jsonMapSlice)
+	_, err = restclient.RequestGetWithStructure(url, &jsonMapSlice)
 
 	if err != nil {
 		// Error
@@ -118,7 +125,15 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		errorJsonMap := make(map[string]interface{})
+		errorJsonMap["error"] = err.Error()
+		c.Data["json"] = errorJsonMap
+		c.ServeJSON()
+		return
+	}
 
 	namespaces, _ := c.GetSession("namespace").(string)
 

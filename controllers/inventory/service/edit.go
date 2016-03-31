@@ -51,7 +51,14 @@ func (c *EditController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/inventory/service/")
+		return
+	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -94,7 +101,7 @@ func (c *EditController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/services/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-	_, err := restclient.RequestPostWithStructure(url, service, nil)
+	_, err = restclient.RequestPostWithStructure(url, service, nil)
 
 	if err != nil {
 		// Error

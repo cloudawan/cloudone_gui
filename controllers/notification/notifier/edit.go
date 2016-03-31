@@ -277,7 +277,15 @@ func (c *EditController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		errorJsonMap := make(map[string]interface{})
+		errorJsonMap["error"] = err.Error()
+		c.Data["json"] = errorJsonMap
+		c.ServeJSON()
+		return
+	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -356,7 +364,7 @@ func (c *EditController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/"
 
-	_, err := restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil)
+	_, err = restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil)
 
 	if err != nil {
 		// Error

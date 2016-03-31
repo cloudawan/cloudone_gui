@@ -66,13 +66,19 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		c.Data["json"].(map[string]interface{})["error"] = err.Error()
+		c.ServeJSON()
+		return
+	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploybluegreens/"
 
 	deployBlueGreenSlice := make([]DeployBlueGreen, 0)
-	_, err := restclient.RequestGetWithStructure(url, &deployBlueGreenSlice)
+	_, err = restclient.RequestGetWithStructure(url, &deployBlueGreenSlice)
 
 	if err != nil {
 		// Error

@@ -141,8 +141,14 @@ func (c *UpdateController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
-
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		return
+	}
 	namespaces, _ := c.GetSession("namespace").(string)
 
 	imageInformationName := c.GetString("name")
@@ -175,7 +181,7 @@ func (c *UpdateController) Post() {
 
 	deployUpdateInput := DeployUpdateInput{imageInformationName, version, description, environmentSlice}
 
-	_, err := restclient.RequestPutWithStructure(url, deployUpdateInput, nil)
+	_, err = restclient.RequestPutWithStructure(url, deployUpdateInput, nil)
 
 	if err != nil {
 		// Error

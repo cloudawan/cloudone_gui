@@ -118,7 +118,12 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		c.Data["json"].(map[string]interface{})["error"] = err.Error()
+		c.ServeJSON()
+		return
+	}
 
 	scope := c.GetString("scope")
 
@@ -142,7 +147,7 @@ func (c *DataController) Get() {
 		"/api/v1/deploys/"
 
 	deployInformationSlice := make([]DeployInformation, 0)
-	_, err := restclient.RequestGetWithStructure(url, &deployInformationSlice)
+	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice)
 	if err != nil {
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.ServeJSON()
