@@ -33,6 +33,10 @@ type LoginController struct {
 
 func (c *LoginController) Get() {
 	c.TplName = "identity/login.html"
+
+	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	guimessage.OutputMessage(c.Data)
 }
 
 type UserData struct {
@@ -74,7 +78,7 @@ func (c *LoginController) Post() {
 	tokenData := TokenData{}
 	_, err = restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
 	if err != nil {
-		guimessage.AddDanger("Fail to get user token with error " + err.Error())
+		guimessage.AddDanger("Fail to get user with username: " + username + " with password: " + password)
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return

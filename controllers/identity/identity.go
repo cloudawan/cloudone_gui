@@ -16,6 +16,7 @@ package identity
 
 import (
 	"github.com/astaxie/beego/context"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 )
 
@@ -27,12 +28,24 @@ func FilterUser(ctx *context.Context) {
 	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginPageURL {
 		// Don't redirect itself to prevent the circle
 	} else {
-		_, ok := ctx.Input.Session("user").(*rbac.User)
+
+		user, ok := ctx.Input.Session("user").(*rbac.User)
 
 		if ok == false {
+			if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
+				guiMessage.AddDanger("Username or password is incorrect")
+			}
 			ctx.Redirect(302, loginPageURL)
 		} else {
-			// TODO Authorize
+			// Authorize
+			if user.HasPermission(componentName, ctx.Input.Method(), ctx.Input.URL()) == false {
+				if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
+					guiMessage.AddDanger("User is not authorized to this page. Please use another user with priviledge.")
+				}
+				ctx.Redirect(302, loginPageURL)
+			}
+
+			// Resource check is in another place since GUI doesn't place the resource name in url
 		}
 	}
 }

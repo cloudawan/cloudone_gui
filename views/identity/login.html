@@ -14,6 +14,9 @@
 </head>
 <body>
 
+	<!-- Display message -->
+	{{ template "widget/message.html" . }}
+
 	<div class="container">
 		<form class="form-signin .has-error .has-success .has-warning" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/login" method="post">
 			<h2 class="form-signin-heading">Please sign in</h2>

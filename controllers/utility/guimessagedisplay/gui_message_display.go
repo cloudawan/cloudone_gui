@@ -14,7 +14,9 @@
 
 package guimessagedisplay
 
-import ()
+import (
+	"github.com/astaxie/beego/context"
+)
 
 type GUIMessage struct {
 	sessionUtility SessionUtility
@@ -27,6 +29,11 @@ type GUIMessage struct {
 const (
 	sessionNameGUIMessage = "guiMessage"
 )
+
+func GetGUIMessageFromContext(ctx *context.Context) *GUIMessage {
+	guiMessage, _ := ctx.Input.Session(sessionNameGUIMessage).(*GUIMessage)
+	return guiMessage
+}
 
 func GetGUIMessage(sessionUtility SessionUtility) *GUIMessage {
 	guiMessage := sessionUtility.GetSession(sessionNameGUIMessage)
@@ -75,12 +82,14 @@ func (guiMessage *GUIMessage) RedirectMessage(sessionUtility SessionUtility) {
 }
 
 func (guiMessage *GUIMessage) OutputMessage(data map[interface{}]interface{}) bool {
-	// Show global data
-	data["currentNamespace"] = guiMessage.sessionUtility.GetSession("namespace")
-
 	if data == nil {
 		return false
 	} else {
+		// Show global data
+		if guiMessage.sessionUtility != nil {
+			data["currentNamespace"] = guiMessage.sessionUtility.GetSession("namespace")
+		}
+
 		has := false
 		if guiMessage.successSlice != nil && len(guiMessage.successSlice) > 0 {
 			data["guiMessageSuccessSlice"] = guiMessage.successSlice
