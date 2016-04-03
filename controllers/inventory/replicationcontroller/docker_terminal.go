@@ -16,6 +16,7 @@ package replicationcontroller
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/ioutility"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -40,11 +41,16 @@ func (c *TerminalController) Get() {
 	hostIP := c.GetString("hostIP")
 	containerID := c.GetString("containerID")
 
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+	token, _ := tokenHeaderMap["token"]
+
 	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
 	c.Data["cloudoneGUIPort"] = cloudoneGUIPort
 
 	c.Data["hostIP"] = hostIP
 	c.Data["containerID"] = containerID
+
+	c.Data["token"] = token
 
 	guimessage.OutputMessage(c.Data)
 }
@@ -79,6 +85,7 @@ func ProxyServer(ws *websocket.Conn) {
 	heightSlice := parameterMap["height"]
 	hostIPSlice := parameterMap["hostIP"]
 	containerIDSlice := parameterMap["containerID"]
+	tokenSlice := parameterMap["token"]
 
 	if len(widthSlice) != 1 {
 		errorMessage := "Parameter width is incorrect"
@@ -126,12 +133,29 @@ func ProxyServer(ws *websocket.Conn) {
 	// Remove docker protocol prefix docker://
 	containerID = containerID[9:]
 
+	if len(tokenSlice) != 1 {
+		errorMessage := "Parameter token is incorrect"
+		ws.Write([]byte(errorMessage))
+		ws.Close()
+		return
+	}
+	token := tokenSlice[0]
+	headerMap := make(map[string]string)
+	headerMap["token"] = token
+
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/hosts/credentials/" + hostIP
 
 	credential := Credential{}
 
-	_, err = restclient.RequestGetWithStructure(url, &credential)
+	_, err = restclient.RequestGetWithStructure(url, &credential, headerMap)
+
+	if identity.IsTokenInvalid(err) {
+		ws.Write([]byte(err.Error()))
+		ws.Close()
+		return
+	}
+
 	if err != nil {
 		ws.Write([]byte(err.Error()))
 		ws.Close()

@@ -16,6 +16,7 @@ package kubernetes
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -43,7 +44,13 @@ func (c *AcknowledgeController) Put() {
 	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/historicalevents/" + namespace + "/" + id + "?acknowledge=" + acknowledge
 
-	_, err := restclient.RequestPutWithStructure(url, nil, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestPutWithStructure(url, nil, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

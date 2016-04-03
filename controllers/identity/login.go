@@ -17,8 +17,14 @@ package identity
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
+	"github.com/cloudawan/cloudone_utility/restclient"
 	"math"
 	"strconv"
+)
+
+const (
+	componentName = "cloudone_gui"
 )
 
 type LoginController struct {
@@ -29,8 +35,21 @@ func (c *LoginController) Get() {
 	c.TplName = "identity/login.html"
 }
 
+type UserData struct {
+	Username string
+	Password string
+}
+
+type TokenData struct {
+	Token string
+}
+
 func (c *LoginController) Post() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	username := c.GetString("username")
 	password := c.GetString("password")
@@ -48,16 +67,43 @@ func (c *LoginController) Post() {
 		c.SetSession("timeZoneOffset", timeZoneOffset)
 	}
 
-	// TODO RBAC
-	if username == "admin" && password == "password" {
-		// Username
-		c.SetSession("username", username)
-		// Namespace
-		namespace := beego.AppConfig.String("namespace")
-		c.SetSession("namespace", namespace)
-
-		guimessage.AddSuccess("User " + username + " login")
+	// User
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/authorizations/tokens/"
+	userData := UserData{username, password}
+	tokenData := TokenData{}
+	_, err = restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
+	if err != nil {
+		guimessage.AddDanger("Fail to get user token with error " + err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/login/")
+		return
 	}
+
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/authorizations/tokens/" + tokenData.Token + "/components/" + componentName
+	user := &rbac.User{}
+	_, err = restclient.RequestGetWithStructure(url, &user, nil)
+	if err != nil {
+		guimessage.AddDanger("Fail to get user data with error " + err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/login/")
+		return
+	}
+
+	// Set session
+	// User is used by this component to authorize
+	c.SetSession("user", user)
+	// Token is used to submit to other componentes to authorize
+	headerMap := make(map[string]string)
+	headerMap["token"] = tokenData.Token
+	c.SetSession("tokenHeaderMap", headerMap)
+
+	// Namespace
+	namespace := beego.AppConfig.String("namespace")
+	c.SetSession("namespace", namespace)
+
+	guimessage.AddSuccess("User " + username + " login")
 
 	c.Ctx.Redirect(302, "/gui/dashboard/topology/")
 

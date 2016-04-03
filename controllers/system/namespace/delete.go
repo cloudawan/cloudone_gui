@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/autoscaler"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploy"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deployclusterapplication"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/notification/notifier"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
@@ -54,7 +55,15 @@ func (c *DeleteController) Get() {
 		"/api/v1/deploys/"
 
 	deployInformationSlice := make([]deploy.DeployInformation, 0)
-	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -64,7 +73,12 @@ func (c *DeleteController) Get() {
 				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 					"/api/v1/deploys/" + name + "/" + deployInformation.ImageInformationName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-				_, err := restclient.RequestDelete(url, nil, true)
+				_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+
+				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+					return
+				}
+
 				if err != nil {
 					guimessage.AddDanger(err.Error())
 				}
@@ -77,7 +91,12 @@ func (c *DeleteController) Get() {
 		"/api/v1/deployclusterapplications/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	deployClusterApplicationSlice := make([]deployclusterapplication.DeployClusterApplication, 0)
-	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice)
+	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -86,7 +105,12 @@ func (c *DeleteController) Get() {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 				"/api/v1/deployclusterapplications/" + name + "/" + deployClusterApplication.Name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-			_, err := restclient.RequestDelete(url, nil, true)
+			_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+
+			if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+				return
+			}
+
 			if err != nil {
 				guimessage.AddDanger(err.Error())
 			}
@@ -97,7 +121,12 @@ func (c *DeleteController) Get() {
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/namespaces/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-	_, err = restclient.RequestDelete(url, nil, true)
+	_, err = restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -115,7 +144,12 @@ func (c *DeleteController) Get() {
 		"/api/v1/autoscalers/"
 
 	replicationControllerAutoScalerSlice := make([]autoscaler.ReplicationControllerAutoScaler, 0)
-	_, err = restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice)
+	_, err = restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -125,7 +159,12 @@ func (c *DeleteController) Get() {
 				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 					"/api/v1/autoscalers/" + name + "/" + replicationControllerAutoScaler.Kind + "/" + replicationControllerAutoScaler.Name
 
-				_, err := restclient.RequestDelete(url, nil, true)
+				_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+
+				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+					return
+				}
+
 				if err != nil {
 					guimessage.AddDanger(err.Error())
 				}
@@ -138,7 +177,12 @@ func (c *DeleteController) Get() {
 		"/api/v1/notifiers/"
 
 	replicationControllerNotifierSlice := make([]notifier.ReplicationControllerNotifier, 0)
-	_, err = restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice)
+	_, err = restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -148,7 +192,12 @@ func (c *DeleteController) Get() {
 				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 					"/api/v1/notifiers/" + name + "/" + replicationControllerNotifier.Kind + "/" + replicationControllerNotifier.Name
 
-				_, err := restclient.RequestDelete(url, nil, true)
+				_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+
+				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+					return
+				}
+
 				if err != nil {
 					guimessage.AddDanger(err.Error())
 				}

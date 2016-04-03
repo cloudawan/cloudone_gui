@@ -16,6 +16,7 @@ package deploy
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -79,7 +80,14 @@ func (c *CreateController) Get() {
 
 	imageRecordSlice := make([]ImageRecord, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &imageRecordSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &imageRecordSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -161,7 +169,13 @@ func (c *CreateController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploys/create/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-	_, err = restclient.RequestPostWithStructure(url, deployCreateInput, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPostWithStructure(url, deployCreateInput, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

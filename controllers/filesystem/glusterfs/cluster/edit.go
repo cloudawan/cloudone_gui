@@ -16,6 +16,7 @@ package cluster
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strings"
@@ -49,7 +50,14 @@ func (c *EditController) Get() {
 			"/api/v1/glusterfs/clusters/" + clusterName
 
 		glusterfsCluster := GlusterfsCluster{}
-		_, err := restclient.RequestGetWithStructure(url, &glusterfsCluster)
+
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestGetWithStructure(url, &glusterfsCluster, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
@@ -138,7 +146,13 @@ func (c *EditController) Post() {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/glusterfs/clusters/"
 
-		_, err := restclient.RequestPostWithStructure(url, glusterfsClusterInput, nil)
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestPostWithStructure(url, glusterfsClusterInput, nil, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
@@ -150,7 +164,13 @@ func (c *EditController) Post() {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/glusterfs/clusters/" + name
 
-		_, err := restclient.RequestPutWithStructure(url, glusterfsClusterInput, nil)
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestPutWithStructure(url, glusterfsClusterInput, nil, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error

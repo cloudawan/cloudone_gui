@@ -16,6 +16,7 @@ package notifier
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"time"
 )
@@ -78,7 +79,13 @@ func (c *ListController) Get() {
 
 	replicationControllerNotifierSlice := make([]ReplicationControllerNotifier, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifierSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

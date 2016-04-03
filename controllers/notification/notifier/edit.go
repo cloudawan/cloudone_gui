@@ -17,6 +17,7 @@ package notifier
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -62,7 +63,15 @@ func (c *EditController) Get() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/emailserversmtp"
 	emailServerSMTPSlice := make([]EmailServerSMTP, 0)
-	_, err := restclient.RequestGetWithStructure(url, &emailServerSMTPSlice)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &emailServerSMTPSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		guimessage.AddDanger(err.Error())
 	}
@@ -70,7 +79,13 @@ func (c *EditController) Get() {
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/smsnexmo"
 	smsNexmoSlice := make([]SMSNexmo, 0)
-	_, err = restclient.RequestGetWithStructure(url, &smsNexmoSlice)
+
+	_, err = restclient.RequestGetWithStructure(url, &smsNexmoSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		guimessage.AddDanger(err.Error())
 	}
@@ -102,7 +117,13 @@ func (c *EditController) Get() {
 
 		replicationControllerNotifier := ReplicationControllerNotifier{}
 
-		_, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifier)
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestGetWithStructure(url, &replicationControllerNotifier, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
@@ -364,7 +385,13 @@ func (c *EditController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/"
 
-	_, err = restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

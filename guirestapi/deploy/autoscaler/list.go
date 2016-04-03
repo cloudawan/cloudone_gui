@@ -16,6 +16,7 @@ package autoscaler
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"time"
 )
@@ -63,7 +64,13 @@ func (c *ListController) GetAll() {
 
 	replicationControllerAutoScalerSlice := make([]ReplicationControllerAutoScaler, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAutoScalerSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

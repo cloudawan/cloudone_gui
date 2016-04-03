@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 	"strings"
@@ -85,7 +86,14 @@ func (c *ListController) Get() {
 		"/api/v1/healthchecks/"
 
 	cloudoneJsonMap := make(map[string]interface{}, 0)
-	_, err := restclient.RequestGetWithStructure(url, &cloudoneJsonMap)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &cloudoneJsonMap, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error
@@ -100,7 +108,12 @@ func (c *ListController) Get() {
 		"/api/v1/healthchecks/"
 
 	cloudoneAnalysisJsonMap := make(map[string]interface{}, 0)
-	_, err = restclient.RequestGetWithStructure(url, &cloudoneAnalysisJsonMap)
+
+	_, err = restclient.RequestGetWithStructure(url, &cloudoneAnalysisJsonMap, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

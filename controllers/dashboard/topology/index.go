@@ -16,6 +16,7 @@ package topology
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -93,12 +94,18 @@ func (c *DataController) Get() {
 
 	scope := c.GetString("scope")
 
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
 	namespaceSlice := make([]string, 0)
 	if scope == allKeyword {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice, tokenHeaderMap)
 
-		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			c.Data["json"].(map[string]interface{})["error"] = err.Error()
 			c.ServeJSON()
@@ -133,7 +140,13 @@ func (c *DataController) Get() {
 			"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
-		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
+
+		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			c.Data["json"].(map[string]interface{})["error"] = "Get replication controller data error"
 			c.Data["json"].(map[string]interface{})["errorMap"].(map[string]interface{})[namespace] = err.Error()

@@ -16,6 +16,7 @@ package identity
 
 import (
 	"github.com/astaxie/beego/context"
+	"github.com/cloudawan/cloudone_utility/rbac"
 )
 
 const (
@@ -26,9 +27,12 @@ func FilterUser(ctx *context.Context) {
 	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginPageURL {
 		// Don't redirect itself to prevent the circle
 	} else {
-		_, ok := ctx.Input.Session("username").(string)
+		_, ok := ctx.Input.Session("user").(*rbac.User)
+
 		if ok == false {
 			ctx.Redirect(302, loginPageURL)
+		} else {
+			// TODO Authorize
 		}
 	}
 }

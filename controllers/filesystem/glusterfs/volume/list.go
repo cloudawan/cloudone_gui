@@ -16,6 +16,7 @@ package volume
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
@@ -51,7 +52,13 @@ func (c *ListController) Get() {
 
 	glusterfsVolumeSlice := make([]GlusterfsVolume, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsVolumeSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

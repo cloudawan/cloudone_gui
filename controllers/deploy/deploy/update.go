@@ -16,6 +16,7 @@ package deploy
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -89,7 +90,15 @@ func (c *UpdateController) Get() {
 		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	replicationController := ReplicationController{}
-	_, err = restclient.RequestGetWithStructure(url, &replicationController)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -107,7 +116,12 @@ func (c *UpdateController) Get() {
 
 	imageRecordSlice := make([]ImageRecord, 0)
 
-	_, err = restclient.RequestGetWithStructure(url, &imageRecordSlice)
+	_, err = restclient.RequestGetWithStructure(url, &imageRecordSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
@@ -184,7 +198,13 @@ func (c *UpdateController) Post() {
 
 	deployUpdateInput := DeployUpdateInput{imageInformationName, version, description, environmentSlice}
 
-	_, err = restclient.RequestPutWithStructure(url, deployUpdateInput, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPutWithStructure(url, deployUpdateInput, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

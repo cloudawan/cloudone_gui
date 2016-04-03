@@ -16,6 +16,7 @@ package deployclusterapplication
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
@@ -50,7 +51,13 @@ func (c *ListController) Get() {
 
 	deployClusterApplicationSlice := make([]DeployClusterApplication, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

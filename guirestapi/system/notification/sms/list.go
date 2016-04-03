@@ -16,6 +16,7 @@ package sms
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -45,7 +46,13 @@ func (c *ListController) Get() {
 
 	smsNexmoSlice := make([]SMSNexmo, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &smsNexmoSlice)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &smsNexmoSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

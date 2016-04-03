@@ -16,6 +16,7 @@ package imageinformation
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
@@ -54,7 +55,13 @@ func (c *UpgradeController) Post() {
 
 	deployUpgradeInput := DeployUpgradeInput{imageInformationName, description}
 
-	_, err := restclient.RequestPutWithStructure(url, deployUpgradeInput, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestPutWithStructure(url, deployUpgradeInput, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

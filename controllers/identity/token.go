@@ -15,21 +15,34 @@
 package identity
 
 import (
-	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"strings"
 )
 
-type LogoutController struct {
-	beego.Controller
+func IsTokenInvalid(err error) bool {
+	if err == nil {
+		return false
+	} else if strings.Contains(err.Error(), "Token is incorrect or expired") {
+		return true
+	} else {
+		return false
+	}
 }
 
-func (c *LogoutController) Get() {
-	guimessage := guimessagedisplay.GetGUIMessage(c)
+func IsTokenInvalidAndRedirect(c guimessagedisplay.SessionUtility, ctx *context.Context, err error) bool {
+	if IsTokenInvalid(err) {
+		guimessage := guimessagedisplay.GetGUIMessage(c)
+		guimessage.AddDanger("User token is expired. Please login agin.")
+		guimessage.RedirectMessage(c)
 
-	c.DelSession("user")
-	c.DelSession("tokenHeaderMap")
+		c.DelSession("user")
+		c.DelSession("tokenHeaderMap")
 
-	c.Ctx.Redirect(302, "/gui/login")
+		ctx.Redirect(302, "/gui/login/")
 
-	guimessage.RedirectMessage(c)
+		return true
+	} else {
+		return false
+	}
 }

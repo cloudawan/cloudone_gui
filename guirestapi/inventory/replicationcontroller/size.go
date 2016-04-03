@@ -16,6 +16,7 @@ package replicationcontroller
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
@@ -49,7 +50,13 @@ func (c *SizeController) Put() {
 	putBodyJsonMap := make(map[string]interface{})
 	putBodyJsonMap["Size"] = size
 
-	_, err := restclient.RequestPut(url, putBodyJsonMap, true)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestPut(url, putBodyJsonMap, tokenHeaderMap, true)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

@@ -19,6 +19,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -39,8 +40,13 @@ func (c *IndexController) Get() {
 	cloudoneGUIHost := c.Ctx.Input.Host()
 	cloudoneGUIPort := c.Ctx.Input.Port()
 
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+	token, _ := tokenHeaderMap["token"]
+
 	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
 	c.Data["cloudoneGUIPort"] = cloudoneGUIPort
+
+	c.Data["token"] = token
 
 	guimessage.OutputMessage(c.Data)
 }
@@ -203,7 +209,6 @@ func stopDockerContainer(credential Credential, containerID string) error {
 }
 
 func ProxyServer(ws *websocket.Conn) {
-
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -236,6 +241,10 @@ func ProxyServer(ws *websocket.Conn) {
 	upgradeServiceName := getParameter(parameterMap, "upgradeServiceName")
 	upgradeServiceContent := getParameter(parameterMap, "upgradeServiceContent")
 
+	token := getParameter(parameterMap, "token")
+	headerMap := make(map[string]string)
+	headerMap["token"] = token
+
 	replicationControllerJsonMap := make(map[string]interface{})
 	serviceJsonMap := make(map[string]interface{})
 	if upgradeTopologyConfiguration == "true" {
@@ -265,7 +274,14 @@ func ProxyServer(ws *websocket.Conn) {
 
 	credentialSlice := make([]Credential, 0)
 
-	_, err = restclient.RequestGetWithStructure(url, &credentialSlice)
+	_, err = restclient.RequestGetWithStructure(url, &credentialSlice, headerMap)
+
+	if identity.IsTokenInvalid(err) {
+		ws.Write([]byte(err.Error()))
+		ws.Close()
+		return
+	}
+
 	if err != nil {
 		errorMessage := "Can't get credential data with error " + err.Error() + "\n"
 		ws.Write([]byte(errorMessage))
@@ -311,7 +327,14 @@ func ProxyServer(ws *websocket.Conn) {
 
 		ws.Write([]byte("Start to update service\n"))
 
-		_, err := restclient.RequestPutWithStructure(url, serviceJsonMap, nil)
+		_, err := restclient.RequestPutWithStructure(url, serviceJsonMap, nil, headerMap)
+
+		if identity.IsTokenInvalid(err) {
+			ws.Write([]byte(err.Error()))
+			ws.Close()
+			return
+		}
+
 		if err != nil {
 			errorMessage := "Can't upgrade service with error " + err.Error() + "\n"
 			ws.Write([]byte(errorMessage))
@@ -329,7 +352,14 @@ func ProxyServer(ws *websocket.Conn) {
 
 		ws.Write([]byte("Stop and recreate the replication controller. Please refresh the page after tens of seconds\n"))
 
-		_, err := restclient.RequestPutWithStructure(url, replicationControllerJsonMap, nil)
+		_, err := restclient.RequestPutWithStructure(url, replicationControllerJsonMap, nil, headerMap)
+
+		if identity.IsTokenInvalid(err) {
+			ws.Write([]byte(err.Error()))
+			ws.Close()
+			return
+		}
+
 		if err != nil {
 			errorMessage := "Can't upgrade replication controller with error " + err.Error() + "\n"
 			ws.Write([]byte(errorMessage))
@@ -344,7 +374,14 @@ func ProxyServer(ws *websocket.Conn) {
 			"/api/v1/replicationcontrollers/" + upgradeNamespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
-		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
+		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, headerMap)
+
+		if identity.IsTokenInvalid(err) {
+			ws.Write([]byte(err.Error()))
+			ws.Close()
+			return
+		}
+
 		if err != nil {
 			errorMessage := "Can't get replication controller and related pod data with error " + err.Error() + "\n"
 			ws.Write([]byte(errorMessage))
@@ -424,7 +461,14 @@ func ProxyServer(ws *websocket.Conn) {
 			cloudoneJsonMap := make(map[string]interface{}, 0)
 			for {
 				time.Sleep(time.Second)
-				_, err := restclient.RequestGetWithStructure(url, &cloudoneJsonMap)
+				_, err := restclient.RequestGetWithStructure(url, &cloudoneJsonMap, headerMap)
+
+				if identity.IsTokenInvalid(err) {
+					ws.Write([]byte(err.Error()))
+					ws.Close()
+					return
+				}
+
 				if err == nil {
 					break
 				} else {
@@ -439,7 +483,14 @@ func ProxyServer(ws *websocket.Conn) {
 			cloudoneAnalysisJsonMap := make(map[string]interface{}, 0)
 			for {
 				time.Sleep(time.Second)
-				_, err := restclient.RequestGetWithStructure(url, &cloudoneAnalysisJsonMap)
+				_, err := restclient.RequestGetWithStructure(url, &cloudoneAnalysisJsonMap, headerMap)
+
+				if identity.IsTokenInvalid(err) {
+					ws.Write([]byte(err.Error()))
+					ws.Close()
+					return
+				}
+
 				if err == nil {
 					break
 				} else {

@@ -27,7 +27,7 @@
 	var moduleContainerTerminal = (function(){
 		var screenWidth = 169;
 		var screenHeight = 48;
-		var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/inventory/replicationcontroller/dockerterminal/websocket?hostIP={{.hostIP}}&containerID={{.containerID}}&width=" + screenWidth + "&height=" + screenHeight;
+		var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/inventory/replicationcontroller/dockerterminal/websocket?hostIP={{.hostIP}}&containerID={{.containerID}}&token={{.token}}&width=" + screenWidth + "&height=" + screenHeight;
 
 		var websocket = new WebSocket(wsUri);
 		websocket.onopen = function(evt) { onOpen(evt) };

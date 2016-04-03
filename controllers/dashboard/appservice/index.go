@@ -16,6 +16,7 @@ package appservice
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -126,13 +127,19 @@ func (c *DataController) Get() {
 	}
 
 	scope := c.GetString("scope")
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
 	namespaceSlice := make([]string, 0)
 	if scope == allKeyword {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice)
+		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			c.Data["json"].(map[string]interface{})["error"] = err.Error()
 			c.ServeJSON()
@@ -147,7 +154,13 @@ func (c *DataController) Get() {
 		"/api/v1/deploys/"
 
 	deployInformationSlice := make([]DeployInformation, 0)
-	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice)
+
+	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		c.Data["json"].(map[string]interface{})["error"] = err.Error()
 		c.ServeJSON()
@@ -184,7 +197,13 @@ func (c *DataController) Get() {
 			"/api/v1/services/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		serviceSlice := make([]Service, 0)
-		_, err := restclient.RequestGetWithStructure(url, &serviceSlice)
+
+		_, err := restclient.RequestGetWithStructure(url, &serviceSlice, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			// Error
 			c.Data["json"].(map[string]interface{})["error"] = "Get service data error"
@@ -194,7 +213,13 @@ func (c *DataController) Get() {
 				"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 			replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
-			_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
+
+			_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, tokenHeaderMap)
+
+			if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+				return
+			}
+
 			if err != nil {
 				// Error
 				c.Data["json"].(map[string]interface{})["error"] = "Get replication controller data error"
@@ -257,7 +282,13 @@ func (c *DataController) Get() {
 			"/api/v1/deployclusterapplications/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 		deployClusterApplicationSlice := make([]DeployClusterApplication, 0)
-		_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice)
+
+		_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			// Error
 			c.Data["json"].(map[string]interface{})["error"] = "Get third party application data error"

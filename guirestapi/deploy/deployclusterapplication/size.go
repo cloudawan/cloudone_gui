@@ -17,6 +17,7 @@ package deployclusterapplication
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
@@ -94,7 +95,14 @@ func (c *SizeController) Get() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/" + name
 	cluster := Cluster{}
-	_, err := restclient.RequestGetWithStructure(url, &cluster)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &cluster, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error
@@ -111,7 +119,13 @@ func (c *SizeController) Get() {
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deployclusterapplications/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	deployClusterApplication := DeployClusterApplication{}
-	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplication)
+
+	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplication, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		// Error
 		c.Data["json"] = make(map[string]interface{})
@@ -136,7 +150,12 @@ func (c *SizeController) Get() {
 		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	replicationController := ReplicationController{}
-	_, err = restclient.RequestGetWithStructure(url, &replicationController)
+
+	_, err = restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error
@@ -193,7 +212,13 @@ func (c *SizeController) Put() {
 		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
 
-	_, err = restclient.RequestPut(url, environmentSlice, true)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPut(url, environmentSlice, tokenHeaderMap, true)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

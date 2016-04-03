@@ -16,6 +16,7 @@ package thirdparty
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -50,7 +51,14 @@ func (c *LaunchController) Get() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/" + name
 	cluster := Cluster{}
-	_, err := restclient.RequestGetWithStructure(url, &cluster)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &cluster, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		guimessage.AddDanger("Fail to get with error" + err.Error())
@@ -114,7 +122,14 @@ func (c *LaunchController) Post() {
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
 		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
 	jsonMap := make(map[string]interface{})
-	nil, err := restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

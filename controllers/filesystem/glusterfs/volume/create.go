@@ -17,6 +17,7 @@ package volume
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/cluster"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strings"
@@ -48,7 +49,14 @@ func (c *CreateController) Get() {
 		"/api/v1/glusterfs/clusters/" + clusterName
 
 	glusterfsCluster := cluster.GlusterfsCluster{}
-	_, err := restclient.RequestGetWithStructure(url, &glusterfsCluster)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &glusterfsCluster, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error
@@ -108,7 +116,13 @@ func (c *CreateController) Post() {
 		hostSlice,
 	}
 
-	_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

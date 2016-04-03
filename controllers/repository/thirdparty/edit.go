@@ -3,6 +3,7 @@ package thirdparty
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"regexp"
@@ -31,7 +32,15 @@ func (c *EditController) Get() {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/clusterapplications/" + name
 		cluster := Cluster{}
-		_, err := restclient.RequestGetWithStructure(url, &cluster)
+
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestGetWithStructure(url, &cluster, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
 		if err != nil {
 			guimessage.AddDanger("Fail to get with error" + err.Error())
 			// Redirect to list
@@ -127,7 +136,13 @@ func (c *EditController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/"
 
-	_, err = restclient.RequestPost(url, cluster, true)
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err = restclient.RequestPost(url, cluster, tokenHeaderMap, true)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
 
 	if err != nil {
 		// Error

@@ -142,7 +142,8 @@
 				"upgradeReplicationControllerName=" + encodeURIComponent($("#upgradeReplicationControllerName").val()) + "&" +
 				"upgradeReplicationControllerContent=" + encodeURIComponent($("#upgradeReplicationControllerContent").val()) + "&" +
 				"upgradeServiceName=" + encodeURIComponent($("#upgradeServiceName").val()) + "&" +
-				"upgradeServiceContent=" + encodeURIComponent($("#upgradeServiceContent").val());
+				"upgradeServiceContent=" + encodeURIComponent($("#upgradeServiceContent").val()) + "&" +
+				"token="+{{.token}};
 
 			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/system/upgrade/websocket?" + encodedParameter;
 	

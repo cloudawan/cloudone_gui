@@ -16,6 +16,7 @@ package topology
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
@@ -72,7 +73,15 @@ func (c *IndexController) Get() {
 		"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
-	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
 	if err != nil {
 		c.Data["json"] = `{"error": "` + err.Error() + `"}`
 	} else {

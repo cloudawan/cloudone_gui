@@ -15,8 +15,8 @@
 package credential
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
@@ -46,7 +46,14 @@ func (c *EditController) Get() {
 			"/api/v1/hosts/credentials/" + ip
 
 		credential := Credential{}
-		_, err := restclient.RequestGetWithStructure(url, &credential)
+
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestGetWithStructure(url, &credential, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
@@ -96,7 +103,13 @@ func (c *EditController) Post() {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/hosts/credentials/"
 
-		_, err := restclient.RequestPostWithStructure(url, credential, nil)
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestPostWithStructure(url, credential, nil, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
@@ -107,8 +120,14 @@ func (c *EditController) Post() {
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/hosts/credentials/" + ip
-		fmt.Println(url)
-		_, err := restclient.RequestPutWithStructure(url, credential, nil)
+
+		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+		_, err := restclient.RequestPutWithStructure(url, credential, nil, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
 
 		if err != nil {
 			// Error
