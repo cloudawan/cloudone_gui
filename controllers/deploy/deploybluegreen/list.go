@@ -21,6 +21,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
+	"strconv"
 )
 
 type ListController struct {
@@ -33,6 +34,7 @@ type DeployBlueGreen struct {
 	NodePort                                int
 	Description                             string
 	SessionAffinity                         string
+	NodePortDisplay                         string
 	HiddenTagGuiDeployDeployBlueGreenSelect string
 	HiddenTagGuiDeployDeployBlueGreenDelete string
 }
@@ -80,6 +82,12 @@ func (c *ListController) Get() {
 		guimessage.AddDanger(err.Error())
 	} else {
 		for i := 0; i < len(deployBlueGreenSlice); i++ {
+			if deployBlueGreenSlice[i].NodePort == 0 {
+				deployBlueGreenSlice[i].NodePortDisplay = "Auto-generated"
+			} else {
+				deployBlueGreenSlice[i].NodePortDisplay = strconv.Itoa(deployBlueGreenSlice[i].NodePort)
+			}
+
 			if hasGuiDeployDeployBlueGreenSelect {
 				deployBlueGreenSlice[i].HiddenTagGuiDeployDeployBlueGreenSelect = "<div class='btn-group'>"
 			} else {
