@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 	"strings"
@@ -85,6 +86,12 @@ func (sortGlusterfsStatusByIP SortGlusterfsStatusByIP) Less(i, j int) bool {
 func (c *ListController) Get() {
 	c.TplName = "dashboard/healthcheck/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Dashboard tab menu
+	user, _ := c.GetSession("user").(*rbac.User)
+	c.Data["dashboardTabMenu"] = identity.GetDashboardTabMenu(user, "healthcheck")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")

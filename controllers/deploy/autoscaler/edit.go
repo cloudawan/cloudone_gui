@@ -31,6 +31,9 @@ func (c *EditController) Get() {
 	c.TplName = "deploy/autoscaler/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	kind := c.GetString("kind")
 	name := c.GetString("name")
 
@@ -183,7 +186,7 @@ func (c *EditController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/autoscaler/")
+		c.Ctx.Redirect(302, "/gui/deploy/autoscaler/list")
 		return
 	}
 
@@ -197,7 +200,7 @@ func (c *EditController) Post() {
 
 	replicationControllerAutoScaler := ReplicationControllerAutoScaler{
 		true, time.Duration(coolDownDuration) * time.Second, 0, kubeapiHost, kubeapiPort, namespace, kind, name,
-		maximumReplica, minimumReplica, indicatorSlice}
+		maximumReplica, minimumReplica, indicatorSlice, "", ""}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/autoscalers/"
@@ -217,7 +220,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Auto scaler for " + kind + " " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/deploy/autoscaler/")
+	c.Ctx.Redirect(302, "/gui/deploy/autoscaler/list")
 
 	guimessage.RedirectMessage(c)
 }

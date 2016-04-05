@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 	"time"
@@ -28,16 +29,18 @@ type ListController struct {
 }
 
 type ReplicationControllerNotifier struct {
-	Check             bool
-	CoolDownDuration  time.Duration
-	RemainingCoolDown time.Duration
-	KubeapiHost       string
-	KubeapiPort       int
-	Namespace         string
-	Kind              string
-	Name              string
-	NotifierSlice     []Notifier
-	IndicatorSlice    []Indicator
+	Check                                  bool
+	CoolDownDuration                       time.Duration
+	RemainingCoolDown                      time.Duration
+	KubeapiHost                            string
+	KubeapiPort                            int
+	Namespace                              string
+	Kind                                   string
+	Name                                   string
+	NotifierSlice                          []Notifier
+	IndicatorSlice                         []Indicator
+	HiddenTagGuiNotificationNotifierEdit   string
+	HiddenTagGuiNotificationNotifierDelete string
 }
 
 type Notifier struct {
@@ -76,6 +79,15 @@ func (c *ListController) Get() {
 	c.TplName = "notification/notifier/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiNotificationNotifierEdit", user, "GET", "/gui/notification/notifier/edit")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiNotificationNotifierEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/notification/notifier/edit")
+	hasGuiNotificationNotifierDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/notification/notifier/delete")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -97,6 +109,19 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		for i := 0; i < len(replicationControllerNotifierSlice); i++ {
+			if hasGuiNotificationNotifierEdit {
+				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierEdit = "<div class='btn-group'>"
+			} else {
+				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierEdit = "<div hidden>"
+			}
+			if hasGuiNotificationNotifierDelete {
+				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierDelete = "<div class='btn-group'>"
+			} else {
+				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierDelete = "<div hidden>"
+			}
+		}
+
 		sort.Sort(ByReplicationControllerNotifier(replicationControllerNotifierSlice))
 		c.Data["replicationControllerNotifierSlice"] = replicationControllerNotifierSlice
 	}

@@ -11,8 +11,12 @@
 	<div class="row">
 		<div class="col-md-12">
 
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiRepositoryThirdPartyEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -31,9 +35,17 @@
 						<td>{{$thirdPartyApplication.Name}}</td>
 						<td>{{$thirdPartyApplication.Description}}</td>
 						<td>
-							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/launch?name={{$thirdPartyApplication.Name}}">Launch</a>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit?name={{$thirdPartyApplication.Name}}">Update</a>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$thirdPartyApplication.Name}}" data-color="btn-danger" data-herf="/gui/repository/thirdparty/delete?name={{$thirdPartyApplication.Name}}">Delete</button>
+							<div class="btn-group">
+								{{ str2html $thirdPartyApplication.HiddenTagGuiRepositoryThirdPartyLaunch }}
+									<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/launch?name={{$thirdPartyApplication.Name}}">Launch</a>
+								</div>
+								{{ str2html $thirdPartyApplication.HiddenTagGuiRepositoryThirdPartyEdit }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/thirdparty/edit?name={{$thirdPartyApplication.Name}}">Update</a>
+							</div>
+								{{ str2html $thirdPartyApplication.HiddenTagGuiRepositoryThirdPartyDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$thirdPartyApplication.Name}}" data-color="btn-danger" data-herf="/gui/repository/thirdparty/delete?name={{$thirdPartyApplication.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 						<td></td>
 					</tr>

@@ -11,8 +11,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/edit">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiInventoryReplicationControllerEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/edit">Create</a>
+					</div>
+				</div>
 			</div>
 
 			<table class="table table-condensed tree">
@@ -37,8 +41,14 @@
 						</td>
 						<td>{{$replicationControllerAndRelatedPod.AliveReplicaAmount}}/{{$replicationControllerAndRelatedPod.ReplicaAmount}}</td>
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/size?name={{$replicationControllerAndRelatedPod.Name}}&size={{$replicationControllerAndRelatedPod.ReplicaAmount}}" >Resize</a>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAndRelatedPod.Name}}" data-color="btn-danger" data-herf="/gui/inventory/replicationcontroller/delete?namespace={{$replicationControllerAndRelatedPod.Namespace}}&replicationcontroller={{$replicationControllerAndRelatedPod.Name}}" {{$replicationControllerAndRelatedPod.Display}}>Delete</button>
+							<div class="btn-group ">
+								{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerSize }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/size?name={{$replicationControllerAndRelatedPod.Name}}&size={{$replicationControllerAndRelatedPod.ReplicaAmount}}" >Resize</a>
+								</div>
+								{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAndRelatedPod.Name}}" data-color="btn-danger" data-herf="/gui/inventory/replicationcontroller/delete?namespace={{$replicationControllerAndRelatedPod.Namespace}}&replicationcontroller={{$replicationControllerAndRelatedPod.Name}}" {{$replicationControllerAndRelatedPod.Display}}>Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				
@@ -59,7 +69,11 @@
 							<td>{{$pod.HostIP}}</td>
 							<td>{{$pod.PodIP}}</td>
 							<td>
-								<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/podlog?namespace={{$pod.Namespace}}&pod={{$pod.Name}}">Log</a>
+								<div class="btn-group ">
+									{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerPodlog }}
+										<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/podlog?namespace={{$pod.Namespace}}&pod={{$pod.Name}}">Log</a>
+									</div>
+								</div>
 							</td>
 						</tr>
 						
@@ -80,7 +94,11 @@
 								<td>{{$container.Image}}</td>
 								<td></td>
 								<td>
-									<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/dockerterminal?hostIP={{$pod.HostIP}}&containerID={{$container.ContainerID}}">Terminal</a>
+									<div class="btn-group ">
+										{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerDockerterminal }}
+											<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/dockerterminal?hostIP={{$pod.HostIP}}&containerID={{$container.ContainerID}}">Terminal</a>
+										</div>
+									</div>
 								</td>
 							</tr>
 							

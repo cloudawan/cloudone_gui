@@ -57,9 +57,9 @@ func (c *AcknowledgeController) Get() {
 	}
 
 	if acknowledge == "true" {
-		c.Ctx.Redirect(302, "/gui/event/kubernetes/?acknowledge=false")
+		c.Ctx.Redirect(302, "/gui/event/kubernetes/list?acknowledge=false")
 	} else {
-		c.Ctx.Redirect(302, "/gui/event/kubernetes/?acknowledge=true")
+		c.Ctx.Redirect(302, "/gui/event/kubernetes/list?acknowledge=true")
 	}
 
 	guimessage.RedirectMessage(c)

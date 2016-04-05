@@ -11,8 +11,12 @@
 	<div class="row">
 		<div class="col-md-12">
 
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiDeployAutoScalerEdit }}>
+						<a class="btn btn-md btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -41,8 +45,14 @@
 						<td>{{$replicationControllerAutoScaler.CoolDownDuration}}</td>
 						<td>{{$replicationControllerAutoScaler.RemainingCoolDown}}</td>
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit?kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Update</a>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAutoScaler.Name}}" data-color="btn-danger" data-herf="/gui/deploy/autoscaler/delete?namespace={{$replicationControllerAutoScaler.Namespace}}&kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Delete</button>
+							<div class="btn-group">
+								{{ str2html $replicationControllerAutoScaler.HiddenTagGuiDeployAutoScalerEdit }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/autoscaler/edit?kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Update</a>
+								</div>
+								{{ str2html $replicationControllerAutoScaler.HiddenTagGuiDeployAutoScalerDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerAutoScaler.Name}}" data-color="btn-danger" data-herf="/gui/deploy/autoscaler/delete?namespace={{$replicationControllerAutoScaler.Namespace}}&kind={{$replicationControllerAutoScaler.Kind}}&name={{$replicationControllerAutoScaler.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				
@@ -71,7 +81,7 @@
 							<td>{{$indicator.BelowPercentageOfData}}</td>
 							<td>{{$indicator.BelowThreshold}}</td>
 							<td></td>
-						</tr>					
+						</tr>
 					{{end}}
 
 				{{end}}

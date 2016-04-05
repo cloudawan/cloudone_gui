@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -26,20 +27,30 @@ type ListController struct {
 }
 
 type GlusterfsVolume struct {
-	VolumeName     string
-	Type           string
-	VolumeID       string
-	Status         string
-	NumberOfBricks string
-	TransportType  string
-	Bricks         []string
-	Size           int
-	ClusterName    string
+	VolumeName                                  string
+	Type                                        string
+	VolumeID                                    string
+	Status                                      string
+	NumberOfBricks                              string
+	TransportType                               string
+	Bricks                                      []string
+	Size                                        int
+	ClusterName                                 string
+	HiddenTagGuiFileSystemGlusterfsVolumeDelete string
 }
 
 func (c *ListController) Get() {
 	c.TplName = "filesystem/glusterfs/volume/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiFileSystemGlusterfsClusterList", user, "GET", "/gui/filesystem/glusterfs/cluster/list")
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuifFileSystemGlusterfsVolumeCreate", user, "GET", "/gui/filesystem/glusterfs/volume/create")
+	// Tag won't work in loop so need to be placed in data
+	hasHiddenTagGuiFileSystemGlusterfsVolumeDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -66,6 +77,12 @@ func (c *ListController) Get() {
 	} else {
 		for i := 0; i < len(glusterfsVolumeSlice); i++ {
 			glusterfsVolumeSlice[i].ClusterName = clusterName
+
+			if hasHiddenTagGuiFileSystemGlusterfsVolumeDelete {
+				glusterfsVolumeSlice[i].HiddenTagGuiFileSystemGlusterfsVolumeDelete = "<div class='btn-group'>"
+			} else {
+				glusterfsVolumeSlice[i].HiddenTagGuiFileSystemGlusterfsVolumeDelete = "<div hidden>"
+			}
 		}
 
 		c.Data["glusterfsVolumeSlice"] = glusterfsVolumeSlice

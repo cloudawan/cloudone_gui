@@ -31,6 +31,9 @@ func (c *CreateController) Get() {
 	c.TplName = "repository/imageinformation/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	guimessage.OutputMessage(c.Data)
 }
 
@@ -49,7 +52,7 @@ func (c *CreateController) Post() {
 	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
 	if match == false {
 		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
-		c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
@@ -91,6 +94,11 @@ func (c *CreateController) Post() {
 		description,
 		"",
 		buildParameter,
+		"",
+		"",
+		"",
+		"",
+		"",
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -111,7 +119,7 @@ func (c *CreateController) Post() {
 		guimessage.AddSuccess("Create  " + name + " success")
 	}
 
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 
 	guimessage.RedirectMessage(c)
 }

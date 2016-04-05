@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -93,8 +94,13 @@ type IndexController struct {
 
 func (c *IndexController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
-
 	c.TplName = "dashboard/appservice/index.html"
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Dashboard tab menu
+	user, _ := c.GetSession("user").(*rbac.User)
+	c.Data["dashboardTabMenu"] = identity.GetDashboardTabMenu(user, "appservice")
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()

@@ -28,7 +28,6 @@ func FilterUser(ctx *context.Context) {
 	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginPageURL {
 		// Don't redirect itself to prevent the circle
 	} else {
-
 		user, ok := ctx.Input.Session("user").(*rbac.User)
 
 		if ok == false {

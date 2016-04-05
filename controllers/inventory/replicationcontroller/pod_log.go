@@ -31,6 +31,9 @@ func (c *PodLogController) Get() {
 	c.TplName = "inventory/replicationcontroller/pod_log.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")

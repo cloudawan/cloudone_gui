@@ -34,65 +34,7 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li class=""><a href="/gui/dashboard/topology/">Dashboard</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Repository<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/repository/imageinformation">Applications</a></li>
-							<li><a href="/gui/repository/thirdparty/">Third-party Services</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deploy<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/deploy/deploy">Applications</a></li>
-							<li><a href="/gui/deploy/deploybluegreen">Blue Green Deployments</a></li>
-							<li><a href="/gui/deploy/autoscaler">Autoscalers</a></li>
-							<li><a href="/gui/deploy/deployclusterapplication">Third-party Services</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/inventory/replicationcontroller">Replications</a></li>
-							<li><a href="/gui/inventory/service">Services</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Filesystem<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/filesystem/glusterfs/cluster">Glusterfs</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Monitor<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/monitor/node">Nodes</a></li>
-							<li><a href="/gui/monitor/container">Containers</a></li>
-							<li><a href="/gui/monitor/historicalcontainer">Historical Containers</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Event<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/event/kubernetes">Kubernetes Event</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Notification<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/notification/notifier">Notifiers</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/gui/system/namespace">Namepaces</a></li>
-							<li><a href="/gui/system/notification/emailserver">Notification</a></li>
-							<li><a href="/gui/system/host/credential">Host Credential</a></li>
-							<li><a href="/gui/system/upgrade">Upgrade</a></li>
-						</ul>
-					</li>
+					{{ str2html .layoutMenu }}
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/gui/logout">Logout</a></li>

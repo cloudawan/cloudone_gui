@@ -36,9 +36,11 @@ const (
 )
 
 func (c *IndexController) Get() {
+	c.TplName = "monitor/historicalcontainer/index.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplName = "monitor/historicalcontainer/index.html"
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")

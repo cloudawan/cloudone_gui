@@ -12,7 +12,14 @@
 		<div class="col-md-12">
 
 			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/edit">Create</a>
+				</div>
+
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiInventoryServiceEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/service/edit">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -47,7 +54,11 @@
 						</td>
 						<td>{{$service.SessionAffinity}}</td>
 						<td>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$service.Name}}" data-color="btn-danger" data-herf="/gui/inventory/service/delete?namespace={{$service.Namespace}}&service={{$service.Name}}" {{$service.Display}}>Delete</button>
+							<div class="btn-group ">
+								{{ str2html $service.HiddenTagGuiInventoryServiceDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$service.Name}}" data-color="btn-danger" data-herf="/gui/inventory/service/delete?namespace={{$service.Namespace}}&service={{$service.Name}}" {{$service.Display}}>Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				

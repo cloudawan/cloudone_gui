@@ -55,7 +55,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/notification/notifier/")
+	c.Ctx.Redirect(302, "/gui/notification/notifier/list")
 
 	guimessage.RedirectMessage(c)
 }

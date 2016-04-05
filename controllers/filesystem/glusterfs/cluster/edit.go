@@ -31,6 +31,9 @@ func (c *EditController) Get() {
 	c.TplName = "filesystem/glusterfs/cluster/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	clusterName := c.GetString("clusterName")
 
 	if clusterName == "" {
@@ -180,7 +183,7 @@ func (c *EditController) Post() {
 		}
 	}
 
-	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/cluster/")
+	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/cluster/list")
 
 	guimessage.RedirectMessage(c)
 }

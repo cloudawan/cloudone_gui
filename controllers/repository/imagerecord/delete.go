@@ -54,7 +54,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/repository/imagerecord/?name="+imageInformationName)
+	c.Ctx.Redirect(302, "/gui/repository/imagerecord/list?name="+imageInformationName)
 
 	guimessage.RedirectMessage(c)
 }

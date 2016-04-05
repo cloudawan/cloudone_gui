@@ -17,6 +17,9 @@ func (c *EditController) Get() {
 	c.TplName = "repository/thirdparty/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -44,7 +47,7 @@ func (c *EditController) Get() {
 		if err != nil {
 			guimessage.AddDanger("Fail to get with error" + err.Error())
 			// Redirect to list
-			c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+			c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
 			guimessage.RedirectMessage(c)
 		} else {
@@ -52,7 +55,7 @@ func (c *EditController) Get() {
 			if err != nil {
 				guimessage.AddDanger("Fail to get with error" + err.Error())
 				// Redirect to list
-				c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+				c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
 				guimessage.RedirectMessage(c)
 			}
@@ -93,7 +96,7 @@ func (c *EditController) Post() {
 	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
 	if match == false {
 		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
@@ -118,7 +121,7 @@ func (c *EditController) Post() {
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
@@ -151,7 +154,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Third party application " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+	c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
 	guimessage.RedirectMessage(c)
 }

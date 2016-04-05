@@ -64,6 +64,9 @@ func (c *UpdateController) Get() {
 	c.TplName = "deploy/deploy/update.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -76,7 +79,7 @@ func (c *UpdateController) Get() {
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 		return
 	}
 
@@ -104,7 +107,7 @@ func (c *UpdateController) Get() {
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 		return
 	}
 
@@ -163,7 +166,7 @@ func (c *UpdateController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 		return
 	}
 	namespaces, _ := c.GetSession("namespace").(string)
@@ -214,7 +217,7 @@ func (c *UpdateController) Post() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+	c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 
 	guimessage.RedirectMessage(c)
 }

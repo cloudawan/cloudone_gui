@@ -36,18 +36,23 @@ func GetGUIMessageFromContext(ctx *context.Context) *GUIMessage {
 }
 
 func GetGUIMessage(sessionUtility SessionUtility) *GUIMessage {
-	guiMessage := sessionUtility.GetSession(sessionNameGUIMessage)
-	if guiMessage == nil {
+	guiMessage, ok := sessionUtility.GetSession(sessionNameGUIMessage).(*GUIMessage)
+	if ok == false {
 		guiMessage = new(GUIMessage)
-		guiMessage.(*GUIMessage).sessionUtility = sessionUtility
-		guiMessage.(*GUIMessage).successSlice = make([]string, 0)
-		guiMessage.(*GUIMessage).infoSlice = make([]string, 0)
-		guiMessage.(*GUIMessage).warningSlice = make([]string, 0)
-		guiMessage.(*GUIMessage).dangerSlice = make([]string, 0)
-	} else {
-		sessionUtility.DelSession(sessionNameGUIMessage)
+		guiMessage.sessionUtility = sessionUtility
+		guiMessage.successSlice = make([]string, 0)
+		guiMessage.infoSlice = make([]string, 0)
+		guiMessage.warningSlice = make([]string, 0)
+		guiMessage.dangerSlice = make([]string, 0)
 	}
-	return guiMessage.(*GUIMessage)
+	return guiMessage
+}
+
+func (guiMessage *GUIMessage) CleanAllMessage() {
+	guiMessage.successSlice = guiMessage.successSlice[:0]
+	guiMessage.infoSlice = guiMessage.successSlice[:0]
+	guiMessage.warningSlice = guiMessage.successSlice[:0]
+	guiMessage.dangerSlice = guiMessage.successSlice[:0]
 }
 
 func (guiMessage *GUIMessage) AddSuccess(text string) {
@@ -110,6 +115,9 @@ func (guiMessage *GUIMessage) OutputMessage(data map[interface{}]interface{}) bo
 		if has == false {
 			data["guiMessageDisplay"] = "hidden"
 		}
+
+		guiMessage.CleanAllMessage()
+
 		return true
 	}
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 )
@@ -27,11 +28,16 @@ type ListController struct {
 }
 
 type ImageInformation struct {
-	Name           string
-	Kind           string
-	Description    string
-	CurrentVersion string
-	BuildParameter map[string]string
+	Name                                          string
+	Kind                                          string
+	Description                                   string
+	CurrentVersion                                string
+	BuildParameter                                map[string]string
+	HiddenTagGuiRepositoryImageRecordList         string
+	HiddenTagGuiRepositoryImageInformationUpgrade string
+	HiddenTagGuiDeployDeployCreate                string
+	HiddenTagGuiDeployDeployBlueGreenSelect       string
+	HiddenTagGuiRepositoryImageInformationDelete  string
 }
 
 type ByImageInformation []ImageInformation
@@ -43,6 +49,18 @@ func (b ByImageInformation) Less(i, j int) bool { return b[i].Name < b[j].Name }
 func (c *ListController) Get() {
 	c.TplName = "repository/imageinformation/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiRepositoryImageInformationCreate", user, "GET", "/gui/repository/imageinformation/create")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiRepositoryImageRecordList := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/list")
+	hasGuiRepositoryImageInformationUpgrade := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imageinformation/upgrade")
+	hasGuiDeployDeployCreate := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/create")
+	hasGuiDeployDeployBlueGreenSelect := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen/select")
+	hasGuiRepositoryImageInformationDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imageinformation/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -65,6 +83,34 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		for i := 0; i < len(imageInformationSlice); i++ {
+			if hasGuiRepositoryImageRecordList {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageRecordList = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageRecordList = "<div hidden>"
+			}
+			if hasGuiRepositoryImageInformationUpgrade {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationUpgrade = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationUpgrade = "<div hidden>"
+			}
+			if hasGuiDeployDeployCreate {
+				imageInformationSlice[i].HiddenTagGuiDeployDeployCreate = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiDeployDeployCreate = "<div hidden>"
+			}
+			if hasGuiDeployDeployBlueGreenSelect {
+				imageInformationSlice[i].HiddenTagGuiDeployDeployBlueGreenSelect = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiDeployDeployBlueGreenSelect = "<div hidden>"
+			}
+			if hasGuiRepositoryImageInformationDelete {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationDelete = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationDelete = "<div hidden>"
+			}
+		}
+
 		sort.Sort(ByImageInformation(imageInformationSlice))
 		c.Data["imageInformationSlice"] = imageInformationSlice
 	}

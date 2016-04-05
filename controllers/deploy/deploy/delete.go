@@ -38,7 +38,7 @@ func (c *DeleteController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 		return
 	}
 
@@ -65,7 +65,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+	c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 
 	guimessage.RedirectMessage(c)
 }

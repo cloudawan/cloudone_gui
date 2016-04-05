@@ -69,6 +69,9 @@ func (c *CreateController) Get() {
 	c.TplName = "deploy/deploy/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -112,7 +115,7 @@ func (c *CreateController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 		return
 	}
 
@@ -184,7 +187,7 @@ func (c *CreateController) Post() {
 		guimessage.AddSuccess("Create deploy " + imageInformationName + " version " + version + " success")
 	}
 
-	c.Ctx.Redirect(302, "/gui/deploy/deploy/")
+	c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 
 	guimessage.RedirectMessage(c)
 }

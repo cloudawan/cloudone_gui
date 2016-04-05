@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 )
@@ -27,11 +28,12 @@ type ListController struct {
 }
 
 type EmailServerSMTP struct {
-	Name     string
-	Account  string
-	Password string
-	Host     string
-	Port     int
+	Name                                            string
+	Account                                         string
+	Password                                        string
+	Host                                            string
+	Port                                            int
+	HiddenTagGuiSystemNotificationEmailserverDelete string
 }
 
 type ByEmailServerSMTP []EmailServerSMTP
@@ -43,6 +45,16 @@ func (b ByEmailServerSMTP) Less(i, j int) bool { return b[i].Name < b[j].Name }
 func (c *ListController) Get() {
 	c.TplName = "system/notification/emailserver/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// System Notification tab menu
+	user, _ := c.GetSession("user").(*rbac.User)
+	c.Data["systemNotificationTabMenu"] = identity.GetSystemNotificationTabMenu(user, "emailserver")
+	// Authorization for Button
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationEmailServerCreate", user, "GET", "/gui/system/notification/emailserver/create")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiSystemNotificationEmailserverDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/notification/emailserver/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -65,6 +77,14 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		for i := 0; i < len(emailServerSMTPSlice); i++ {
+			if hasGuiSystemNotificationEmailserverDelete {
+				emailServerSMTPSlice[i].HiddenTagGuiSystemNotificationEmailserverDelete = "<div class='btn-group'>"
+			} else {
+				emailServerSMTPSlice[i].HiddenTagGuiSystemNotificationEmailserverDelete = "<div hidden>"
+			}
+		}
+
 		sort.Sort(ByEmailServerSMTP(emailServerSMTPSlice))
 		c.Data["emailServerSMTPSlice"] = emailServerSMTPSlice
 	}

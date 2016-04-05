@@ -11,8 +11,8 @@
 		<div class="col-md-12">
 			
 			<ul class="nav nav-tabs">
-				<li role="presentation" class="{{ .unacknowledgeActive }}"><a href="/gui/event/kubernetes/?acknowledge=false">Unacknowledged</a></li>
-				<li role="presentation" class="{{ .acknowledgeActive }}"><a href="/gui/event/kubernetes/?acknowledge=true">Acknowledged</a></li>
+				<li role="presentation" class="{{ .unacknowledgeActive }}"><a href="/gui/event/kubernetes/list?acknowledge=false">Unacknowledged</a></li>
+				<li role="presentation" class="{{ .acknowledgeActive }}"><a href="/gui/event/kubernetes/list?acknowledge=true">Acknowledged</a></li>
 			</ul>
 
 			<table class="table table-condensed tree">
@@ -53,7 +53,11 @@
 						<td>{{$kubernetesEvent.Message}}</td>
 						<td>{{$kubernetesEvent.Reason}}</td>
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/event/kubernetes/acknowledge?namespace={{$kubernetesEvent.Namespace}}&id={{$kubernetesEvent.Id}}&acknowledge={{ .Action }}"> {{ .Button }}</a>
+							<div class="btn-group ">
+								{{ str2html $kubernetesEvent.HiddenTagGuiEventKubernetesAcknowledge }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/event/kubernetes/acknowledge?namespace={{$kubernetesEvent.Namespace}}&id={{$kubernetesEvent.Id}}&acknowledge={{ .Action }}"> {{ .Button }}</a>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

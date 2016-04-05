@@ -28,6 +28,7 @@ func (c *LogoutController) Get() {
 
 	c.DelSession("user")
 	c.DelSession("tokenHeaderMap")
+	c.DelSession("layoutMenu")
 
 	c.Ctx.Redirect(302, "/gui/login")
 

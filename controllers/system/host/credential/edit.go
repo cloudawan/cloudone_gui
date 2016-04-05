@@ -29,6 +29,9 @@ func (c *EditController) Get() {
 	c.TplName = "system/host/credential/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	ip := c.GetString("ip")
 
 	if ip == "" {
@@ -97,6 +100,8 @@ func (c *EditController) Post() {
 			sshUser,
 			sshPassword,
 		},
+		"",
+		"",
 	}
 
 	if createOrUpdate == "create" {
@@ -137,7 +142,7 @@ func (c *EditController) Post() {
 		}
 	}
 
-	c.Ctx.Redirect(302, "/gui/system/host/credential/")
+	c.Ctx.Redirect(302, "/gui/system/host/credential/list")
 
 	guimessage.RedirectMessage(c)
 }

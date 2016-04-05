@@ -11,8 +11,12 @@
 	<div class="row">
 		<div class="col-md-12">
 
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiNotificationNotifierEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -39,8 +43,14 @@
 						<td>{{$replicationControllerNotifier.CoolDownDuration}}</td>
 						<td>{{$replicationControllerNotifier.RemainingCoolDown}}</td>
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit?&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Update</a>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerNotifier.Name}}" data-color="btn-danger" data-herf="/gui/notification/notifier/delete?namespace={{$replicationControllerNotifier.Namespace}}&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Delete</button>
+							<div class="btn-group ">
+								{{ str2html $replicationControllerNotifier.HiddenTagGuiNotificationNotifierEdit }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/notification/notifier/edit?&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Update</a>
+								</div>
+								{{ str2html $replicationControllerNotifier.HiddenTagGuiNotificationNotifierDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$replicationControllerNotifier.Name}}" data-color="btn-danger" data-herf="/gui/notification/notifier/delete?namespace={{$replicationControllerNotifier.Namespace}}&kind={{$replicationControllerNotifier.Kind}}&name={{$replicationControllerNotifier.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				

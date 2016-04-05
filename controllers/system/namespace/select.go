@@ -32,7 +32,7 @@ func (c *SelectController) Get() {
 	guimessage.AddSuccess("Use namespace " + name)
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/system/namespace/")
+	c.Ctx.Redirect(302, "/gui/system/namespace/list")
 
 	guimessage.RedirectMessage(c)
 }

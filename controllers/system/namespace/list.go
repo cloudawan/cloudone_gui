@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 	"strconv"
@@ -29,9 +30,11 @@ type ListController struct {
 }
 
 type Namespace struct {
-	Name     string
-	Selected bool
-	Display  string
+	Name                              string
+	Selected                          bool
+	Display                           string
+	HiddenTagGuiSystemNamespaceSelect string
+	HiddenTagGuiSystemNamespaceDelete string
 }
 
 var displayMap map[string]string = map[string]string{
@@ -48,6 +51,15 @@ func (b ByNamespace) Less(i, j int) bool { return b[i].Name < b[j].Name }
 func (c *ListController) Get() {
 	c.TplName = "system/namespace/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNamespaceEdit", user, "GET", "/gui/system/namespace/edit")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiSystemNamespaceSelect := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/select")
+	hasGuiSystemNamespaceDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -83,12 +95,22 @@ func (c *ListController) Get() {
 
 		namespaceSlice := make([]Namespace, 0)
 		for _, name := range nameSlice {
-
-			namespace := Namespace{name, false, ""}
+			namespace := Namespace{name, false, "", "", ""}
 			if name == selectedNamespace {
 				namespace.Selected = true
 			}
 			namespace.Display = displayMap[name]
+
+			if hasGuiSystemNamespaceSelect {
+				namespace.HiddenTagGuiSystemNamespaceSelect = "<div class='btn-group'>"
+			} else {
+				namespace.HiddenTagGuiSystemNamespaceSelect = "<div hidden>"
+			}
+			if hasGuiSystemNamespaceDelete {
+				namespace.HiddenTagGuiSystemNamespaceDelete = "<div class='btn-group'>"
+			} else {
+				namespace.HiddenTagGuiSystemNamespaceDelete = "<div hidden>"
+			}
 
 			namespaceSlice = append(namespaceSlice, namespace)
 		}

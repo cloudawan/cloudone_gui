@@ -31,6 +31,9 @@ func (c *SizeController) Get() {
 	c.TplName = "inventory/replicationcontroller/size.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	name := c.GetString("name")
 	size := c.GetString("size")
 	c.Data["name"] = name
@@ -50,7 +53,7 @@ func (c *SizeController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/")
+		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
 		return
 	}
 
@@ -80,7 +83,7 @@ func (c *SizeController) Post() {
 		guimessage.AddSuccess("Replication Controller " + name + " is resized")
 	}
 
-	c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/")
+	c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
 
 	guimessage.RedirectMessage(c)
 }

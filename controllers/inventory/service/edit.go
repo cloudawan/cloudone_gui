@@ -32,6 +32,9 @@ func (c *EditController) Get() {
 	c.TplName = "inventory/service/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	service := c.GetString("service")
 	if service == "" {
 		c.Data["actionButtonValue"] = "Create"
@@ -57,7 +60,7 @@ func (c *EditController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/inventory/service/")
+		c.Ctx.Redirect(302, "/gui/inventory/service/list")
 		return
 	}
 
@@ -78,7 +81,7 @@ func (c *EditController) Post() {
 	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
 	if match == false {
 		guimessage.AddDanger("The name need to be a DNS 952 label ^[a-z]{1}[a-z0-9-]{1,23}$")
-		c.Ctx.Redirect(302, "/gui/inventory/service/")
+		c.Ctx.Redirect(302, "/gui/inventory/service/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
@@ -97,7 +100,7 @@ func (c *EditController) Post() {
 	labelMap := make(map[string]interface{})
 	labelMap["name"] = labelName
 
-	service := Service{name, namespace, portSlice, selectorMap, "", labelMap, sessionAffinity, ""}
+	service := Service{name, namespace, portSlice, selectorMap, "", labelMap, sessionAffinity, "", ""}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/services/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
@@ -117,7 +120,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Service " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/inventory/service/")
+	c.Ctx.Redirect(302, "/gui/inventory/service/list")
 
 	guimessage.RedirectMessage(c)
 }

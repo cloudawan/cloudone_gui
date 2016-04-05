@@ -10,9 +10,15 @@
 	<div class="row">
 		<div class="col-md-12">
 			
-			<div class="">
-				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/">Cancel</a>
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/create?clusterName={{.clusterName}}">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiFileSystemGlusterfsClusterList }}>
+						<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/list">Cancel</a>
+					</div>
+					<div class="btn-group" {{ str2html .hiddenTagGuifFileSystemGlusterfsVolumeCreate }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/create?clusterName={{.clusterName}}">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -43,7 +49,11 @@
 							{{end}}
 						</td>
 						<td>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$glusterfsVolume.VolumeName}}" data-color="btn-danger" data-herf="/gui/filesystem/glusterfs/volume/delete?glusterfsVolume={{$glusterfsVolume.VolumeName}}&clusterName={{$glusterfsVolume.ClusterName}}">Delete</button>
+							<div class="btn-group ">
+								{{ str2html $glusterfsVolume.HiddenTagGuiFileSystemGlusterfsVolumeDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$glusterfsVolume.VolumeName}}" data-color="btn-danger" data-herf="/gui/filesystem/glusterfs/volume/delete?glusterfsVolume={{$glusterfsVolume.VolumeName}}&clusterName={{$glusterfsVolume.ClusterName}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

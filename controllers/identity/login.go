@@ -33,7 +33,6 @@ type LoginController struct {
 
 func (c *LoginController) Get() {
 	c.TplName = "identity/login.html"
-
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	guimessage.OutputMessage(c.Data)
@@ -102,6 +101,9 @@ func (c *LoginController) Post() {
 	headerMap := make(map[string]string)
 	headerMap["token"] = tokenData.Token
 	c.SetSession("tokenHeaderMap", headerMap)
+	// Layout menu is used to display common layout menu
+	layoutMenu := GetLayoutMenu(user)
+	c.SetSession("layoutMenu", layoutMenu)
 
 	// Namespace
 	namespace := beego.AppConfig.String("namespace")

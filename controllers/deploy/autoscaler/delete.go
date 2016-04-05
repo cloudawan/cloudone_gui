@@ -55,7 +55,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/deploy/autoscaler/")
+	c.Ctx.Redirect(302, "/gui/deploy/autoscaler/list")
 
 	guimessage.RedirectMessage(c)
 }

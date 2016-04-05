@@ -42,9 +42,11 @@ type IndexController struct {
 }
 
 func (c *IndexController) Get() {
+	c.TplName = "monitor/node/index.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
-	c.TplName = "monitor/node/index.html"
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()

@@ -9,15 +9,18 @@
 	</div>
 
 	<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation"><a href="/gui/system/notification/emailserver/" role="tab" >Email Server</a></li>
-		<li role="presentation" class="active"><a href="#" role="tab" >SMS</a></li>
+		{{ str2html .systemNotificationTabMenu }}
 	</ul>
 
 	<div class="row">
 		<div class="col-md-12">
 			
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/sms/create">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiSystemNotificationSMSCreate }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/sms/create">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -40,7 +43,11 @@
 						<td>{{$smsNexmo.APIKey}}</td>
 						<td>******</td>
 						<td>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$smsNexmo.Name}}" data-color="btn-danger" data-herf="/gui/system/notification/sms/delete?name={{$smsNexmo.Name}}">Delete</button>
+							<div class="btn-group">
+								{{ str2html $smsNexmo.HiddenTagGuiSystemNotificationSMSDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$smsNexmo.Name}}" data-color="btn-danger" data-herf="/gui/system/notification/sms/delete?name={{$smsNexmo.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

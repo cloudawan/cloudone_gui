@@ -31,6 +31,9 @@ func (c *EditController) Get() {
 	c.TplName = "inventory/replicationcontroller/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	replicationcontroller := c.GetString("replicationcontroller")
 	if replicationcontroller == "" {
 		c.Data["actionButtonValue"] = "Create"
@@ -84,7 +87,7 @@ func (c *EditController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/")
+		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
 		return
 	}
 
@@ -134,7 +137,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Replication Controller " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/")
+	c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
 
 	guimessage.RedirectMessage(c)
 }

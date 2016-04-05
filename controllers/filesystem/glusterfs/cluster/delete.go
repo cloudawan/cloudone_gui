@@ -53,7 +53,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/cluster/")
+	c.Ctx.Redirect(302, "/gui/filesystem/glusterfs/cluster/list")
 
 	guimessage.RedirectMessage(c)
 }

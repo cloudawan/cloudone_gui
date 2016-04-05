@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 )
@@ -27,10 +28,11 @@ type ListController struct {
 }
 
 type SMSNexmo struct {
-	Name      string
-	Url       string
-	APIKey    string
-	APISecret string
+	Name                                    string
+	Url                                     string
+	APIKey                                  string
+	APISecret                               string
+	HiddenTagGuiSystemNotificationSMSDelete string
 }
 
 type BySMSNexmo []SMSNexmo
@@ -42,6 +44,16 @@ func (b BySMSNexmo) Less(i, j int) bool { return b[i].Name < b[j].Name }
 func (c *ListController) Get() {
 	c.TplName = "system/notification/sms/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// System Notification tab menu
+	user, _ := c.GetSession("user").(*rbac.User)
+	c.Data["systemNotificationTabMenu"] = identity.GetSystemNotificationTabMenu(user, "sms")
+	// Authorization for Button
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationSMSCreate", user, "GET", "/gui/system/notification/sms/create")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiSystemNotificationSMSDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/notification/sms/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -64,6 +76,14 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
+		for i := 0; i < len(smsNexmoSlice); i++ {
+			if hasGuiSystemNotificationSMSDelete {
+				smsNexmoSlice[i].HiddenTagGuiSystemNotificationSMSDelete = "<div class='btn-group'>"
+			} else {
+				smsNexmoSlice[i].HiddenTagGuiSystemNotificationSMSDelete = "<div hidden>"
+			}
+		}
+
 		sort.Sort(BySMSNexmo(smsNexmoSlice))
 		c.Data["smsNexmoSlice"] = smsNexmoSlice
 	}

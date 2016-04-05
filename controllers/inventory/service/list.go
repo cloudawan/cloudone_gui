@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -28,14 +29,15 @@ type ListController struct {
 }
 
 type Service struct {
-	Name            string
-	Namespace       string
-	PortSlice       []ServicePort
-	Selector        map[string]interface{}
-	ClusterIP       string
-	LabelMap        map[string]interface{}
-	SessionAffinity string
-	Display         string
+	Name                               string
+	Namespace                          string
+	PortSlice                          []ServicePort
+	Selector                           map[string]interface{}
+	ClusterIP                          string
+	LabelMap                           map[string]interface{}
+	SessionAffinity                    string
+	Display                            string
+	HiddenTagGuiInventoryServiceDelete string
 }
 
 type ServicePort struct {
@@ -56,6 +58,14 @@ var displayMap map[string]string = map[string]string{
 func (c *ListController) Get() {
 	c.TplName = "inventory/service/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiInventoryServiceEdit", user, "GET", "/gui/inventory/service/edit")
+	// Tag won't work in loop so need to be placed in data
+	hasGuiInventoryServiceDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/service/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -89,6 +99,12 @@ func (c *ListController) Get() {
 	} else {
 		for i := 0; i < len(serviceSlice); i++ {
 			serviceSlice[i].Display = displayMap[serviceSlice[i].Name]
+
+			if hasGuiInventoryServiceDelete {
+				serviceSlice[i].HiddenTagGuiInventoryServiceDelete = "<div class='btn-group'>"
+			} else {
+				serviceSlice[i].HiddenTagGuiInventoryServiceDelete = "<div hidden>"
+			}
 		}
 		c.Data["serviceSlice"] = serviceSlice
 	}

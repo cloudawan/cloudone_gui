@@ -35,6 +35,9 @@ func (c *TerminalController) Get() {
 	c.TplName = "inventory/replicationcontroller/docker_terminal.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneGUIHost := c.Ctx.Input.Host()
 	cloudoneGUIPort := c.Ctx.Input.Port()
 

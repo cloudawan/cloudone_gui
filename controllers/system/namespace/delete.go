@@ -209,7 +209,7 @@ func (c *DeleteController) Get() {
 	time.Sleep(time.Millisecond * 500)
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/system/namespace/")
+	c.Ctx.Redirect(302, "/gui/system/namespace/list")
 
 	guimessage.RedirectMessage(c)
 }

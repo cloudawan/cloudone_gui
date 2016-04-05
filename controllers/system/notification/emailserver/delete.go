@@ -53,7 +53,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/system/notification/emailserver/")
+	c.Ctx.Redirect(302, "/gui/system/notification/emailserver/list")
 
 	guimessage.RedirectMessage(c)
 }

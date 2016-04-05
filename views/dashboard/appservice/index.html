@@ -32,10 +32,7 @@
     </div>
 	<div>
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation"><a href="/gui/dashboard/topology/" role="tab" >Topology</a></li>
-			<li role="presentation"><a href="/gui/dashboard/healthcheck/" role="tab" >Health Check</a></li>
-			<li role="presentation"><a href="/gui/dashboard/bluegreen/" role="tab" >BlueGreen</a></li>
-			<li role="presentation" class="active"><a href="#" role="tab" >AppService</a></li>
+			{{ str2html .dashboardTabMenu }}
 		</ul>
 
 		<div class="row">

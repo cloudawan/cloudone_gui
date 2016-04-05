@@ -10,8 +10,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/edit">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiFileSystemGlusterfsClusterEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/edit">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -47,9 +51,17 @@
 						<td>******</td>
 						
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume?clusterName={{$glusterfsCluster.Name}}">Volume</a>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/edit?clusterName={{$glusterfsCluster.Name}}">Update</a>	
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$glusterfsCluster.Name}}" data-color="btn-danger" data-herf="/gui/filesystem/glusterfs/cluster/delete?clusterName={{$glusterfsCluster.Name}}">Delete</button>
+							<div class="btn-group ">
+								{{ str2html $glusterfsCluster.HiddenTagGuiFileSystemGlusterfsVolumeList }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/list?clusterName={{$glusterfsCluster.Name}}">Volume</a>
+								</div>
+								{{ str2html $glusterfsCluster.HiddenTagGuiFileSystemGlusterfsClusterEdit }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/edit?clusterName={{$glusterfsCluster.Name}}">Update</a>	
+								</div>
+								{{ str2html $glusterfsCluster.HiddenTagGuiFileSystemGlusterfsClusterDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$glusterfsCluster.Name}}" data-color="btn-danger" data-herf="/gui/filesystem/glusterfs/cluster/delete?clusterName={{$glusterfsCluster.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

@@ -75,6 +75,9 @@ func (c *SizeController) Get() {
 	c.TplName = "deploy/deployclusterapplication/size.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -83,7 +86,7 @@ func (c *SizeController) Get() {
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 		return
 	}
 
@@ -107,7 +110,7 @@ func (c *SizeController) Get() {
 	if err != nil {
 		guimessage.AddDanger("Fail to get cluster application with error" + err.Error())
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 		guimessage.RedirectMessage(c)
 		return
@@ -130,7 +133,7 @@ func (c *SizeController) Get() {
 	if err != nil {
 		guimessage.AddDanger("Fail to get cluster application deployment with error" + err.Error())
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 		guimessage.RedirectMessage(c)
 		return
@@ -139,7 +142,7 @@ func (c *SizeController) Get() {
 	if len(deployClusterApplication.ReplicationControllerNameSlice) == 0 {
 		guimessage.AddDanger("The replication controller name slice is empty for the cluster application deployment with name " + name)
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 		guimessage.RedirectMessage(c)
 		return
@@ -161,7 +164,7 @@ func (c *SizeController) Get() {
 	if err != nil {
 		guimessage.AddDanger("Fail to get the replication controller with name " + replicationControllerName)
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 		guimessage.RedirectMessage(c)
 		return
@@ -188,7 +191,7 @@ func (c *SizeController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 		return
 	}
 
@@ -235,7 +238,7 @@ func (c *SizeController) Post() {
 		guimessage.AddSuccess("Cluster application " + name + " is resized")
 	}
 
-	c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+	c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 	guimessage.RedirectMessage(c)
 }

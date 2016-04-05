@@ -29,6 +29,9 @@ func (c *CreateController) Get() {
 	c.TplName = "system/notification/sms/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	guimessage.OutputMessage(c.Data)
 }
 
@@ -52,6 +55,7 @@ func (c *CreateController) Post() {
 		urlPath,
 		apiKey,
 		apiSecret,
+		"",
 	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
@@ -69,7 +73,7 @@ func (c *CreateController) Post() {
 		guimessage.AddSuccess("SMS configuration " + name + " is created")
 	}
 
-	c.Ctx.Redirect(302, "/gui/system/notification/sms")
+	c.Ctx.Redirect(302, "/gui/system/notification/sms/list")
 
 	guimessage.RedirectMessage(c)
 }

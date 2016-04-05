@@ -9,15 +9,18 @@
 	</div>
 
 	<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#" role="tab" >Email Server</a></li>
-		<li role="presentation"><a href="/gui/system/notification/sms/" role="tab" >SMS</a></li>
+		{{ str2html .systemNotificationTabMenu }}
 	</ul>
 
 	<div class="row">
 		<div class="col-md-12">
-			
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/emailserver/create">Create</a>
+
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiSystemNotificationEmailServerCreate }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/notification/emailserver/create">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -42,7 +45,11 @@
 						<td>{{$emailServerSMTP.Host}}</td>
 						<td>{{$emailServerSMTP.Port}}</td>
 						<td>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$emailServerSMTP.Name}}" data-color="btn-danger" data-herf="/gui/system/notification/emailserver/delete?name={{$emailServerSMTP.Name}}">Delete</button>
+							<div class="btn-group">
+								{{ str2html $emailServerSMTP.HiddenTagGuiSystemNotificationEmailserverDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$emailServerSMTP.Name}}" data-color="btn-danger" data-herf="/gui/system/notification/emailserver/delete?name={{$emailServerSMTP.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

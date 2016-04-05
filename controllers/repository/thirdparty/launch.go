@@ -42,6 +42,9 @@ func (c *LaunchController) Get() {
 	c.TplName = "repository/thirdparty/launch.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -63,7 +66,7 @@ func (c *LaunchController) Get() {
 	if err != nil {
 		guimessage.AddDanger("Fail to get with error" + err.Error())
 		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/")
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
 		guimessage.RedirectMessage(c)
 	} else {
@@ -144,7 +147,7 @@ func (c *LaunchController) Post() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/")
+	c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
 
 	guimessage.RedirectMessage(c)
 }

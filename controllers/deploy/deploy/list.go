@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 )
@@ -27,11 +28,13 @@ type ListController struct {
 }
 
 type DeployInformation struct {
-	Namespace                 string
-	ImageInformationName      string
-	CurrentVersion            string
-	CurrentVersionDescription string
-	Description               string
+	Namespace                      string
+	ImageInformationName           string
+	CurrentVersion                 string
+	CurrentVersionDescription      string
+	Description                    string
+	HiddenTagGuiDeployDeployUpdate string
+	HiddenTagGuiDeployDeployDelete string
 }
 
 type ByDeployInformation []DeployInformation
@@ -46,6 +49,14 @@ func (b ByDeployInformation) getIdentifier(i int) string {
 func (c *ListController) Get() {
 	c.TplName = "deploy/deploy/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	// Tag won't work in loop so need to be placed in data
+	hiddenTagGuiDeployDeployUpdate := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/update")
+	hiddenTagGuiDeployDeployDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -74,6 +85,18 @@ func (c *ListController) Get() {
 		filteredDeployInformationSlice := make([]DeployInformation, 0)
 		for _, deployInformation := range deployInformationSlice {
 			if deployInformation.Namespace == namespaces {
+
+				if hiddenTagGuiDeployDeployUpdate {
+					deployInformation.HiddenTagGuiDeployDeployUpdate = "<div class='btn-group'>"
+				} else {
+					deployInformation.HiddenTagGuiDeployDeployUpdate = "<div hidden>"
+				}
+				if hiddenTagGuiDeployDeployDelete {
+					deployInformation.HiddenTagGuiDeployDeployDelete = "<div class='btn-group'>"
+				} else {
+					deployInformation.HiddenTagGuiDeployDeployDelete = "<div hidden>"
+				}
+
 				filteredDeployInformationSlice = append(filteredDeployInformationSlice, deployInformation)
 			}
 		}

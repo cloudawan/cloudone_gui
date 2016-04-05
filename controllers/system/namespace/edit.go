@@ -31,6 +31,9 @@ func (c *EditController) Get() {
 	c.TplName = "system/namespace/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	namespace := c.GetString("namespace")
 	if namespace == "" {
 		c.Data["actionButtonValue"] = "Create"
@@ -63,7 +66,7 @@ func (c *EditController) Post() {
 
 	name := c.GetString("name")
 
-	namespace := Namespace{name, false, ""}
+	namespace := Namespace{name, false, "", "", ""}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
@@ -83,7 +86,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Namespace " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/system/namespace/")
+	c.Ctx.Redirect(302, "/gui/system/namespace/list")
 
 	guimessage.RedirectMessage(c)
 }

@@ -34,6 +34,9 @@ func (c *UpgradeController) Get() {
 	c.TplName = "repository/imageinformation/upgrade.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	name := c.GetString("name")
 	c.Data["name"] = name
 
@@ -71,7 +74,7 @@ func (c *UpgradeController) Post() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/")
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 
 	guimessage.RedirectMessage(c)
 }

@@ -50,6 +50,9 @@ func (c *EditController) Get() {
 	c.TplName = "notification/notifier/edit.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	kind := c.GetString("kind")
 	name := c.GetString("name")
 
@@ -321,14 +324,14 @@ func (c *EditController) Post() {
 
 	if len(emailServerName) == 0 {
 		guimessage.AddDanger("Email server configuration name can't be empty")
-		c.Ctx.Redirect(302, "/gui/notification/notifier/")
+		c.Ctx.Redirect(302, "/gui/notification/notifier/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
 
 	if len(smsNexmoName) == 0 {
 		guimessage.AddDanger("SMS Nexom configuration name can't be empty")
-		c.Ctx.Redirect(302, "/gui/notification/notifier/")
+		c.Ctx.Redirect(302, "/gui/notification/notifier/list")
 		guimessage.RedirectMessage(c)
 		return
 	}
@@ -380,7 +383,7 @@ func (c *EditController) Post() {
 
 	replicationControllerNotifier := ReplicationControllerNotifier{
 		true, time.Duration(coolDownDuration) * time.Second, 0, kubeapiHost,
-		kubeapiPort, namespace, kind, name, notifierSlice, indicatorSlice}
+		kubeapiPort, namespace, kind, name, notifierSlice, indicatorSlice, "", ""}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/"
@@ -400,7 +403,7 @@ func (c *EditController) Post() {
 		guimessage.AddSuccess("Email notifier for " + kind + " " + name + " is edited")
 	}
 
-	c.Ctx.Redirect(302, "/gui/notification/notifier/")
+	c.Ctx.Redirect(302, "/gui/notification/notifier/list")
 
 	guimessage.RedirectMessage(c)
 }

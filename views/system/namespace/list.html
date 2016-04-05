@@ -9,9 +9,13 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/edit">Create</a>
+
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiSystemNamespaceEdit }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/edit">Create</a>
+					</div>
+				</div>
 			</div>
 
 			<table class="table table-condensed tree">
@@ -30,8 +34,14 @@
 						<td>{{$namespace.Name}}</td>
 						<td>{{$namespace.Selected}}</td>
 						<td>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/select?name={{$namespace.Name}}">Select</a>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$namespace.Name}}" data-color="btn-danger" data-herf="/gui/system/namespace/delete?name={{$namespace.Name}}" {{$namespace.Display}}>Delete</button>
+							<div class="btn-group">
+								{{ str2html $namespace.HiddenTagGuiSystemNamespaceSelect }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/select?name={{$namespace.Name}}">Select</a>
+								</div>
+								{{ str2html $namespace.HiddenTagGuiSystemNamespaceDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$namespace.Name}}" data-color="btn-danger" data-herf="/gui/system/namespace/delete?name={{$namespace.Name}}" {{$namespace.Display}}>Delete</button>
+								</div>
+							</div>
 						</td>
 					</thead>
 					</tr>

@@ -53,7 +53,7 @@ func (c *DeleteController) Get() {
 	}
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/system/host/credential/")
+	c.Ctx.Redirect(302, "/gui/system/host/credential/list")
 
 	guimessage.RedirectMessage(c)
 }

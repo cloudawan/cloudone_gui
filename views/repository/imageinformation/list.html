@@ -8,11 +8,16 @@
 	<div class="page-header">
 		<h1>Image List: Application</h1>
 	</div>
+
 	<div class="row">
 		<div class="col-md-12">
 
-			<div class="">
-				<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/create">Create</a>
+			<div class="pull-right">
+				<div class="btn-group">
+					<div class="btn-group" {{ str2html .hiddenTagGuiRepositoryImageInformationCreate }}>
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/create">Create</a>
+					</div>
+				</div>
 			</div>
 			
 			<table class="table table-condensed tree">
@@ -41,11 +46,23 @@
 							{{end}}
 						</td>
 						<td>
-							<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imagerecord/?name={{$imageInformation.Name}}">View Records</a><br/>
-							<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/upgrade?name={{$imageInformation.Name}}">Upgrade</a><br/>
-							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/create?name={{$imageInformation.Name}}">Deploy</a><br/>
-							<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$imageInformation.Name}}&action=create">B/G deployment</a><br/>
-							<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$imageInformation.Name}}" data-color="btn-danger" data-herf="/gui/repository/imageinformation/delete?name={{$imageInformation.Name}}">Delete</button>
+							<div class="btn-group-vertical">
+								{{ str2html $imageInformation.HiddenTagGuiRepositoryImageRecordList }}
+									<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imagerecord/list?name={{$imageInformation.Name}}">View Records</a>
+								</div>
+								{{ str2html $imageInformation.HiddenTagGuiRepositoryImageInformationUpgrade }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/upgrade?name={{$imageInformation.Name}}">Upgrade</a>
+								</div>
+								{{ str2html $imageInformation.HiddenTagGuiDeployDeployCreate }}
+									<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/create?name={{$imageInformation.Name}}">Deploy</a>
+								</div>
+								{{ str2html $imageInformation.HiddenTagGuiDeployDeployBlueGreenSelect }}
+									<a class="btn btn-xs btn-success" type="button" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploybluegreen/select?imageInformation={{$imageInformation.Name}}&action=create">B/G deployment</a>
+								</div>
+								{{ str2html $imageInformation.HiddenTagGuiRepositoryImageInformationDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$imageInformation.Name}}" data-color="btn-danger" data-herf="/gui/repository/imageinformation/delete?name={{$imageInformation.Name}}">Delete</button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				{{end}}

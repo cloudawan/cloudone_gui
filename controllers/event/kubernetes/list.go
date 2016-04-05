@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 	"time"
@@ -28,19 +29,20 @@ type ListController struct {
 }
 
 type KubernetesEvent struct {
-	Namespace      string
-	Name           string
-	Kind           string
-	Source         map[string]interface{}
-	Id             string
-	FirstTimestamp string
-	LastTimestamp  string
-	Count          int
-	Message        string
-	Reason         string
-	Acknowledge    bool
-	Action         string
-	Button         string
+	Namespace                              string
+	Name                                   string
+	Kind                                   string
+	Source                                 map[string]interface{}
+	Id                                     string
+	FirstTimestamp                         string
+	LastTimestamp                          string
+	Count                                  int
+	Message                                string
+	Reason                                 string
+	Acknowledge                            bool
+	Action                                 string
+	Button                                 string
+	HiddenTagGuiEventKubernetesAcknowledge string
 }
 
 const (
@@ -50,6 +52,13 @@ const (
 func (c *ListController) Get() {
 	c.TplName = "event/kubernetes/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
+
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+	// Authorization for Button
+	user, _ := c.GetSession("user").(*rbac.User)
+	// Tag won't work in loop so need to be placed in data
+	hasGuiEventKubernetesAcknowledge := user.HasPermission(identity.GetConponentName(), "GET", "/gui/event/kubernetes/acknowledge")
 
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
@@ -135,6 +144,7 @@ func (c *ListController) Get() {
 				acknowledge,
 				action,
 				button,
+				"",
 			}
 
 			kubernetesEventSlice = append(kubernetesEventSlice, kubernetesEvent)
@@ -165,12 +175,20 @@ func (c *ListController) Get() {
 
 		if acknowledge == "true" {
 			c.Data["acknowledgeActive"] = "active"
-			c.Data["paginationUrlPrevious"] = "/gui/event/kubernetes/?acknowledge=true&offset=" + strconv.Itoa(previousOffset)
-			c.Data["paginationUrlNext"] = "/gui/event/kubernetes/?acknowledge=true&offset=" + strconv.Itoa(nextOffset)
+			c.Data["paginationUrlPrevious"] = "/gui/event/kubernetes/list?acknowledge=true&offset=" + strconv.Itoa(previousOffset)
+			c.Data["paginationUrlNext"] = "/gui/event/kubernetes/list?acknowledge=true&offset=" + strconv.Itoa(nextOffset)
 		} else {
 			c.Data["unacknowledgeActive"] = "active"
-			c.Data["paginationUrlPrevious"] = "/gui/event/kubernetes/?acknowledge=false&offset=" + strconv.Itoa(previousOffset)
-			c.Data["paginationUrlNext"] = "/gui/event/kubernetes/?acknowledge=false&offset=" + strconv.Itoa(nextOffset)
+			c.Data["paginationUrlPrevious"] = "/gui/event/kubernetes/list?acknowledge=false&offset=" + strconv.Itoa(previousOffset)
+			c.Data["paginationUrlNext"] = "/gui/event/kubernetes/list?acknowledge=false&offset=" + strconv.Itoa(nextOffset)
+		}
+
+		for i := 0; i < len(kubernetesEventSlice); i++ {
+			if hasGuiEventKubernetesAcknowledge {
+				kubernetesEventSlice[i].HiddenTagGuiEventKubernetesAcknowledge = "<div class='btn-group'>"
+			} else {
+				kubernetesEventSlice[i].HiddenTagGuiEventKubernetesAcknowledge = "<div hidden>"
+			}
 		}
 
 		c.Data["kubernetesEventSlice"] = kubernetesEventSlice

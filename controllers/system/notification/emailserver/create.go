@@ -29,6 +29,9 @@ func (c *CreateController) Get() {
 	c.TplName = "system/notification/emailserver/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	// Authorization for web page display
+	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
 	guimessage.OutputMessage(c.Data)
 }
 
@@ -54,6 +57,7 @@ func (c *CreateController) Post() {
 		password,
 		host,
 		port,
+		"",
 	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
@@ -71,7 +75,7 @@ func (c *CreateController) Post() {
 		guimessage.AddSuccess("Email server configuration " + name + " is created")
 	}
 
-	c.Ctx.Redirect(302, "/gui/system/notification/emailserver")
+	c.Ctx.Redirect(302, "/gui/system/notification/emailserver/list")
 
 	guimessage.RedirectMessage(c)
 }
