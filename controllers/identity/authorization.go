@@ -24,10 +24,10 @@ func GetConponentName() string {
 }
 
 func SetPriviledgeHiddenTag(data map[interface{}]interface{}, tagName string, user *rbac.User, method string, path string) {
-	if user.HasPermission(componentName, method, path) == false {
-		data[tagName] = "hidden"
+	if user.HasPermission(componentName, method, path) {
+		data[tagName] = "<div class='btn-group'>"
 	} else {
-		data[tagName] = ""
+		data[tagName] = "<div hidden>"
 	}
 }
 
@@ -41,7 +41,7 @@ func GetLayoutMenu(user *rbac.User) string {
 
 	// Dashboard
 	if user.HasChildPermission(componentName, "GET", "/gui/dashboard") {
-		buffer.WriteString("					<li class=''><a href='/gui/dashboard/topology/'>Dashboard</a></li>\n")
+		buffer.WriteString("					<li class=''><a href='/gui/dashboard/topology'>Dashboard</a></li>\n")
 	}
 
 	// Repository
@@ -276,6 +276,31 @@ func GetSystemNotificationTabMenu(user *rbac.User, activeTab string) string {
 			buffer.WriteString("			<li role='presentation' class='active'><a href='#' role='tab' >SMS</a></li>\n")
 		} else {
 			buffer.WriteString("			<li role='presentation'><a href='/gui/system/notification/sms/list' role='tab' >SMS</a></li>\n")
+		}
+	}
+	return buffer.String()
+}
+
+func GetSystemRBACTabMenu(user *rbac.User, activeTab string) string {
+	if user == nil {
+		return ""
+	}
+
+	buffer := bytes.Buffer{}
+	buffer.WriteByte('\n')
+
+	if user.HasPermission(componentName, "GET", "/gui/system/rbac/user/list") {
+		if activeTab == "user" {
+			buffer.WriteString("			<li role='presentation' class='active'><a href='#' role='tab' >User</a></li>\n")
+		} else {
+			buffer.WriteString("			<li role='presentation'><a href='/gui/system/rbac/user/list' role='tab' >User</a></li>\n")
+		}
+	}
+	if user.HasPermission(componentName, "GET", "/gui/system/rbac/role/list") {
+		if activeTab == "role" {
+			buffer.WriteString("			<li role='presentation' class='active'><a href='#' role='tab' >Role</a></li>\n")
+		} else {
+			buffer.WriteString("			<li role='presentation'><a href='/gui/system/rbac/role/list' role='tab' >Role</a></li>\n")
 		}
 	}
 	return buffer.String()

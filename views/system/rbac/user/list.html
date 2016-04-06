@@ -8,12 +8,16 @@
 		<h1>User List</h1>
 	</div>
 
+	<ul class="nav nav-tabs" role="tablist">
+		{{ str2html .systemRBACTabMenu }}
+	</ul>
+
 	<div class="row">
 		<div class="col-md-12">
 			
 			<div class="pull-right">
 				<div class="btn-group">
-					<div class="btn-group" {{ str2html .hiddenTagGuiSystemRBACUserEdit }}>
+					{{ str2html .hiddenTagGuiSystemRBACUserEdit }}
 						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/rbac/user/edit?action=create">Create</a>
 					</div>
 				</div>
@@ -26,7 +30,7 @@
 					<th>Name</th>
 					<th>Password</th>
 					<th>Role</th>
-					<th>Environment</th>
+					<th>Namespace</th>
 					<th>Description</th>
 					<th>Action</th>
 				</tr>

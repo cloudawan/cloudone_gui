@@ -1,0 +1,800 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/system/rbac/role/edit?action={{ .action }}" method="post">
+				<input id="action" class="form-control" type="hidden" name="action" value="{{ .action }}">
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" required>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="description">Description:</label>
+					<div class="col-md-9">
+						<input id="description" class="form-control" type="text" name="description" value="{{ .description }}">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" >Permissions:</label>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="dashboard">Dashboard:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="dashboard" type="checkbox" name="dashboard" onclick="$('#regionDashboard').toggle();">
+					</div>
+				</div>
+				<div id="regionDashboard">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="dashboardTopology">Topology:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="dashboardTopology" type="checkbox" name="dashboardTopology" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="dashboardHealthCheck">Health Check:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="dashboardHealthCheck" type="checkbox" name="dashboardHealthCheck" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="dashboardBlueGreen">Blue Green:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="dashboardBlueGreen" type="checkbox" name="dashboardBlueGreen" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="dashboardAppService">App Service:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="dashboardAppService" type="checkbox" name="dashboardAppService" >
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="repository">Repository:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="repository" type="checkbox" name="repository" onclick="$('#regionRepository').toggle();">
+					</div>
+				</div>
+				<div id="regionRepository">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="repositoryImageInformation">Applications:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="repositoryImageInformation" type="checkbox" name="repositoryImageInformation" onclick="$('#regionRepositoryImageInformation').toggle();">
+						</div>
+					</div>
+					<div id="regionRepositoryImageInformation">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageInformationList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageInformationList" type="checkbox" name="repositoryImageInformationList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageInformationCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageInformationCreate" type="checkbox" name="repositoryImageInformationCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageInformationUpgrade">Upgrade:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageInformationUpgrade" type="checkbox" name="repositoryImageInformationUpgrade" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageInformationDeploy">Deploy:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageInformationDeploy" type="checkbox" name="repositoryImageInformationDeploy" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageInformationDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageInformationDelete" type="checkbox" name="repositoryImageInformationDelete" >
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="repositoryImageRecord">Record:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="repositoryImageRecord" type="checkbox" name="repositoryImageRecord" onclick="$('#regionRepositoryImageRecord').toggle();">
+						</div>
+					</div>
+					<div id="regionRepositoryImageRecord">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageRecordList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageRecordList" type="checkbox" name="repositoryImageRecordList">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryImageRecordDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryImageRecordDelete" type="checkbox" name="repositoryImageRecordDelete" >
+							</div>
+						</div>
+					</div>
+				
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="repositoryThirdPartyService">Third-party Service:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="repositoryThirdPartyService" type="checkbox" name="repositoryThirdPartyService" onclick="$('#regionRepositoryThirdPartyService').toggle();">
+						</div>
+					</div>
+					<div id="regionRepositoryThirdPartyService">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryThirdPartyServiceList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryThirdPartyServiceList" type="checkbox" name="repositoryThirdPartyServiceList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryThirdPartyServiceCreate">Create/Update:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryThirdPartyServiceCreate" type="checkbox" name="repositoryThirdPartyServiceCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryThirdPartyServiceLaunch">Launch:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryThirdPartyServiceLaunch" type="checkbox" name="repositoryThirdPartyServiceLaunch" >
+							</div>
+						</div>
+						<!--
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryThirdPartyServiceUpdate">Update:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryThirdPartyServiceUpdate" type="checkbox" name="repositoryThirdPartyServiceUpdate" >
+							</div>
+						</div>
+						-->
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryThirdPartyServiceDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryThirdPartyServiceDelete" type="checkbox" name="repositoryThirdPartyServiceDelete" >
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="deploy">Deploy:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="deploy" type="checkbox" name="deploy" onclick="$('#regionDeploy').toggle();">
+					</div>
+				</div>
+				<div id="regionDeploy">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="repositoryDeployDeploy">Applications:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="repositoryDeployDeploy" type="checkbox" name="repositoryDeployDeploy" onclick="$('#regionRepositoryDeployDeploy').toggle();">
+						</div>
+					</div>
+					<div id="regionRepositoryDeployDeploy">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryDeployDeployList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryDeployDeployList" type="checkbox" name="repositoryDeployDeployList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryDeployDeployCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryDeployDeployCreate" type="checkbox" name="repositoryDeployDeployCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryDeployDeployUpdate">Update/RollBack:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryDeployDeployUpdate" type="checkbox" name="repositoryDeployDeployUpdate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="repositoryDeployDeployDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="repositoryDeployDeployDelete" type="checkbox" name="repositoryDeployDeployDelete" >
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="deployDeployBlueGreen">Blue Green Deployments:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="deployDeployBlueGreen" type="checkbox" name="deployDeployBlueGreen" onclick="$('#regionDeployDeployBlueGreen').toggle();">
+						</div>
+					</div>
+					<div id="regionDeployDeployBlueGreen">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployBlueGreenList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployBlueGreenList" type="checkbox" name="deployDeployBlueGreenList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployBlueGreenSelect">Select:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployBlueGreenSelect" type="checkbox" name="deployDeployBlueGreenSelect" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployBlueGreenDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployBlueGreenDelete" type="checkbox" name="deployDeployBlueGreenDelete" >
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="deployAutoScaler">AutoScalers:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="deployAutoScaler" type="checkbox" name="deployAutoScaler" onclick="$('#regionDeployAutoScaler').toggle();">
+						</div>
+					</div>
+					<div id="regionDeployAutoScaler">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployAutoScalerList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployAutoScalerList" type="checkbox" name="deployAutoScalerList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployAutoScalerCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployAutoScalerCreate" type="checkbox" name="deployAutoScalerCreate" >
+							</div>
+						</div>
+						<!--
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployAutoScalerUpdate">Update:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployAutoScalerUpdate" type="checkbox" name="deployAutoScalerUpdate" >
+							</div>
+						</div>
+						-->
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployAutoScalerDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployAutoScalerDelete" type="checkbox" name="deployAutoScalerDelete" >
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="deployDeployClusterApplication">Third-Party Services:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="deployDeployClusterApplication" type="checkbox" name="deployDeployClusterApplication" onclick="$('#regionDeployDeployClusterApplication').toggle();">
+						</div>
+					</div>
+					<div id="regionDeployDeployClusterApplication">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployClusterApplicationList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployClusterApplicationList" type="checkbox" name="deployDeployClusterApplicationList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployClusterApplicationSize">Resize:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployClusterApplicationSize" type="checkbox" name="deployDeployClusterApplicationSize" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="deployDeployClusterApplicationDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="deployDeployClusterApplicationDelete" type="checkbox" name="deployDeployClusterApplicationDelete" >
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="inventory">Inventory:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="inventory" type="checkbox" name="inventory" onclick="$('#regionInventory').toggle();">
+					</div>
+				</div>
+				<div id="regionInventory">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="inventoryReplicationController">Replication Controllers:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="inventoryReplicationController" type="checkbox" name="inventoryReplicationController" onclick="$('#regionInventoryReplicationController').toggle();">
+						</div>
+					</div>
+					<div id="regionInventoryReplicationController">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerList" type="checkbox" name="inventoryReplicationControllerList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerCreate" type="checkbox" name="inventoryReplicationControllerCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerSize">Resize:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerSize" type="checkbox" name="inventoryReplicationControllerSize" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerDelete" type="checkbox" name="inventoryReplicationControllerDelete" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerPodLog">Log:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerPodLog" type="checkbox" name="inventoryReplicationControllerPodLog" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryReplicationControllerDockerTerminal">Terminal:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryReplicationControllerDockerTerminal" type="checkbox" name="inventoryReplicationControllerDockerTerminal" >
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="inventoryService">Services:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="inventoryService" type="checkbox" name="inventoryService" onclick="$('#regionInventoryService').toggle();">
+						</div>
+					</div>
+					<div id="regionInventoryService">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryServiceList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryServiceList" type="checkbox" name="inventoryServiceList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryServiceCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryServiceCreate" type="checkbox" name="inventoryServiceCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="inventoryServiceDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="inventoryServiceDelete" type="checkbox" name="inventoryServiceDelete" >
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="filesystem">Filesystem:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="filesystem" type="checkbox" name="filesystem" onclick="$('#regionFilesystem').toggle();">
+					</div>
+				</div>
+				<div id="regionFilesystem">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="filesystemGlusterfs">Glusterfs:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="filesystemGlusterfs" type="checkbox" name="filesystemGlusterfs" onclick="$('#regionFilesystemGlusterfs').toggle();">
+						</div>
+					</div>
+					<div id="regionFilesystemGlusterfs">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="filesystemGlusterfsCluster">Cluster:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="filesystemGlusterfsCluster" type="checkbox" name="filesystemGlusterfsCluster" onclick="$('#regionFilesystemGlusterfsCluster').toggle();">
+							</div>
+						</div>
+						<div id="regionFilesystemGlusterfsCluster">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="filesystemGlusterfsClusterList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="filesystemGlusterfsClusterList" type="checkbox" name="filesystemGlusterfsClusterList" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="filesystemGlusterfsClusterCreate">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="filesystemGlusterfsClusterCreate" type="checkbox" name="filesystemGlusterfsClusterCreate" >
+								</div>
+							</div>
+							<!--
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="filesystemGlusterfsClusterUpdate">Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="filesystemGlusterfsClusterUpdate" type="checkbox" name="filesystemGlusterfsClusterUpdate" >
+								</div>
+							</div>
+							-->
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="filesystemGlusterfsClusterDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="filesystemGlusterfsClusterDelete" type="checkbox" name="filesystemGlusterfsClusterDelete" >
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-4 control-label" for="filesystemGlusterfsVolume">Volumes:</label>
+							<div class="col-md-offset-1 col-md-5 checkbox">
+								<input id="filesystemGlusterfsVolume" type="checkbox" name="filesystemGlusterfsVolume" onclick="$('#regionFilesystemGlusterfsVolume').toggle();">
+							</div>
+						</div>
+						<div id="regionFilesystemGlusterfsVolume">
+							<div class="form-group">
+								<label class="col-md-5 control-label" for="filesystemGlusterfsVolumeList">View:</label>
+								<div class="col-md-offset-1 col-md-4 checkbox">
+									<input id="filesystemGlusterfsVolumeList" type="checkbox" name="filesystemGlusterfsVolumeList" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-5 control-label" for="filesystemGlusterfsVolumeCreate">Create:</label>
+								<div class="col-md-offset-1 col-md-4 checkbox">
+									<input id="filesystemGlusterfsVolumeCreate" type="checkbox" name="filesystemGlusterfsVolumeCreate" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-5 control-label" for="filesystemGlusterfsVolumeDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-4 checkbox">
+									<input id="filesystemGlusterfsVolumeDelete" type="checkbox" name="filesystemGlusterfsVolumeDelete" >
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="monitor">Monitor:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="monitor" type="checkbox" name="monitor" onclick="$('#regionMonitor').toggle();">
+					</div>
+				</div>
+				<div id="regionMonitor">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="monitorNode">Nodes:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="monitorNode" type="checkbox" name="monitorNode" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="monitorContainer">Containers:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="monitorContainer" type="checkbox" name="monitorContainer" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="monitorHistoricalContainer">Historical Containers:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="monitorHistoricalContainer" type="checkbox" name="monitorHistoricalContainer" >
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="event">Event:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="event" type="checkbox" name="event" onclick="$('#regionEvent').toggle();">
+					</div>
+				</div>
+				<div id="regionEvent">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="eventKubernetes">Kubernetes:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="eventKubernetes" type="checkbox" name="eventKubernetes" onclick="$('#regionEventKubernetes').toggle();">
+						</div>
+					</div>
+					<div id="regionEventKubernetes">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="eventKubernetesList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="eventKubernetesList" type="checkbox" name="eventKubernetesList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="eventKubernetesAcknowledge">Acknowledge:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="eventKubernetesAcknowledge" type="checkbox" name="eventKubernetesAcknowledge" >
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="notification">Notification:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="notification" type="checkbox" name="notification" onclick="$('#regionNotification').toggle();">
+					</div>
+				</div>
+				<div id="regionNotification">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="notificationNotifier">Notifiers:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="notificationNotifier" type="checkbox" name="notificationNotifier" onclick="$('#regionNotificationNotifier').toggle();">
+						</div>
+					</div>
+					<div id="regionNotificationNotifier">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="notificationNotifierList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="notificationNotifierList" type="checkbox" name="notificationNotifierList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="notificationNotifierCreate">Create/Update:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="notificationNotifierCreate" type="checkbox" name="notificationNotifierCreate" >
+							</div>
+						</div>
+						<!--
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="notificationNotifierUpdate">Update:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="notificationNotifierUpdate" type="checkbox" name="notificationNotifierUpdate" >
+							</div>
+						</div>
+						-->
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="notificationNotifierDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="notificationNotifierDelete" type="checkbox" name="notificationNotifierDelete" >
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="system">System:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="system" type="checkbox" name="system" onclick="$('#regionSystem').toggle();">
+					</div>
+				</div>
+				<div id="regionSystem">
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemNamespace">Namespaces:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemNamespace" type="checkbox" name="systemNamespace" onclick="$('#regionSystemNamespace').toggle();">
+						</div>
+					</div>
+					<div id="regionSystemNamespace">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNamespaceList">View:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNamespaceList" type="checkbox" name="systemNamespaceList" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNamespaceCreate">Create:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNamespaceCreate" type="checkbox" name="systemNamespaceCreate" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNamespaceSelect">Select:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNamespaceSelect" type="checkbox" name="systemNamespaceSelect" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNamespaceDelete">Delete:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNamespaceDelete" type="checkbox" name="systemNamespaceDelete" >
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemNotification">Notifications:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemNotification" type="checkbox" name="systemNotification" onclick="$('#regionSystemNotification').toggle();">
+						</div>
+					</div>
+					<div id="regionSystemNotification">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNotificationEmailServer">Email Servers:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNotificationEmailServer" type="checkbox" name="systemNotificationEmailServer" onclick="$('#regionSystemNotificationEmailServer').toggle();">
+							</div>
+						</div>
+						<div id="regionSystemNotificationEmailServer">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationEmailServerList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationEmailServerList" type="checkbox" name="systemNotificationEmailServerList">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationEmailServerCreate">Create:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationEmailServerCreate" type="checkbox" name="systemNotificationEmailServerCreate">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationEmailServerDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationEmailServerDelete" type="checkbox" name="systemNotificationEmailServerDelete">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemNotificationSMS">SMS:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemNotificationSMS" type="checkbox" name="systemNotificationSMS" onclick="$('#regionSystemNotificationSMS').toggle();">
+							</div>
+						</div>
+						<div id="regionSystemNotificationSMS">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationSMSList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationSMSList" type="checkbox" name="systemNotificationSMSList">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationSMSCreate">Create:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationSMSCreate" type="checkbox" name="systemNotificationSMSCreate">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemNotificationSMSDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemNotificationSMSDelete" type="checkbox" name="systemNotificationSMSDelete">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemHost">Host:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemHost" type="checkbox" name="systemHost" onclick="$('#regionSystemHost').toggle();">
+						</div>
+					</div>
+					<div id="regionSystemHost">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemHostCredential">Credential:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemHostCredential" type="checkbox" name="systemHostCredential" onclick="$('#regionSystemHostCredential').toggle();">
+							</div>
+						</div>
+						<div id="regionSystemHostCredential">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemHostCredentialList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemHostCredentialList" type="checkbox" name="systemHostCredentialList" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemHostCredentialCreate">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemHostCredentialCreate" type="checkbox" name="systemHostCredentialCreate" >
+								</div>
+							</div>
+							<!--
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemHostCredentialUpdate">Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemHostCredentialUpdate" type="checkbox" name="systemHostCredentialUpdate" >
+								</div>
+							</div>
+							-->
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemHostCredentialDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemHostCredentialDelete" type="checkbox" name="systemHostCredentialDelete" >
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemRBAC">RBAC:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemRBAC" type="checkbox" name="systemRBAC" onclick="$('#regionSystemRBAC').toggle();">
+						</div>
+					</div>
+					<div id="regionSystemRBAC">
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemRBACUser">User:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemRBACUser" type="checkbox" name="systemRBACUser" onclick="$('#regionSystemRBACUser').toggle();">
+							</div>
+						</div>
+						<div id="regionSystemRBACUser">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACUserList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACUserList" type="checkbox" name="systemRBACUserList">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACUserCreate">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACUserCreate" type="checkbox" name="systemRBACUserCreate">
+								</div>
+							</div>
+							<!--
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACUserUpdate">Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACUserUpdate" type="checkbox" name="systemRBACUserUpdate">
+								</div>
+							</div>
+							-->
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACUserDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACUserDelete" type="checkbox" name="systemRBACUserDelete">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemRBACRole">Role:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemRBACRole" type="checkbox" name="systemRBACRole" onclick="$('#regionSystemRBACRole').toggle();">
+							</div>
+						</div>
+						<div id="regionSystemRBACRole">
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACRoleList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACRoleList" type="checkbox" name="systemRBACRoleList">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACRoleCreate">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACRoleCreate" type="checkbox" name="systemRBACRoleCreate">
+								</div>
+							</div>
+							<!--
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACRoleUpdate">Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACRoleUpdate" type="checkbox" name="systemRBACRoleUpdate">
+								</div>
+							</div>
+							-->
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemRBACRoleDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemRBACRoleDelete" type="checkbox" name="systemRBACRoleDelete">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemUpgrade">Upgrade:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemUpgrade" type="checkbox" name="systemUpgrade">
+						</div>
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/rbac/role/list">Cancel</a>
+				<input class="btn btn-md btn-success pull-right" type="submit" value="{{.actionButtonValue}}">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

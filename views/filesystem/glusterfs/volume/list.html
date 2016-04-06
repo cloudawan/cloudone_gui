@@ -12,10 +12,10 @@
 			
 			<div class="pull-right">
 				<div class="btn-group">
-					<div class="btn-group" {{ str2html .hiddenTagGuiFileSystemGlusterfsClusterList }}>
+					{{ str2html .hiddenTagGuiFileSystemGlusterfsClusterList }}
 						<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/cluster/list">Cancel</a>
 					</div>
-					<div class="btn-group" {{ str2html .hiddenTagGuifFileSystemGlusterfsVolumeCreate }}>
+					{{ str2html .hiddenTagGuifFileSystemGlusterfsVolumeCreate }}
 						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/filesystem/glusterfs/volume/create?clusterName={{.clusterName}}">Create</a>
 					</div>
 				</div>

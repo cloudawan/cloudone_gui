@@ -114,7 +114,7 @@ func (c *EditController) Get() {
 
 	if action == "create" {
 		c.Data["actionButtonValue"] = "Create"
-		c.Data["pageHeader"] = "Create Service"
+		c.Data["pageHeader"] = "Create User"
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/authorizations/users/" + name
@@ -145,12 +145,13 @@ func (c *EditController) Get() {
 
 		for _, ownedResource := range user.ResourceSlice {
 			// Simplied user version so the component of the resource is *
-			if ownedResource.Path == "*" {
+			if ownedResource.Path == "*" || ownedResource.Path == "/namespaces/" {
 				// The first one is * all
 				namespaceSlice[0].TagChecked = "checked"
 			} else if strings.HasPrefix(ownedResource.Path, "/namespaces/") {
 				splitSlice := strings.Split(ownedResource.Path, "/")
 				ownedNamespaceName := splitSlice[2]
+
 				for i := 0; i < len(namespaceSlice); i++ {
 					if namespaceSlice[i].Name == ownedNamespaceName {
 						namespaceSlice[i].TagChecked = "checked"
@@ -163,7 +164,7 @@ func (c *EditController) Get() {
 		c.Data["description"] = user.Description
 
 		c.Data["actionButtonValue"] = "Update"
-		c.Data["pageHeader"] = "Update Service"
+		c.Data["pageHeader"] = "Update User"
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -209,7 +210,7 @@ func (c *EditController) Post() {
 	}
 
 	if hasNamespaceNameAll {
-		resourceSlice = append(resourceSlice, &rbac.Resource{"namespace_*", "*", "/namespaces/*"})
+		resourceSlice = append(resourceSlice, &rbac.Resource{"namespace_*", "*", "/namespaces/"})
 	} else {
 		for _, namespaceName := range namespaceNameSlice {
 			resourceSlice = append(resourceSlice, &rbac.Resource{"namespace_" + namespaceName, "*", "/namespaces/" + namespaceName})

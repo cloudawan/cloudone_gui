@@ -51,8 +51,10 @@ func (c *ListController) Get() {
 
 	// Authorization for web page display
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
-	// Authorization for Button
+	// System RBAC tab menu
 	user, _ := c.GetSession("user").(*rbac.User)
+	c.Data["systemRBACTabMenu"] = identity.GetSystemRBACTabMenu(user, "user")
+	// Authorization for Button
 	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemRBACUserEdit", user, "GET", "/gui/system/rbac/user/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemRBACUserEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/rbac/user/edit")
@@ -111,7 +113,7 @@ func (c *ListController) Get() {
 				for _, resource := range user.ResourceSlice {
 					// Use component * only since they are the same in all components in the simplified version
 					if resource.Component == "*" {
-						if resource.Path == "*" {
+						if resource.Path == "*" || resource.Path == "/namespaces/" {
 							namespaceSlice = make([]string, 0)
 							namespaceSlice = append(namespaceSlice, "*")
 							break

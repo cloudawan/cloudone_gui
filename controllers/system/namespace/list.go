@@ -112,7 +112,9 @@ func (c *ListController) Get() {
 				namespace.HiddenTagGuiSystemNamespaceDelete = "<div hidden>"
 			}
 
-			namespaceSlice = append(namespaceSlice, namespace)
+			if user.HasResource(identity.GetConponentName(), "/namespaces/"+namespace.Name) {
+				namespaceSlice = append(namespaceSlice, namespace)
+			}
 		}
 
 		sort.Sort(ByNamespace(namespaceSlice))
