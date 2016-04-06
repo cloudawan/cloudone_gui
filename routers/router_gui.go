@@ -42,6 +42,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/system/namespace"
 	"github.com/cloudawan/cloudone_gui/controllers/system/notification/emailserver"
 	"github.com/cloudawan/cloudone_gui/controllers/system/notification/sms"
+	"github.com/cloudawan/cloudone_gui/controllers/system/rbac/user"
 	"github.com/cloudawan/cloudone_gui/controllers/system/upgrade"
 )
 
@@ -93,6 +94,9 @@ func init() {
 	beego.Router("/gui/system/host/credential/edit", &credential.EditController{})
 	beego.Router("/gui/system/upgrade", &upgrade.IndexController{})
 	beego.Router("/gui/system/upgrade/websocket", &upgrade.WebSocketController{})
+	beego.Router("/gui/system/rbac/user/list", &user.ListController{})
+	beego.Router("/gui/system/rbac/user/delete", &user.DeleteController{})
+	beego.Router("/gui/system/rbac/user/edit", &user.EditController{})
 	beego.Router("/gui/dashboard/topology", &topology.IndexController{})
 	beego.Router("/gui/dashboard/topology/data", &topology.DataController{})
 	beego.Router("/gui/dashboard/healthcheck/list", &healthcheck.ListController{})

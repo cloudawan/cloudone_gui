@@ -201,6 +201,9 @@ func GetLayoutMenu(user *rbac.User) string {
 	if user.HasPermission(componentName, "GET", "/gui/system/host/credential/list") {
 		buffer.WriteString("							<li><a href='/gui/system/host/credential/list'>Host Credential</a></li>\n")
 	}
+	if user.HasPermission(componentName, "GET", "/gui/system/rbac/user/list") {
+		buffer.WriteString("							<li><a href='/gui/system/rbac/user/list'>RBAC</a></li>\n")
+	}
 	if user.HasPermission(componentName, "GET", "/gui/system/upgrade/list") {
 		buffer.WriteString("							<li><a href='/gui/system/upgrade'>Upgrade</a></li>\n")
 	}
