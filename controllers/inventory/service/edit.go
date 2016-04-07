@@ -99,7 +99,7 @@ func (c *EditController) Post() {
 	}
 
 	portSlice := make([]ServicePort, 0)
-	portSlice = append(portSlice, ServicePort{portName, protocol, port, targetPort, nodePort})
+	portSlice = append(portSlice, ServicePort{portName, protocol, port, targetPort, nodePort, "", ""})
 	selectorMap := make(map[string]interface{})
 	selectorMap["name"] = selectorName
 	labelMap := make(map[string]interface{})

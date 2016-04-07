@@ -41,11 +41,13 @@ type Service struct {
 }
 
 type ServicePort struct {
-	Name       string
-	Protocol   string
-	Port       string
-	TargetPort string
-	NodePort   string
+	Name              string
+	Protocol          string
+	Port              string
+	TargetPort        string
+	NodePort          string
+	NodePortURL       string
+	HiddenTagNodePort string
 }
 
 var displayMap map[string]string = map[string]string{
@@ -100,12 +102,21 @@ func (c *ListController) Get() {
 		for i := 0; i < len(serviceSlice); i++ {
 			serviceSlice[i].Display = displayMap[serviceSlice[i].Name]
 
+			for j := 0; j < len(serviceSlice[i].PortSlice); j++ {
+				if serviceSlice[i].PortSlice[j].NodePort == "" {
+					serviceSlice[i].PortSlice[j].HiddenTagNodePort = "hidden"
+				} else {
+					serviceSlice[i].PortSlice[j].NodePortURL = "http://" + kubeapiHost + ":" + serviceSlice[i].PortSlice[j].NodePort
+				}
+			}
+
 			if hasGuiInventoryServiceDelete {
 				serviceSlice[i].HiddenTagGuiInventoryServiceDelete = "<div class='btn-group'>"
 			} else {
 				serviceSlice[i].HiddenTagGuiInventoryServiceDelete = "<div hidden>"
 			}
 		}
+
 		c.Data["serviceSlice"] = serviceSlice
 	}
 

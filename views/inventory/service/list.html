@@ -71,6 +71,7 @@
 							<th>TargetPort</th>
 							<th>NodePort</th>
 							<th></th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					
@@ -83,6 +84,13 @@
 							<td>{{$port.TargetPort}}</td>
 							<td>{{$port.NodePort}}</td>
 							<td></td>
+							<td>
+								<div class="btn-group">
+									<div {{ $port.HiddenTagNodePort }}>
+										<a class="btn btn-xs btn-primary" target="_blank" href="{{ $port.NodePortURL }}">Aceess</a>
+									</div>
+								</div>
+							</td>
 						</tr>		
 					{{end}}
 
