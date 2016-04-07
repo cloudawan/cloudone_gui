@@ -162,6 +162,7 @@ func (c *EditController) Get() {
 
 		c.Data["name"] = name
 		c.Data["description"] = user.Description
+		c.Data["readonly"] = "readonly"
 
 		c.Data["actionButtonValue"] = "Update"
 		c.Data["pageHeader"] = "Update User"
