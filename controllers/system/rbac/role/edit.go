@@ -136,7 +136,8 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/inventory/replicationcontroller/edit", "checkedTagInventoryReplicationControllerCreate", c.Data, pathMap)
 		setCheckedTag("/gui/inventory/replicationcontroller/size", "checkedTagInventoryReplicationControllerSize", c.Data, pathMap)
 		setCheckedTag("/gui/inventory/replicationcontroller/delete", "checkedTagInventoryReplicationControllerDelete", c.Data, pathMap)
-		setCheckedTag("/gui/inventory/replicationcontroller/podlog", "checkedTagInventoryReplicationControllerPodLog", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/pod/log", "checkedTagInventoryReplicationControllerPodLog", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/pod/delete", "checkedTagInventoryReplicationControllerPodDelete", c.Data, pathMap)
 		setCheckedTag("/gui/inventory/replicationcontroller/dockerterminal", "checkedTagInventoryReplicationControllerDockerTerminal", c.Data, pathMap)
 		setCheckedTag("/gui/inventory/service", "checkedTagInventoryService", c.Data, pathMap)
 		setHiddenTag("/gui/inventory/service", "hiddenTagInventoryService", c.Data, pathMap)
@@ -460,7 +461,11 @@ func (c *EditController) Post() {
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerPodLog") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerPodLog", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/podlog"}
+				permission := &rbac.Permission{"inventoryReplicationControllerPodLog", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/pod/log"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+			if c.GetString("inventoryReplicationControllerPodDelete") == "on" {
+				permission := &rbac.Permission{"inventoryReplicationControllerPodDelete", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/pod/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerDockerTerminal") == "on" {

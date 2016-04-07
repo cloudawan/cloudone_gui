@@ -71,7 +71,10 @@
 							<td>
 								<div class="btn-group ">
 									{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerPodlog }}
-										<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/podlog?namespace={{$pod.Namespace}}&pod={{$pod.Name}}">Log</a>
+										<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/pod/log?namespace={{$pod.Namespace}}&pod={{$pod.Name}}">Log</a>
+									</div>
+									{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerPodDelete }}
+										<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$pod.Name}}" data-color="btn-danger" data-herf="/gui/inventory/replicationcontroller/pod/delete?namespace={{$pod.Namespace}}&pod={{$pod.Name}}">Delete</button>
 									</div>
 								</div>
 							</td>

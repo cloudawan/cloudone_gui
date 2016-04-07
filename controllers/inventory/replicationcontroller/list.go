@@ -40,6 +40,7 @@ type ReplicationControllerAndRelatedPod struct {
 	HiddenTagGuiInventoryReplicationControllerSize           string
 	HiddenTagGuiInventoryReplicationControllerDelete         string
 	HiddenTagGuiInventoryReplicationControllerPodlog         string
+	HiddenTagGuiInventoryReplicationControllerPodDelete      string
 	HiddenTagGuiInventoryReplicationControllerDockerterminal string
 }
 
@@ -82,7 +83,8 @@ func (c *ListController) Get() {
 	// Tag won't work in loop so need to be placed in data
 	hasGuiInventoryReplicationControllerSize := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/size")
 	hasGuiInventoryReplicationControllerDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/delete")
-	hasGuiInventoryReplicationControllerPodlog := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/podlog")
+	hasGuiInventoryReplicationControllerPodlog := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/pod/log")
+	hasGuiInventoryReplicationControllerPodDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/pod/delete")
 	hasGuiInventoryReplicationControllerDockerterminal := user.HasPermission(identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/dockerterminal")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -133,6 +135,11 @@ func (c *ListController) Get() {
 				replicationControllerAndRelatedPodSlice[i].HiddenTagGuiInventoryReplicationControllerPodlog = "<div class='btn-group'>"
 			} else {
 				replicationControllerAndRelatedPodSlice[i].HiddenTagGuiInventoryReplicationControllerPodlog = "<div hidden>"
+			}
+			if hasGuiInventoryReplicationControllerPodDelete {
+				replicationControllerAndRelatedPodSlice[i].HiddenTagGuiInventoryReplicationControllerPodDelete = "<div class='btn-group'>"
+			} else {
+				replicationControllerAndRelatedPodSlice[i].HiddenTagGuiInventoryReplicationControllerPodDelete = "<div hidden>"
 			}
 			if hasGuiInventoryReplicationControllerDockerterminal {
 				replicationControllerAndRelatedPodSlice[i].HiddenTagGuiInventoryReplicationControllerDockerterminal = "<div class='btn-group'>"

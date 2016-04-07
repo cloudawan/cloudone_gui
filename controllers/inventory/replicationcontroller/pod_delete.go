@@ -23,16 +23,12 @@ import (
 	"strconv"
 )
 
-type PodLogController struct {
+type PodDeleteController struct {
 	beego.Controller
 }
 
-func (c *PodLogController) Get() {
-	c.TplName = "inventory/replicationcontroller/pod_log.html"
+func (c *PodDeleteController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
-
-	// Authorization for web page display
-	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -41,7 +37,8 @@ func (c *PodLogController) Get() {
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
 		return
 	}
 
@@ -49,24 +46,25 @@ func (c *PodLogController) Get() {
 	pod := c.GetString("pod")
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/pods/" + namespace + "/" + pod + "/logs?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/pods/" + namespace + "/" + pod + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	result, err := restclient.RequestGet(url, tokenHeaderMap, true)
+	_, err = restclient.RequestDelete(url, nil, tokenHeaderMap, true)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
 	}
 
-	jsonMap, _ := result.(map[string]interface{})
-
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		c.Data["logJsonMap"] = jsonMap
+		guimessage.AddSuccess("Pod " + pod + " is deleted")
 	}
 
-	guimessage.OutputMessage(c.Data)
+	// Redirect to list
+	c.Ctx.Redirect(302, "/gui/inventory/replicationcontroller/list")
+
+	guimessage.RedirectMessage(c)
 }
