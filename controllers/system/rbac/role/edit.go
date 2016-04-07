@@ -67,6 +67,165 @@ func (c *EditController) Get() {
 			return
 		}
 
+		pathMap := make(map[string]bool)
+		for _, permission := range role.PermissionSlice {
+			if permission.Component == identity.GetConponentName() && permission.Method == "GET" {
+				pathMap[permission.Path] = true
+			}
+		}
+
+		// Dashboard
+		setCheckedTag("/gui/dashboard", "checkedTagDashboard", c.Data, pathMap)
+		setHiddenTag("/gui/dashboard", "hiddenTagDashboard", c.Data, pathMap)
+		setCheckedTag("/gui/dashboard/topology", "checkedTagDashboardTopology", c.Data, pathMap)
+		setCheckedTag("/gui/dashboard/healthcheck", "checkedTagDashboardHealthCheck", c.Data, pathMap)
+		setCheckedTag("/gui/dashboard/bluegreen", "checkedTagDashboardBlueGreen", c.Data, pathMap)
+		setCheckedTag("/gui/dashboard/appservice", "checkedTagDashboardAppService", c.Data, pathMap)
+
+		// Repository
+		setCheckedTag("/gui/repository", "checkedTagRepository", c.Data, pathMap)
+		setHiddenTag("/gui/repository", "hiddenTagRepository", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imageinformation", "checkedTagRepositoryImageInformation", c.Data, pathMap)
+		setHiddenTag("/gui/repository/imageinformation", "hiddenTagRepositoryImageInformation", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imageinformation/list", "checkedTagRepositoryImageInformationList", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imageinformation/create", "checkedTagRepositoryImageInformationCreate", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imageinformation/upgrade", "checkedTagRepositoryImageInformationUpgrade", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imageinformation/delete", "checkedTagRepositoryImageInformationDelete", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imagerecord", "checkedTagRepositoryImageRecord", c.Data, pathMap)
+		setHiddenTag("/gui/repository/imagerecord", "hiddenTagRepositoryImageRecord", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imagerecord/list", "checkedTagRepositoryImageRecordList", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imagerecord/delete", "checkedTagRepositoryImageRecordDelete", c.Data, pathMap)
+		setCheckedTag("/gui/repository/thirdparty", "checkedTagRepositoryThirdPartyService", c.Data, pathMap)
+		setHiddenTag("/gui/repository/thirdparty", "hiddenTagRepositoryThirdPartyService", c.Data, pathMap)
+		setCheckedTag("/gui/repository/thirdparty/list", "checkedTagRepositoryThirdPartyServiceList", c.Data, pathMap)
+		setCheckedTag("/gui/repository/thirdparty/edit", "checkedTagRepositoryThirdPartyServiceCreate", c.Data, pathMap)
+		setCheckedTag("/gui/repository/thirdparty/launch", "checkedTagRepositoryThirdPartyServiceLaunch", c.Data, pathMap)
+		setCheckedTag("/gui/repository/thirdparty/delete", "checkedTagRepositoryThirdPartyServiceDelete", c.Data, pathMap)
+
+		// Deploy
+		setCheckedTag("/gui/deploy", "checkedTagDeploy", c.Data, pathMap)
+		setHiddenTag("/gui/deploy", "hiddenTagDeploy", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy", "checkedTagDeployDeploy", c.Data, pathMap)
+		setHiddenTag("/gui/deploy/deploy", "hiddenTagDeployDeploy", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy/list", "checkedTagDeployDeployList", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy/create", "checkedTagDeployDeployCreate", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy/update", "checkedTagDeployDeployUpdate", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy/delete", "checkedTagDeployDeployDelete", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploybluegreen", "checkedTagDeployDeployBlueGreen", c.Data, pathMap)
+		setHiddenTag("/gui/deploy/deploybluegreen", "hiddenTagDeployDeployBlueGreen", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploybluegreen/list", "checkedTagDeployDeployBlueGreenList", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploybluegreen/select", "checkedTagDeployDeployBlueGreenSelect", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploybluegreen/delete", "checkedTagDeployDeployBlueGreenDelete", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/autoscaler", "checkedTagDeployAutoScaler", c.Data, pathMap)
+		setHiddenTag("/gui/deploy/autoscaler", "hiddenTagDeployDeployAutoScaler", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/autoscaler/list", "checkedTagDeployAutoScalerList", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/autoscaler/edit", "checkedTagDeployAutoScalerCreate", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/autoscaler/delete", "checkedTagDeployAutoScalerDelete", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deployclusterapplication", "checkedTagDeployDeployClusterApplication", c.Data, pathMap)
+		setHiddenTag("/gui/deploy/deployclusterapplication", "hiddenTagDeployDeployClusterApplication", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deployclusterapplication/list", "checkedTagDeployDeployClusterApplicationList", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deployclusterapplication/size", "checkedTagDeployDeployClusterApplicationSize", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deployclusterapplication/delete", "checkedTagDeployDeployClusterApplicationDelete", c.Data, pathMap)
+
+		// Inventory
+		setCheckedTag("/gui/inventory", "checkedTagInventory", c.Data, pathMap)
+		setHiddenTag("/gui/inventory", "hiddenTagInventory", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller", "checkedTagInventoryReplicationController", c.Data, pathMap)
+		setHiddenTag("/gui/inventory/replicationcontroller", "hiddenTagInventoryReplicationController", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/list", "checkedTagInventoryReplicationControllerList", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/edit", "checkedTagInventoryReplicationControllerCreate", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/size", "checkedTagInventoryReplicationControllerSize", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/delete", "checkedTagInventoryReplicationControllerDelete", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/podlog", "checkedTagInventoryReplicationControllerPodLog", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/replicationcontroller/dockerterminal", "checkedTagInventoryReplicationControllerDockerTerminal", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/service", "checkedTagInventoryService", c.Data, pathMap)
+		setHiddenTag("/gui/inventory/service", "hiddenTagInventoryService", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/service/list", "checkedTagInventoryServiceList", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/service/edit", "checkedTagInventoryServiceCreate", c.Data, pathMap)
+		setCheckedTag("/gui/inventory/service/delete", "checkedTagInventoryServiceDelete", c.Data, pathMap)
+
+		// File System
+		setCheckedTag("/gui/filesystem", "checkedTagFilesystem", c.Data, pathMap)
+		setHiddenTag("/gui/filesystem", "hiddenTagFilesystem", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs", "checkedTagFilesystemGlusterfs", c.Data, pathMap)
+		setHiddenTag("/gui/filesystem/glusterfs", "hiddenTagFilesystemGlusterfs", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/cluster", "checkedTagFilesystemGlusterfsCluster", c.Data, pathMap)
+		setHiddenTag("/gui/filesystem/glusterfs/cluster", "hiddenTagFilesystemGlusterfsCluster", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/cluster/list", "checkedTagFilesystemGlusterfsClusterList", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/cluster/edit", "checkedTagFilesystemGlusterfsClusterCreate", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/cluster/delete", "checkedTagFilesystemGlusterfsClusterDelete", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/volume", "checkedTagFilesystemGlusterfsVolume", c.Data, pathMap)
+		setHiddenTag("/gui/filesystem/glusterfs/volume", "hiddenTagFilesystemGlusterfsVolume", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/volume/list", "checkedTagFilesystemGlusterfsVolumeList", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/volume/create", "checkedTagFilesystemGlusterfsVolumeCreate", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/volume/delete", "checkedTagFilesystemGlusterfsVolumeDelete", c.Data, pathMap)
+
+		// Monitor
+		setCheckedTag("/gui/monitor", "checkedTagMonitor", c.Data, pathMap)
+		setHiddenTag("/gui/monitor", "hiddenTagMonitor", c.Data, pathMap)
+		setCheckedTag("/gui/monitor/node", "checkedTagMonitorNode", c.Data, pathMap)
+		setCheckedTag("/gui/monitor/container", "checkedTagMonitorContainer", c.Data, pathMap)
+		setCheckedTag("/gui/monitor/historicalcontainer", "checkedTagMonitorHistoricalContainer", c.Data, pathMap)
+
+		// Event
+		setCheckedTag("/gui/event", "checkedTagEvent", c.Data, pathMap)
+		setHiddenTag("/gui/event", "hiddenTagEvent", c.Data, pathMap)
+		setCheckedTag("/gui/event/kubernetes", "checkedTagEventKubernetes", c.Data, pathMap)
+		setHiddenTag("/gui/event/kubernetes", "hiddenTagEventKubernetes", c.Data, pathMap)
+		setCheckedTag("/gui/event/kubernetes/list", "checkedTagEventKubernetesList", c.Data, pathMap)
+		setCheckedTag("/gui/event/kubernetes/acknowledge", "checkedTagEventKubernetesAcknowledge", c.Data, pathMap)
+
+		// Notification
+		setCheckedTag("/gui/notification", "checkedTagNotification", c.Data, pathMap)
+		setHiddenTag("/gui/notification", "hiddenTagNotification", c.Data, pathMap)
+		setCheckedTag("/gui/notification/notifier", "checkedTagNotificationNotifier", c.Data, pathMap)
+		setHiddenTag("/gui/notification/notifier", "hiddenTagNotificationNotifier", c.Data, pathMap)
+		setCheckedTag("/gui/notification/notifier/list", "checkedTagNotificationNotifierList", c.Data, pathMap)
+		setCheckedTag("/gui/notification/notifier/edit", "checkedTagNotificationNotifierCreate", c.Data, pathMap)
+		setCheckedTag("/gui/notification/notifier/delete", "checkedTagNotificationNotifierDelete", c.Data, pathMap)
+
+		// System
+		setCheckedTag("/gui/system", "checkedTagSystem", c.Data, pathMap)
+		setHiddenTag("/gui/system", "hiddenTagSystem", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace", "checkedTagSystemNamespace", c.Data, pathMap)
+		setHiddenTag("/gui/system/namespace", "hiddenTagSystemNamespace", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace/list", "checkedTagSystemNamespaceList", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace/edit", "checkedTagSystemNamespaceCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace/select", "checkedTagSystemNamespaceSelect", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace/delete", "checkedTagSystemNamespaceDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification", "checkedTagSystemNotification", c.Data, pathMap)
+		setHiddenTag("/gui/system/notification", "hiddenTagSystemNotification", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/emailserver", "checkedTagSystemNotificationEmailServer", c.Data, pathMap)
+		setHiddenTag("/gui/system/notification/emailserver", "hiddenTagSystemNotificationEmailServer", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/emailserver/list", "checkedTagSystemNotificationEmailServerList", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/emailserver/create", "checkedTagSystemNotificationEmailServerCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/emailserver/delete", "checkedTagSystemNotificationEmailServerDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/sms", "checkedTagSystemNotificationSMS", c.Data, pathMap)
+		setHiddenTag("/gui/system/notification/sms", "hiddenTagSystemNotificationnSMS", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/sms/list", "checkedTagSystemNotificationSMSList", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/sms/create", "checkedTagSystemNotificationSMSCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/notification/sms/delete", "checkedTagSystemNotificationSMSDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/host", "checkedTagSystemHost", c.Data, pathMap)
+		setHiddenTag("/gui/system/host", "hiddenTagSystemHost", c.Data, pathMap)
+		setCheckedTag("/gui/system/host/credential", "checkedTagSystemHostCredential", c.Data, pathMap)
+		setHiddenTag("/gui/system/host/credential", "hiddenTagSystemHostCredential", c.Data, pathMap)
+		setCheckedTag("/gui/system/host/credential/list", "checkedTagSystemHostCredentialList", c.Data, pathMap)
+		setCheckedTag("/gui/system/host/credential/edit", "checkedTagSystemHostCredentialCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/host/credential/delete", "checkedTagSystemHostCredentialDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac", "checkedTagSystemRBAC", c.Data, pathMap)
+		setHiddenTag("/gui/system/rbac", "hiddenTagSystemRBAC", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/user", "checkedTagSystemRBACUser", c.Data, pathMap)
+		setHiddenTag("/gui/system/rbac/user", "hiddenTagSystemRBACUser", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/user/list", "checkedTagSystemRBACUserList", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/user/edit", "checkedTagSystemRBACUserCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/user/delete", "checkedTagSystemRBACUserDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/role", "checkedTagSystemRBACRole", c.Data, pathMap)
+		setHiddenTag("/gui/system/rbac/role", "hiddenTagSystemRBACRole", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/role/list", "checkedTagSystemRBACRoleList", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/role/edit", "checkedTagSystemRBACRoleCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/rbac/role/delete", "checkedTagSystemRBACRoleDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/upgrade", "checkedTagSystemUpgrade", c.Data, pathMap)
+
 		c.Data["name"] = name
 		c.Data["description"] = role.Description
 
@@ -75,6 +234,22 @@ func (c *EditController) Get() {
 	}
 
 	guimessage.OutputMessage(c.Data)
+}
+
+func setCheckedTag(targetPath string, checkedTag string, data map[interface{}]interface{}, pathMap map[string]bool) {
+	if pathMap[targetPath] {
+		data[checkedTag] = "checked"
+	} else {
+		data[checkedTag] = ""
+	}
+}
+
+func setHiddenTag(targetPath string, hiddenTag string, data map[interface{}]interface{}, pathMap map[string]bool) {
+	if pathMap[targetPath] {
+		data[hiddenTag] = "hidden"
+	} else {
+		data[hiddenTag] = ""
+	}
 }
 
 func (c *EditController) Post() {
@@ -92,90 +267,86 @@ func (c *EditController) Post() {
 
 	// Dashboard
 	if c.GetString("dashboard") == "on" {
-		permission := &rbac.Permission{"dashboard", "cloudone_gui", "GET", "/gui/dashboard"}
+		permission := &rbac.Permission{"dashboard", identity.GetConponentName(), "GET", "/gui/dashboard"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("dashboardTopology") == "on" {
-			permission := &rbac.Permission{"dashboardTopology", "cloudone_gui", "GET", "/gui/dashboard/topology"}
+			permission := &rbac.Permission{"dashboardTopology", identity.GetConponentName(), "GET", "/gui/dashboard/topology"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 		if c.GetString("dashboardHealthCheck") == "on" {
-			permission := &rbac.Permission{"dashboardHealthCheck", "cloudone_gui", "GET", "/gui/dashboard/healthcheck"}
+			permission := &rbac.Permission{"dashboardHealthCheck", identity.GetConponentName(), "GET", "/gui/dashboard/healthcheck"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 		if c.GetString("dashboardBlueGree") == "on" {
-			permission := &rbac.Permission{"dashboardBlueGreen", "cloudone_gui", "GET", "/gui/dashboard/bluegreen"}
+			permission := &rbac.Permission{"dashboardBlueGreen", identity.GetConponentName(), "GET", "/gui/dashboard/bluegreen"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 		if c.GetString("dashboardAppService") == "on" {
-			permission := &rbac.Permission{"dashboardAppService", "cloudone_gui", "GET", "/gui/dashboard/appservice"}
+			permission := &rbac.Permission{"dashboardAppService", identity.GetConponentName(), "GET", "/gui/dashboard/appservice"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 	}
 
 	// Repository
 	if c.GetString("repository") == "on" {
-		permission := &rbac.Permission{"repository", "cloudone_gui", "GET", "/gui/repository"}
+		permission := &rbac.Permission{"repository", identity.GetConponentName(), "GET", "/gui/repository"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("repositoryImageInformation") == "on" {
-			permission := &rbac.Permission{"repositoryImageInformation", "cloudone_gui", "GET", "/gui/repository/imageinformation"}
+			permission := &rbac.Permission{"repositoryImageInformation", identity.GetConponentName(), "GET", "/gui/repository/imageinformation"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("repositoryImageInformationList") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationList", "cloudone_gui", "GET", "/gui/repository/imageinformation/list"}
+				permission := &rbac.Permission{"repositoryImageInformationList", identity.GetConponentName(), "GET", "/gui/repository/imageinformation/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryImageInformationCreate") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationCreate", "cloudone_gui", "GET", "/gui/repository/imageinformation/create"}
+				permission := &rbac.Permission{"repositoryImageInformationCreate", identity.GetConponentName(), "GET", "/gui/repository/imageinformation/create"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryImageInformationUpgrade") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationUpgrade", "cloudone_gui", "GET", "/gui/repository/imageinformation/upgrade"}
-				permissionSlice = append(permissionSlice, permission)
-			}
-			if c.GetString("repositoryImageInformationDeploy") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationDeploy", "cloudone_gui", "GET", "/gui/deploy/deploy/create"}
+				permission := &rbac.Permission{"repositoryImageInformationUpgrade", identity.GetConponentName(), "GET", "/gui/repository/imageinformation/upgrade"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryImageInformationDelete") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationDelete", "cloudone_gui", "GET", "/gui/repository/imageinformation/delete"}
+				permission := &rbac.Permission{"repositoryImageInformationDelete", identity.GetConponentName(), "GET", "/gui/repository/imageinformation/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("repositoryImageRecord") == "on" {
-			permission := &rbac.Permission{"repositoryImageRecord", "cloudone_gui", "GET", "/gui/repository/imagerecord"}
+			permission := &rbac.Permission{"repositoryImageRecord", identity.GetConponentName(), "GET", "/gui/repository/imagerecord"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("repositoryImageRecordList") == "on" {
-				permission := &rbac.Permission{"repositoryImageRecordList", "cloudone_gui", "GET", "/gui/repository/imagerecord/list"}
+				permission := &rbac.Permission{"repositoryImageRecordList", identity.GetConponentName(), "GET", "/gui/repository/imagerecord/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryImageRecordDelete") == "on" {
-				permission := &rbac.Permission{"repositoryImageRecordDelete", "cloudone_gui", "GET", "/gui/repository/imagerecord/delete"}
+				permission := &rbac.Permission{"repositoryImageRecordDelete", identity.GetConponentName(), "GET", "/gui/repository/imagerecord/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("repositoryThirdPartyService") == "on" {
-			permission := &rbac.Permission{"repositoryThirdPartyService", "cloudone_gui", "GET", "/gui/repository/thirdparty"}
+			permission := &rbac.Permission{"repositoryThirdPartyService", identity.GetConponentName(), "GET", "/gui/repository/thirdparty"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("repositoryThirdPartyServiceList") == "on" {
-				permission := &rbac.Permission{"repositoryThirdPartyServiceList", "cloudone_gui", "GET", "/gui/repository/thirdparty/list"}
+				permission := &rbac.Permission{"repositoryThirdPartyServiceList", identity.GetConponentName(), "GET", "/gui/repository/thirdparty/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryThirdPartyServiceCreate") == "on" {
-				permission := &rbac.Permission{"repositoryThirdPartyServiceCreate", "cloudone_gui", "GET", "/gui/repository/thirdparty/edit"}
+				permission := &rbac.Permission{"repositoryThirdPartyServiceCreate", identity.GetConponentName(), "GET", "/gui/repository/thirdparty/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryThirdPartyServiceLaunch") == "on" {
-				permission := &rbac.Permission{"repositoryThirdPartyServiceLaunch", "cloudone_gui", "GET", "/gui/repository/thirdparty/launch"}
+				permission := &rbac.Permission{"repositoryThirdPartyServiceLaunch", identity.GetConponentName(), "GET", "/gui/repository/thirdparty/launch"}
 				permissionSlice = append(permissionSlice, permission)
 			}
-			if c.GetString("repositoryImageInformationDeploy") == "on" {
-				permission := &rbac.Permission{"repositoryImageInformationDeploy", "cloudone_gui", "GET", "/gui/repository/thirdparty/delete"}
+			if c.GetString("repositoryThirdPartyServiceDelete") == "on" {
+				permission := &rbac.Permission{"repositoryThirdPartyServiceDelete", identity.GetConponentName(), "GET", "/gui/repository/thirdparty/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -183,81 +354,81 @@ func (c *EditController) Post() {
 
 	// Deploy
 	if c.GetString("deploy") == "on" {
-		permission := &rbac.Permission{"deploy", "cloudone_gui", "GET", "/gui/deploy"}
+		permission := &rbac.Permission{"deploy", identity.GetConponentName(), "GET", "/gui/deploy"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
-		if c.GetString("repositoryDeployDeploy") == "on" {
-			permission := &rbac.Permission{"repositoryDeployDeploy", "cloudone_gui", "GET", "/gui/deploy/deploy"}
+		if c.GetString("deployDeploy") == "on" {
+			permission := &rbac.Permission{"deployDeploy", identity.GetConponentName(), "GET", "/gui/deploy/deploy"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
-			if c.GetString("repositoryDeployDeployList") == "on" {
-				permission := &rbac.Permission{"repositoryDeployDeployList", "cloudone_gui", "GET", "/gui/deploy/deploy/list"}
+			if c.GetString("deployDeployList") == "on" {
+				permission := &rbac.Permission{"deployDeployList", identity.GetConponentName(), "GET", "/gui/deploy/deploy/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
-			if c.GetString("repositoryDeployDeployCreate") == "on" {
-				permission := &rbac.Permission{"repositoryDeployDeployCreate", "cloudone_gui", "GET", "/gui/deploy/deploy/create"}
+			if c.GetString("deployDeployCreate") == "on" {
+				permission := &rbac.Permission{"deployDeployCreate", identity.GetConponentName(), "GET", "/gui/deploy/deploy/create"}
 				permissionSlice = append(permissionSlice, permission)
 			}
-			if c.GetString("repositoryDeployDeployUpdate") == "on" {
-				permission := &rbac.Permission{"repositoryDeployDeployUpdate", "cloudone_gui", "GET", "/gui/deploy/deploy/update"}
+			if c.GetString("deployDeployUpdate") == "on" {
+				permission := &rbac.Permission{"deployDeployUpdate", identity.GetConponentName(), "GET", "/gui/deploy/deploy/update"}
 				permissionSlice = append(permissionSlice, permission)
 			}
-			if c.GetString("repositoryDeployDeployDelete") == "on" {
-				permission := &rbac.Permission{"repositoryDeployDeployDelete", "cloudone_gui", "GET", "/gui/deploy/deploy/delete"}
+			if c.GetString("deployDeployDelete") == "on" {
+				permission := &rbac.Permission{"deployDeployDelete", identity.GetConponentName(), "GET", "/gui/deploy/deploy/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("deployDeployBlueGreen") == "on" {
-			permission := &rbac.Permission{"deployDeployBlueGreen", "cloudone_gui", "GET", "/gui/deploy/deploybluegreen"}
+			permission := &rbac.Permission{"deployDeployBlueGreen", identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("deployDeployBlueGreenList") == "on" {
-				permission := &rbac.Permission{"deployDeployBlueGreenList", "cloudone_gui", "GET", "/gui/deploy/deploybluegreen/list"}
+				permission := &rbac.Permission{"deployDeployBlueGreenList", identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployDeployBlueGreenSelect") == "on" {
-				permission := &rbac.Permission{"deployDeployBlueGreenSelect", "cloudone_gui", "GET", "/gui/deploy/deploybluegreen/select"}
+				permission := &rbac.Permission{"deployDeployBlueGreenSelect", identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen/select"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployDeployBlueGreenDelete") == "on" {
-				permission := &rbac.Permission{"deployDeployBlueGreenDelete", "cloudone_gui", "GET", "/gui/deploy/deploybluegreen/delete"}
+				permission := &rbac.Permission{"deployDeployBlueGreenDelete", identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("deployAutoScaler") == "on" {
-			permission := &rbac.Permission{"deployAutoScaler", "cloudone_gui", "GET", "/gui/deploy/autoscaler"}
+			permission := &rbac.Permission{"deployAutoScaler", identity.GetConponentName(), "GET", "/gui/deploy/autoscaler"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("deployAutoScalerList") == "on" {
-				permission := &rbac.Permission{"deployAutoScalerList", "cloudone_gui", "GET", "/gui/deploy/autoscaler/list"}
+				permission := &rbac.Permission{"deployAutoScalerList", identity.GetConponentName(), "GET", "/gui/deploy/autoscaler/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployAutoScalerCreate") == "on" {
-				permission := &rbac.Permission{"deployAutoScalerCreate", "cloudone_gui", "GET", "/gui/deploy/autoscaler/edit"}
+				permission := &rbac.Permission{"deployAutoScalerCreate", identity.GetConponentName(), "GET", "/gui/deploy/autoscaler/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployAutoScalerDelete") == "on" {
-				permission := &rbac.Permission{"deployAutoScalerDelete", "cloudone_gui", "GET", "/gui/deploy/autoscaler/delete"}
+				permission := &rbac.Permission{"deployAutoScalerDelete", identity.GetConponentName(), "GET", "/gui/deploy/autoscaler/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("deployDeployClusterApplication") == "on" {
-			permission := &rbac.Permission{"deployDeployClusterApplication", "cloudone_gui", "GET", "/gui/deploy/deployclusterapplication"}
+			permission := &rbac.Permission{"deployDeployClusterApplication", identity.GetConponentName(), "GET", "/gui/deploy/deployclusterapplication"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("deployDeployClusterApplicationList") == "on" {
-				permission := &rbac.Permission{"deployDeployClusterApplicationList", "cloudone_gui", "GET", "/gui/deploy/deployclusterapplication/list"}
+				permission := &rbac.Permission{"deployDeployClusterApplicationList", identity.GetConponentName(), "GET", "/gui/deploy/deployclusterapplication/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployDeployClusterApplicationSize") == "on" {
-				permission := &rbac.Permission{"deployDeployClusterApplicationSize", "cloudone_gui", "GET", "/gui/deploy/deployclusterapplication/size"}
+				permission := &rbac.Permission{"deployDeployClusterApplicationSize", identity.GetConponentName(), "GET", "/gui/deploy/deployclusterapplication/size"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployDeployClusterApplicationDelete") == "on" {
-				permission := &rbac.Permission{"deployDeployClusterApplicationDelete", "cloudone_gui", "GET", "/gui/deploy/deployclusterapplication/delete"}
+				permission := &rbac.Permission{"deployDeployClusterApplicationDelete", identity.GetConponentName(), "GET", "/gui/deploy/deployclusterapplication/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -265,53 +436,53 @@ func (c *EditController) Post() {
 
 	// Inventory
 	if c.GetString("inventory") == "on" {
-		permission := &rbac.Permission{"inventory", "cloudone_gui", "GET", "/gui/inventory"}
+		permission := &rbac.Permission{"inventory", identity.GetConponentName(), "GET", "/gui/inventory"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("inventoryReplicationController") == "on" {
-			permission := &rbac.Permission{"inventoryReplicationController", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller"}
+			permission := &rbac.Permission{"inventoryReplicationController", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("inventoryReplicationControllerList") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerList", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/list"}
+				permission := &rbac.Permission{"inventoryReplicationControllerList", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerCreate") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerCreate", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/edit"}
+				permission := &rbac.Permission{"inventoryReplicationControllerCreate", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerSize") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerSize", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/size"}
+				permission := &rbac.Permission{"inventoryReplicationControllerSize", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/size"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerDelete") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerDelete", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/delete"}
+				permission := &rbac.Permission{"inventoryReplicationControllerDelete", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerPodLog") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerPodLog", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/podlog"}
+				permission := &rbac.Permission{"inventoryReplicationControllerPodLog", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/podlog"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryReplicationControllerDockerTerminal") == "on" {
-				permission := &rbac.Permission{"inventoryReplicationControllerDockerTerminal", "cloudone_gui", "GET", "/gui/inventory/replicationcontroller/dockerterminal"}
+				permission := &rbac.Permission{"inventoryReplicationControllerDockerTerminal", identity.GetConponentName(), "GET", "/gui/inventory/replicationcontroller/dockerterminal"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("inventoryService") == "on" {
-			permission := &rbac.Permission{"inventoryService", "cloudone_gui", "GET", "/gui/inventory/service"}
+			permission := &rbac.Permission{"inventoryService", identity.GetConponentName(), "GET", "/gui/inventory/service"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("inventoryServiceList") == "on" {
-				permission := &rbac.Permission{"inventoryServiceList", "cloudone_gui", "GET", "/gui/inventory/service/list"}
+				permission := &rbac.Permission{"inventoryServiceList", identity.GetConponentName(), "GET", "/gui/inventory/service/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryServiceCreate") == "on" {
-				permission := &rbac.Permission{"inventoryServiceCreate", "cloudone_gui", "GET", "/gui/inventory/service/edit"}
+				permission := &rbac.Permission{"inventoryServiceCreate", identity.GetConponentName(), "GET", "/gui/inventory/service/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("inventoryServiceDelete") == "on" {
-				permission := &rbac.Permission{"inventoryServiceDelete", "cloudone_gui", "GET", "/gui/inventory/service/delete"}
+				permission := &rbac.Permission{"inventoryServiceDelete", identity.GetConponentName(), "GET", "/gui/inventory/service/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -319,45 +490,45 @@ func (c *EditController) Post() {
 
 	// File System
 	if c.GetString("filesystem") == "on" {
-		permission := &rbac.Permission{"filesystem", "cloudone_gui", "GET", "/gui/filesystem"}
+		permission := &rbac.Permission{"filesystem", identity.GetConponentName(), "GET", "/gui/filesystem"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("filesystemGlusterfs") == "on" {
-			permission := &rbac.Permission{"filesystemGlusterfs", "cloudone_gui", "GET", "/gui/filesystem/glusterfs"}
+			permission := &rbac.Permission{"filesystemGlusterfs", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("filesystemGlusterfsCluster") == "on" {
-				permission := &rbac.Permission{"filesystemGlusterfsCluster", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/cluster"}
+				permission := &rbac.Permission{"filesystemGlusterfsCluster", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/cluster"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("filesystemGlusterfsClusterList") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsClusterList", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/cluster/list"}
+					permission := &rbac.Permission{"filesystemGlusterfsClusterList", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/cluster/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("filesystemGlusterfsClusterCreate") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsClusterCreate", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/cluster/edit"}
+					permission := &rbac.Permission{"filesystemGlusterfsClusterCreate", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/cluster/edit"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("filesystemGlusterfsClusterDelete") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsClusterDelete", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/cluster/delete"}
+					permission := &rbac.Permission{"filesystemGlusterfsClusterDelete", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/cluster/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 
 			if c.GetString("filesystemGlusterfsVolume") == "on" {
-				permission := &rbac.Permission{"filesystemGlusterfsVolume", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/volume"}
+				permission := &rbac.Permission{"filesystemGlusterfsVolume", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("filesystemGlusterfsVolumeList") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsVolumeList", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/volume/list"}
+					permission := &rbac.Permission{"filesystemGlusterfsVolumeList", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("filesystemGlusterfsVolumeCreate") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsVolumeCreate", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/volume/create"}
+					permission := &rbac.Permission{"filesystemGlusterfsVolumeCreate", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/create"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("filesystemGlusterfsVolumeDelete") == "on" {
-					permission := &rbac.Permission{"filesystemGlusterfsVolumeDelete", "cloudone_gui", "GET", "/gui/filesystem/glusterfs/volume/delete"}
+					permission := &rbac.Permission{"filesystemGlusterfsVolumeDelete", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
@@ -366,38 +537,38 @@ func (c *EditController) Post() {
 
 	// Monitor
 	if c.GetString("monitor") == "on" {
-		permission := &rbac.Permission{"monitor", "cloudone_gui", "GET", "/gui/monitor"}
+		permission := &rbac.Permission{"monitor", identity.GetConponentName(), "GET", "/gui/monitor"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("monitorNode") == "on" {
-			permission := &rbac.Permission{"monitorNode", "cloudone_gui", "GET", "/gui/monitor/node"}
+			permission := &rbac.Permission{"monitorNode", identity.GetConponentName(), "GET", "/gui/monitor/node"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 		if c.GetString("monitorContainer") == "on" {
-			permission := &rbac.Permission{"monitorContainer", "cloudone_gui", "GET", "/gui/monitor/container"}
+			permission := &rbac.Permission{"monitorContainer", identity.GetConponentName(), "GET", "/gui/monitor/container"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 		if c.GetString("monitorHistoricalContainer") == "on" {
-			permission := &rbac.Permission{"monitorHistoricalContainer", "cloudone_gui", "GET", "/gui/monitor/historicalcontainer"}
+			permission := &rbac.Permission{"monitorHistoricalContainer", identity.GetConponentName(), "GET", "/gui/monitor/historicalcontainer"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 	}
 
 	// Event
 	if c.GetString("event") == "on" {
-		permission := &rbac.Permission{"event", "cloudone_gui", "GET", "/gui/event"}
+		permission := &rbac.Permission{"event", identity.GetConponentName(), "GET", "/gui/event"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("eventKubernetes") == "on" {
-			permission := &rbac.Permission{"eventKubernetes", "cloudone_gui", "GET", "/gui/event/kubernetes"}
+			permission := &rbac.Permission{"eventKubernetes", identity.GetConponentName(), "GET", "/gui/event/kubernetes"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("eventKubernetesList") == "on" {
-				permission := &rbac.Permission{"eventKubernetesList", "cloudone_gui", "GET", "/gui/event/kubernetes/list"}
+				permission := &rbac.Permission{"eventKubernetesList", identity.GetConponentName(), "GET", "/gui/event/kubernetes/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("eventKubernetesAcknowledge") == "on" {
-				permission := &rbac.Permission{"eventKubernetesAcknowledge", "cloudone_gui", "GET", "/gui/event/kubernetes/acknowledge"}
+				permission := &rbac.Permission{"eventKubernetesAcknowledge", identity.GetConponentName(), "GET", "/gui/event/kubernetes/acknowledge"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -405,23 +576,23 @@ func (c *EditController) Post() {
 
 	// Notification
 	if c.GetString("notification") == "on" {
-		permission := &rbac.Permission{"notification", "cloudone_gui", "GET", "/gui/notification"}
+		permission := &rbac.Permission{"notification", identity.GetConponentName(), "GET", "/gui/notification"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("notificationNotifier") == "on" {
-			permission := &rbac.Permission{"notificationNotifier", "cloudone_gui", "GET", "/gui/notification/notifier"}
+			permission := &rbac.Permission{"notificationNotifier", identity.GetConponentName(), "GET", "/gui/notification/notifier"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("notificationNotifierList") == "on" {
-				permission := &rbac.Permission{"notificationNotifierList", "cloudone_gui", "GET", "/gui/notification/notifier/list"}
+				permission := &rbac.Permission{"notificationNotifierList", identity.GetConponentName(), "GET", "/gui/notification/notifier/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("notificationNotifierCreate") == "on" {
-				permission := &rbac.Permission{"notificationNotifierCreate", "cloudone_gui", "GET", "/gui/notification/notifier/edit"}
+				permission := &rbac.Permission{"notificationNotifierCreate", identity.GetConponentName(), "GET", "/gui/notification/notifier/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("notificationNotifierDelete") == "on" {
-				permission := &rbac.Permission{"notificationNotifierDelete", "cloudone_gui", "GET", "/gui/notification/notifier/delete"}
+				permission := &rbac.Permission{"notificationNotifierDelete", identity.GetConponentName(), "GET", "/gui/notification/notifier/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -429,138 +600,138 @@ func (c *EditController) Post() {
 
 	// System
 	if c.GetString("system") == "on" {
-		permission := &rbac.Permission{"system", "cloudone_gui", "GET", "/gui/system"}
+		permission := &rbac.Permission{"system", identity.GetConponentName(), "GET", "/gui/system"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
 		if c.GetString("systemNamespace") == "on" {
-			permission := &rbac.Permission{"systemNamespace", "cloudone_gui", "GET", "/gui/system/namespace"}
+			permission := &rbac.Permission{"systemNamespace", identity.GetConponentName(), "GET", "/gui/system/namespace"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("systemNamespaceList") == "on" {
-				permission := &rbac.Permission{"systemNamespaceList", "cloudone_gui", "GET", "/gui/system/namespace/list"}
+				permission := &rbac.Permission{"systemNamespaceList", identity.GetConponentName(), "GET", "/gui/system/namespace/list"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("systemNamespaceCreate") == "on" {
-				permission := &rbac.Permission{"systemNamespaceCreate", "cloudone_gui", "GET", "/gui/system/namespace/edit"}
+				permission := &rbac.Permission{"systemNamespaceCreate", identity.GetConponentName(), "GET", "/gui/system/namespace/edit"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("systemNamespaceSelect") == "on" {
-				permission := &rbac.Permission{"systemNamespaceSelect", "cloudone_gui", "GET", "/gui/system/namespace/select"}
+				permission := &rbac.Permission{"systemNamespaceSelect", identity.GetConponentName(), "GET", "/gui/system/namespace/select"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("systemNamespaceDelete") == "on" {
-				permission := &rbac.Permission{"systemNamespaceDelete", "cloudone_gui", "GET", "/gui/system/namespace/delete"}
+				permission := &rbac.Permission{"systemNamespaceDelete", identity.GetConponentName(), "GET", "/gui/system/namespace/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
 
 		if c.GetString("systemNotification") == "on" {
-			permission := &rbac.Permission{"systemNotification", "cloudone_gui", "GET", "/gui/system/notification"}
+			permission := &rbac.Permission{"systemNotification", identity.GetConponentName(), "GET", "/gui/system/notification"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("systemNotificationEmailServer") == "on" {
-				permission := &rbac.Permission{"systemNotificationEmailServer", "cloudone_gui", "GET", "/gui/system/notification/emailserver"}
+				permission := &rbac.Permission{"systemNotificationEmailServer", identity.GetConponentName(), "GET", "/gui/system/notification/emailserver"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("systemNotificationEmailServerList") == "on" {
-					permission := &rbac.Permission{"systemNotificationEmailServerList", "cloudone_gui", "GET", "/gui/system/notification/emailserver/list"}
+					permission := &rbac.Permission{"systemNotificationEmailServerList", identity.GetConponentName(), "GET", "/gui/system/notification/emailserver/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemNotificationEmailServerCreate") == "on" {
-					permission := &rbac.Permission{"systemNotificationEmailServerCreate", "cloudone_gui", "GET", "/gui/system/notification/emailserver/create"}
+					permission := &rbac.Permission{"systemNotificationEmailServerCreate", identity.GetConponentName(), "GET", "/gui/system/notification/emailserver/create"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemNotificationEmailServerDelete") == "on" {
-					permission := &rbac.Permission{"systemNotificationEmailServerDelete", "cloudone_gui", "GET", "/gui/system/notification/emailserver/delete"}
+					permission := &rbac.Permission{"systemNotificationEmailServerDelete", identity.GetConponentName(), "GET", "/gui/system/notification/emailserver/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 
 			if c.GetString("systemNotificationSMS") == "on" {
-				permission := &rbac.Permission{"systemNotificationSMS", "cloudone_gui", "GET", "/gui/system/notification/emailserver"}
+				permission := &rbac.Permission{"systemNotificationSMS", identity.GetConponentName(), "GET", "/gui/system/notification/sms"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("systemNotificationSMSList") == "on" {
-					permission := &rbac.Permission{"systemNotificationSMSList", "cloudone_gui", "GET", "/gui/system/notification/sms/list"}
+					permission := &rbac.Permission{"systemNotificationSMSList", identity.GetConponentName(), "GET", "/gui/system/notification/sms/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemNotificationSMSCreate") == "on" {
-					permission := &rbac.Permission{"systemNotificationSMSCreate", "cloudone_gui", "GET", "/gui/system/notification/sms/create"}
+					permission := &rbac.Permission{"systemNotificationSMSCreate", identity.GetConponentName(), "GET", "/gui/system/notification/sms/create"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemNotificationSMSDelete") == "on" {
-					permission := &rbac.Permission{"systemNotificationSMSDelete", "cloudone_gui", "GET", "/gui/system/notification/sms/delete"}
+					permission := &rbac.Permission{"systemNotificationSMSDelete", identity.GetConponentName(), "GET", "/gui/system/notification/sms/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 		}
 
 		if c.GetString("systemHost") == "on" {
-			permission := &rbac.Permission{"systemHost", "cloudone_gui", "GET", "/gui/system/host"}
+			permission := &rbac.Permission{"systemHost", identity.GetConponentName(), "GET", "/gui/system/host"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("systemHostCredential") == "on" {
-				permission := &rbac.Permission{"systemHostCredential", "cloudone_gui", "GET", "/gui/system/host/credential"}
+				permission := &rbac.Permission{"systemHostCredential", identity.GetConponentName(), "GET", "/gui/system/host/credential"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("systemHostCredentialList") == "on" {
-					permission := &rbac.Permission{"systemHostCredentialList", "cloudone_gui", "GET", "/gui/system/host/credential/list"}
+					permission := &rbac.Permission{"systemHostCredentialList", identity.GetConponentName(), "GET", "/gui/system/host/credential/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemHostCredentialCreate") == "on" {
-					permission := &rbac.Permission{"systemHostCredentialCreate", "cloudone_gui", "GET", "/gui/system/host/credential/edit"}
+					permission := &rbac.Permission{"systemHostCredentialCreate", identity.GetConponentName(), "GET", "/gui/system/host/credential/edit"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemHostCredentialDelete") == "on" {
-					permission := &rbac.Permission{"systemHostCredentialDelete", "cloudone_gui", "GET", "/gui/system/host/credential/delete"}
+					permission := &rbac.Permission{"systemHostCredentialDelete", identity.GetConponentName(), "GET", "/gui/system/host/credential/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 		}
 
 		if c.GetString("systemRBAC") == "on" {
-			permission := &rbac.Permission{"systemRBAC", "cloudone_gui", "GET", "/gui/system/rbac"}
+			permission := &rbac.Permission{"systemRBAC", identity.GetConponentName(), "GET", "/gui/system/rbac"}
 			permissionSlice = append(permissionSlice, permission)
 		} else {
 			if c.GetString("systemRBACUser") == "on" {
-				permission := &rbac.Permission{"systemRBACUser", "cloudone_gui", "GET", "/gui/system/rbac/user"}
+				permission := &rbac.Permission{"systemRBACUser", identity.GetConponentName(), "GET", "/gui/system/rbac/user"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("systemRBACUserList") == "on" {
-					permission := &rbac.Permission{"systemRBACUserList", "cloudone_gui", "GET", "/gui/system/rbac/user/list"}
+					permission := &rbac.Permission{"systemRBACUserList", identity.GetConponentName(), "GET", "/gui/system/rbac/user/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemRBACUserCreate") == "on" {
-					permission := &rbac.Permission{"systemRBACUserCreate", "cloudone_gui", "GET", "/gui/system/rbac/user/edit"}
+					permission := &rbac.Permission{"systemRBACUserCreate", identity.GetConponentName(), "GET", "/gui/system/rbac/user/edit"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemRBACUserDelete") == "on" {
-					permission := &rbac.Permission{"systemRBACUserDelete", "cloudone_gui", "GET", "/gui/system/rbac/user/delete"}
+					permission := &rbac.Permission{"systemRBACUserDelete", identity.GetConponentName(), "GET", "/gui/system/rbac/user/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 
 			if c.GetString("systemRBACRole") == "on" {
-				permission := &rbac.Permission{"systemRBACRole", "cloudone_gui", "GET", "/gui/system/rbac/role"}
+				permission := &rbac.Permission{"systemRBACRole", identity.GetConponentName(), "GET", "/gui/system/rbac/role"}
 				permissionSlice = append(permissionSlice, permission)
 			} else {
 				if c.GetString("systemRBACRoleList") == "on" {
-					permission := &rbac.Permission{"systemRBACRoleList", "cloudone_gui", "GET", "/gui/system/rbac/role/list"}
+					permission := &rbac.Permission{"systemRBACRoleList", identity.GetConponentName(), "GET", "/gui/system/rbac/role/list"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemRBACRoleCreate") == "on" {
-					permission := &rbac.Permission{"systemRBACRoleCreate", "cloudone_gui", "GET", "/gui/system/rbac/role/edit"}
+					permission := &rbac.Permission{"systemRBACRoleCreate", identity.GetConponentName(), "GET", "/gui/system/rbac/role/edit"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemRBACRoleDelete") == "on" {
-					permission := &rbac.Permission{"systemRBACRoleDelete", "cloudone_gui", "GET", "/gui/system/rbac/role/delete"}
+					permission := &rbac.Permission{"systemRBACRoleDelete", identity.GetConponentName(), "GET", "/gui/system/rbac/role/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}
 		}
 
 		if c.GetString("systemUpgrade") == "on" {
-			permission := &rbac.Permission{"systemUpgrade", "cloudone_gui", "GET", "/gui/system/upgrade"}
+			permission := &rbac.Permission{"systemUpgrade", identity.GetConponentName(), "GET", "/gui/system/upgrade"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 	}
@@ -569,7 +740,7 @@ func (c *EditController) Post() {
 	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone-all", "cloudone", "*", "*"})
 	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_analysis-all", "cloudone_analysis", "*", "*"})
 	// Essentail one
-	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_gui_logout", "cloudone_gui", "GET", "/gui/logout"})
+	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_gui_logout", identity.GetConponentName(), "GET", "/gui/logout"})
 
 	role := rbac.Role{
 		name,
