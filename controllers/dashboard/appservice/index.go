@@ -46,9 +46,9 @@ type Service struct {
 type ServicePort struct {
 	Name       string
 	Protocol   string
-	Port       string
+	Port       int
 	TargetPort string
-	NodePort   string
+	NodePort   int
 }
 
 type ReplicationControllerAndRelatedPod struct {
@@ -241,7 +241,11 @@ func (c *DataController) Get() {
 							if deployInformation.ImageInformationName == service.Name {
 								serviceName = service.Name
 								for _, port := range service.PortSlice {
-									serviceName += " " + port.Port + "/" + port.NodePort
+									nodePortText := ""
+									if port.NodePort >= 0 {
+										nodePortText = strconv.Itoa(port.NodePort)
+									}
+									serviceName += " " + strconv.Itoa(port.Port) + "/" + nodePortText
 								}
 							}
 						}
@@ -306,7 +310,11 @@ func (c *DataController) Get() {
 				for _, service := range serviceSlice {
 					if service.Name == deployClusterApplication.ServiceName {
 						for _, port := range service.PortSlice {
-							serviceName += " " + port.Port + "/" + port.NodePort
+							nodePortText := ""
+							if port.NodePort >= 0 {
+								nodePortText = strconv.Itoa(port.NodePort)
+							}
+							serviceName += " " + strconv.Itoa(port.Port) + "/" + nodePortText
 						}
 					}
 				}

@@ -43,9 +43,10 @@ type Service struct {
 type ServicePort struct {
 	Name              string
 	Protocol          string
-	Port              string
+	Port              int
 	TargetPort        string
-	NodePort          string
+	NodePort          int
+	NodePortText      string
 	NodePortURL       string
 	HiddenTagNodePort string
 }
@@ -103,10 +104,13 @@ func (c *ListController) Get() {
 			serviceSlice[i].Display = displayMap[serviceSlice[i].Name]
 
 			for j := 0; j < len(serviceSlice[i].PortSlice); j++ {
-				if serviceSlice[i].PortSlice[j].NodePort == "" {
+				// < 0 not used, == 0 auto-generated, > 0 port number
+				if serviceSlice[i].PortSlice[j].NodePort < 0 {
+					serviceSlice[i].PortSlice[j].NodePortText = ""
 					serviceSlice[i].PortSlice[j].HiddenTagNodePort = "hidden"
 				} else {
-					serviceSlice[i].PortSlice[j].NodePortURL = "http://" + kubeapiHost + ":" + serviceSlice[i].PortSlice[j].NodePort
+					serviceSlice[i].PortSlice[j].NodePortText = strconv.Itoa(serviceSlice[i].PortSlice[j].NodePort)
+					serviceSlice[i].PortSlice[j].NodePortURL = "http://" + kubeapiHost + ":" + strconv.Itoa(serviceSlice[i].PortSlice[j].NodePort)
 				}
 			}
 

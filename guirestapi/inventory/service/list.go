@@ -41,7 +41,7 @@ type ServicePort struct {
 	Protocol   string
 	Port       string
 	TargetPort string
-	NodePort   string
+	NodePort   int
 }
 
 // @Title get
