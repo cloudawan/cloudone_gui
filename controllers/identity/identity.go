@@ -66,12 +66,13 @@ func sendAuditLog(ctx *context.Context, userName string) {
 	requestURI := ctx.Input.URI()
 	method := ctx.Input.Method()
 	path := ctx.Input.URL()
+	remoteAddress := ctx.Request.RemoteAddr
 
 	// Header is not used since the header has no useful information for now
 	// Body is not used since the backend component will record again.
 	// Path is not used since the backend component will record again.
 	// Query is not used since the backend component will record again.
-	auditLog := audit.CreateAuditLog(componentName, path, userName, nil, nil, method, requestURI, "", nil)
+	auditLog := audit.CreateAuditLog(componentName, path, userName, remoteAddress, nil, nil, method, requestURI, "", nil)
 
 	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
 

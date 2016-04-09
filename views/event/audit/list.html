@@ -1,0 +1,75 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Audit List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<!--
+					<th>#</th>
+					-->
+					<th>Component</th>
+					<th>User</th>
+					<th>Remote Address</th>
+					<th>Kind</th>
+					<th>Created Time</th>
+					<th>Query Parameters</th>
+					<th>Path Parameters</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $auditLogKey, $auditLog := .auditLogSlice}}
+					<tr>
+						<!--
+						<td>{{$auditLogKey}}</td>
+						-->
+						<td>{{$auditLog.Component}}</td>
+						<td>{{$auditLog.UserName}}</td>
+						<td>{{$auditLog.RemoteAddress}}</td>
+						<td>{{$auditLog.Kind}}</td>
+						<td>{{$auditLog.CreatedTime}}</td>
+						<td>
+							{{range $queryParameterKey, $queryParameterValue := $auditLog.QueryParameterMap}}
+								{{$queryParameterKey}}: {{$queryParameterValue}}<br/>
+							{{end}}
+						</td>
+						<td>
+							{{range $pathParameterKey, $pathParameterValue := $auditLog.PathParameterMap}}
+								{{$pathParameterKey}}: {{$pathParameterValue}}<br/>
+							{{end}}
+						</td>
+						<td>{{$auditLog.Description}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+		
+		<nav>
+			<ul class="pagination">
+				<li>
+					<a href="{{ .paginationUrlPrevious }}" aria-label="Previous" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" {{ .previousButtonHidden }}>
+						<span aria-hidden="true">&laquo;{{ .previousLabel }}</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ .paginationUrlNext }}" aria-label="Next" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});">
+						<span aria-hidden="true">{{ .nextLabel }}&raquo;</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

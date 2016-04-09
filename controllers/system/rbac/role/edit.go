@@ -171,6 +171,9 @@ func (c *EditController) Get() {
 		// Event
 		setCheckedTag("/gui/event", "checkedTagEvent", c.Data, pathMap)
 		setHiddenTag("/gui/event", "hiddenTagEvent", c.Data, pathMap)
+		setCheckedTag("/gui/event/audit", "checkedTagEventAudit", c.Data, pathMap)
+		setHiddenTag("/gui/event/audit", "hiddenTagEventAudit", c.Data, pathMap)
+		setCheckedTag("/gui/event/audit/list", "checkedTagEventAuditList", c.Data, pathMap)
 		setCheckedTag("/gui/event/kubernetes", "checkedTagEventKubernetes", c.Data, pathMap)
 		setHiddenTag("/gui/event/kubernetes", "hiddenTagEventKubernetes", c.Data, pathMap)
 		setCheckedTag("/gui/event/kubernetes/list", "checkedTagEventKubernetesList", c.Data, pathMap)

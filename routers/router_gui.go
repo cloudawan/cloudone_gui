@@ -25,6 +25,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploy"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploybluegreen"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deployclusterapplication"
+	"github.com/cloudawan/cloudone_gui/controllers/event/audit"
 	"github.com/cloudawan/cloudone_gui/controllers/event/kubernetes"
 	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/cluster"
 	"github.com/cloudawan/cloudone_gui/controllers/filesystem/glusterfs/volume"
@@ -106,6 +107,7 @@ func init() {
 	beego.Router("/gui/monitor/container/data", &container.DataController{})
 	beego.Router("/gui/monitor/historicalcontainer", &historicalcontainer.IndexController{})
 	beego.Router("/gui/monitor/historicalcontainer/data", &historicalcontainer.DataController{})
+	beego.Router("/gui/event/audit/list", &audit.ListController{})
 	beego.Router("/gui/event/kubernetes/list", &kubernetes.ListController{})
 	beego.Router("/gui/event/kubernetes/acknowledge", &kubernetes.AcknowledgeController{})
 	beego.Router("/gui/notification/notifier/list", &notifier.ListController{})

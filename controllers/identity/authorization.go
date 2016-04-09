@@ -158,8 +158,11 @@ func GetLayoutMenu(user *rbac.User) string {
 		buffer.WriteString("						<ul class='dropdown-menu' role='menu'>\n")
 	}
 	// Child
+	if user.HasPermission(componentName, "GET", "/gui/event/audit/list") {
+		buffer.WriteString("							<li><a href='/gui/event/audit/list'>Audit Logs</a></li>\n")
+	}
 	if user.HasPermission(componentName, "GET", "/gui/event/kubernetes/list") {
-		buffer.WriteString("							<li><a href='/gui/event/kubernetes/list'>Kubernetes Event</a></li>\n")
+		buffer.WriteString("							<li><a href='/gui/event/kubernetes/list'>Kubernetes Events</a></li>\n")
 	}
 	// Parent
 	if user.HasChildPermission(componentName, "GET", "/gui/event") {
