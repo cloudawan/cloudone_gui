@@ -15,9 +15,12 @@
 package identity
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/audit"
 	"github.com/cloudawan/cloudone_utility/rbac"
+	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
 const (
@@ -45,6 +48,37 @@ func FilterUser(ctx *context.Context) {
 			}
 
 			// Resource check is in another place since GUI doesn't place the resource name in url
+
+			// Audit log
+			go func() {
+				sendAuditLog(ctx, user.Name)
+			}()
+		}
+	}
+}
+
+func sendAuditLog(ctx *context.Context, userName string) {
+	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
+	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
+	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
+
+	tokenHeaderMap, _ := ctx.Input.Session("tokenHeaderMap").(map[string]string)
+	requestURI := ctx.Input.URI()
+	method := ctx.Input.Method()
+	path := ctx.Input.URL()
+
+	// Header is not used since the header has no useful information for now
+	// Body is not used since the backend component will record again.
+	// Path is not used since the backend component will record again.
+	// Query is not used since the backend component will record again.
+	auditLog := audit.CreateAuditLog(componentName, path, userName, nil, nil, method, requestURI, "", nil)
+
+	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
+
+	_, err := restclient.RequestPost(url, auditLog, tokenHeaderMap, false)
+	if err != nil {
+		if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
+			guiMessage.AddDanger("Fail to send audit log with error " + err.Error())
 		}
 	}
 }
