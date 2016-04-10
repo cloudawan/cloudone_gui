@@ -62,7 +62,7 @@ func sendAuditLog(ctx *context.Context, userName string) {
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
-	tokenHeaderMap, _ := ctx.Input.Session("tokenHeaderMap").(map[string]string)
+	tokenHeaderMap, tokenHeaderMapOK := ctx.Input.Session("tokenHeaderMap").(map[string]string)
 	requestURI := ctx.Input.URI()
 	method := ctx.Input.Method()
 	path := ctx.Input.URL()
@@ -74,12 +74,14 @@ func sendAuditLog(ctx *context.Context, userName string) {
 	// Query is not used since the backend component will record again.
 	auditLog := audit.CreateAuditLog(componentName, path, userName, remoteAddress, nil, nil, method, requestURI, "", nil)
 
-	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
+	if tokenHeaderMapOK {
+		url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
 
-	_, err := restclient.RequestPost(url, auditLog, tokenHeaderMap, false)
-	if err != nil {
-		if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
-			guiMessage.AddDanger("Fail to send audit log with error " + err.Error())
+		_, err := restclient.RequestPost(url, auditLog, tokenHeaderMap, false)
+		if err != nil {
+			if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
+				guiMessage.AddDanger("Fail to send audit log with error " + err.Error())
+			}
 		}
 	}
 }
