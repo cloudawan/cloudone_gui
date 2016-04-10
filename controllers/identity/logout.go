@@ -17,6 +17,7 @@ package identity
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 )
 
 type LogoutController struct {
@@ -26,9 +27,18 @@ type LogoutController struct {
 func (c *LogoutController) Get() {
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
+	user, ok := c.GetSession("user").(*rbac.User)
+
+	// Send audit log since this page will pass filter
+	if ok {
+		sendAuditLog(c.Ctx, user.Name)
+	}
+
 	c.DelSession("user")
 	c.DelSession("tokenHeaderMap")
 	c.DelSession("layoutMenu")
+
+	c.DestroySession()
 
 	c.Ctx.Redirect(302, "/gui/login")
 

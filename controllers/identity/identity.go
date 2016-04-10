@@ -24,11 +24,12 @@ import (
 )
 
 const (
-	loginPageURL = "/gui/login"
+	loginPageURL  = "/gui/login"
+	logoutPageURL = "/gui/logout"
 )
 
 func FilterUser(ctx *context.Context) {
-	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginPageURL {
+	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && (ctx.Input.URL() == loginPageURL || ctx.Input.URL() == logoutPageURL) {
 		// Don't redirect itself to prevent the circle
 	} else {
 		user, ok := ctx.Input.Session("user").(*rbac.User)

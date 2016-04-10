@@ -109,6 +109,9 @@ func (c *LoginController) Post() {
 	namespace := beego.AppConfig.String("namespace")
 	c.SetSession("namespace", namespace)
 
+	// Send audit log since this page will pass filter
+	sendAuditLog(c.Ctx, user.Name)
+
 	guimessage.AddSuccess("User " + username + " login")
 
 	c.Ctx.Redirect(302, "/gui/dashboard/topology/")
