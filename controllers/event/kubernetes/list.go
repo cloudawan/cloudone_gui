@@ -34,8 +34,8 @@ type KubernetesEvent struct {
 	Kind                                   string
 	Source                                 map[string]interface{}
 	Id                                     string
-	FirstTimestamp                         string
-	LastTimestamp                          string
+	FirstTimestamp                         time.Time
+	LastTimestamp                          time.Time
 	Count                                  int
 	Message                                string
 	Reason                                 string
@@ -70,8 +70,6 @@ func (c *ListController) Get() {
 	}
 
 	offset, _ := c.GetInt("offset")
-
-	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)
 
 	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/historicalevents?acknowledge=" + acknowledge + "&size=" + strconv.Itoa(amountPerPage) + "&offset=" + strconv.Itoa(offset)
@@ -117,17 +115,12 @@ func (c *ListController) Get() {
 			acknowledge, _ := sourceJsonMap["searchMetaData"].(map[string]interface{})["acknowledge"].(bool)
 
 			firstTime, err := time.Parse(time.RFC3339, firstTimestamp)
-			if err != nil {
-				// Fail to parse, show original one
-			} else {
-				firstTimestamp = firstTime.Add(time.Minute * time.Duration(timeZoneOffset) * -1).Format(time.RFC3339)
+			if err == nil {
+				firstTime = firstTime.In(time.Local)
 			}
-
 			lastTime, err := time.Parse(time.RFC3339, lastTimestamp)
-			if err != nil {
-				// Fail to parse, show original one
-			} else {
-				lastTimestamp = lastTime.Add(time.Minute * time.Duration(timeZoneOffset) * -1).Format(time.RFC3339)
+			if err == nil {
+				lastTime = lastTime.In(time.Local)
 			}
 
 			kubernetesEvent := KubernetesEvent{
@@ -136,8 +129,8 @@ func (c *ListController) Get() {
 				kind,
 				source,
 				id,
-				firstTimestamp,
-				lastTimestamp,
+				firstTime,
+				lastTime,
 				int(count),
 				message,
 				reason,

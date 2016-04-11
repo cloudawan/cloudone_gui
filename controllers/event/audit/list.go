@@ -61,8 +61,6 @@ func (c *ListController) Get() {
 
 	offset, _ := c.GetInt("offset")
 
-	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)
-
 	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 		"/api/v1/auditlogs?size=" + strconv.Itoa(amountPerPage) + "&offset=" + strconv.Itoa(offset)
 
@@ -81,7 +79,7 @@ func (c *ListController) Get() {
 		guimessage.AddDanger(err.Error())
 	} else {
 		for i := 0; i < len(auditLogSlice); i++ {
-			auditLogSlice[i].CreatedTime.Add(time.Minute * time.Duration(timeZoneOffset) * -1)
+			auditLogSlice[i].CreatedTime = auditLogSlice[i].CreatedTime.In(time.Local)
 		}
 
 		previousOffset := offset - amountPerPage
