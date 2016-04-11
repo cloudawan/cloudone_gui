@@ -136,20 +136,57 @@
 			var switchInput = function(kind) {
 				switch(kind) {
 					case "git":
+						$("#sourceCodeURL").prop("required", true);
+						$("#hostAndPort").prop("required", false);
+						$("#username").prop("required", false);
+						$("#password").prop("required", false);
+						$("#sourcePath").prop("required", false);
+						$("#compressFileName").prop("required", false);
+						$("#unpackageCommand").prop("required", false);
+
 						$("#git_specific").show();
 						$("#file_specific").hide();
 						$("#scp_specific").hide();
 						break;
 					case "scp":
+						$("#sourceCodeURL").prop("required", false);
+						$("#hostAndPort").prop("required", true);
+						$("#username").prop("required", true);
+						$("#password").prop("required", true);
+						$("#sourcePath").prop("required", true);
+						$("#compressFileName").prop("required", true);
+						$("#unpackageCommand").prop("required", true);
+
 						$("#git_specific").hide();
 						$("#file_specific").show();
 						$("#scp_specific").show();
 						break;
-					default:
+					case "sftp":
+						$("#sourceCodeURL").prop("required", false);
+						$("#hostAndPort").prop("required", true);
+						$("#username").prop("required", true);
+						$("#password").prop("required", true);
+						$("#sourcePath").prop("required", true);
+						$("#compressFileName").prop("required", false);
+						$("#unpackageCommand").prop("required", false);
+
 						$("#git_specific").hide();
 						$("#file_specific").show();
 						$("#scp_specific").hide();
 						break;
+					default:
+						// default git
+						$("#sourceCodeURL").prop("required", true);
+						$("#hostAndPort").prop("required", false);
+						$("#username").prop("required", false);
+						$("#password").prop("required", false);
+						$("#sourcePath").prop("required", false);
+						$("#compressFileName").prop("required", false);
+						$("#unpackageCommand").prop("required", false);
+
+						$("#git_specific").show();
+						$("#file_specific").hide();
+						$("#scp_specific").hide();
 				}
 			};
 			
