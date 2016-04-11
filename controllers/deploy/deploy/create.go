@@ -36,6 +36,7 @@ type DeployCreateInput struct {
 	ReplicaAmount        int
 	PortSlice            []DeployContainerPort
 	EnvironmentSlice     []ReplicationControllerContainerEnvironment
+	ResourceMap          map[string]interface{}
 }
 
 type DeployContainerPort struct {
@@ -131,6 +132,11 @@ func (c *CreateController) Post() {
 	description := c.GetString("description")
 	replicaAmount, _ := c.GetInt("replicaAmount")
 
+	resourceCPURequest, resourceCPURequestError := c.GetFloat("resourceCPURequest")
+	resourceCPULimit, resourceCPULimitError := c.GetFloat("resourceCPULimit")
+	resourceMemoryRequest, resourceMemoryRequestError := c.GetInt("resourceMemoryRequest")
+	resourceMemoryLimit, resourceMemoryLimitError := c.GetInt("resourceMemoryLimit")
+
 	portName := "generated"
 
 	indexContainerPortMap := make(map[string]int)
@@ -179,6 +185,28 @@ func (c *CreateController) Post() {
 		i++
 	}
 
+	// Resource reservation
+	resourceMap := make(map[string]interface{})
+	if resourceCPURequestError == nil || resourceMemoryRequestError == nil {
+		resourceMap["requests"] = make(map[string]interface{})
+		if resourceCPURequestError == nil {
+			resourceMap["requests"].(map[string]interface{})["cpu"] = resourceCPURequest
+		}
+		if resourceMemoryRequestError == nil {
+			resourceMap["requests"].(map[string]interface{})["memory"] = strconv.Itoa(resourceMemoryRequest) + "Mi"
+		}
+	}
+
+	if resourceCPULimitError == nil || resourceMemoryLimitError == nil {
+		resourceMap["limits"] = make(map[string]interface{})
+		if resourceCPULimitError == nil {
+			resourceMap["limits"].(map[string]interface{})["cpu"] = resourceCPULimit
+		}
+		if resourceMemoryLimitError == nil {
+			resourceMap["limits"].(map[string]interface{})["memory"] = strconv.Itoa(resourceMemoryLimit) + "Mi"
+		}
+	}
+
 	deployCreateInput := DeployCreateInput{
 		imageInformationName,
 		version,
@@ -186,6 +214,7 @@ func (c *CreateController) Post() {
 		replicaAmount,
 		deployContainerPortSlice,
 		environmentSlice,
+		resourceMap,
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
