@@ -110,7 +110,9 @@ func (c *LoginController) Post() {
 	c.SetSession("namespace", namespace)
 
 	// Send audit log since this page will pass filter
-	sendAuditLog(c.Ctx, user.Name)
+	go func() {
+		sendAuditLog(c.Ctx, user.Name, false)
+	}()
 
 	guimessage.AddSuccess("User " + username + " login")
 

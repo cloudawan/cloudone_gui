@@ -52,13 +52,13 @@ func FilterUser(ctx *context.Context) {
 
 			// Audit log
 			go func() {
-				sendAuditLog(ctx, user.Name)
+				sendAuditLog(ctx, user.Name, true)
 			}()
 		}
 	}
 }
 
-func sendAuditLog(ctx *context.Context, userName string) {
+func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) {
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
@@ -68,12 +68,18 @@ func sendAuditLog(ctx *context.Context, userName string) {
 	method := ctx.Input.Method()
 	path := ctx.Input.URL()
 	remoteAddress := ctx.Request.RemoteAddr
+	queryParameterMap := ctx.Request.Form
+
+	if saveParameter == false {
+		// Not to save parameter, such as password
+		requestURI = path
+		queryParameterMap = nil
+	}
 
 	// Header is not used since the header has no useful information for now
 	// Body is not used since the backend component will record again.
 	// Path is not used since the backend component will record again.
-	// Query is not used since the backend component will record again.
-	auditLog := audit.CreateAuditLog(componentName, path, userName, remoteAddress, nil, nil, method, requestURI, "", nil)
+	auditLog := audit.CreateAuditLog(componentName, path, userName, remoteAddress, queryParameterMap, nil, method, requestURI, "", nil)
 
 	if tokenHeaderMapOK {
 		url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
