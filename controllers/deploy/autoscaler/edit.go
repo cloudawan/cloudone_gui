@@ -46,6 +46,8 @@ func (c *EditController) Get() {
 		c.Data["kind"] = ""
 		c.Data["name"] = ""
 		c.Data["readonly"] = ""
+		c.Data["maximumReplica"] = 1
+		c.Data["minimumReplica"] = 1
 	} else {
 		namespace, _ := c.GetSession("namespace").(string)
 
@@ -114,6 +116,14 @@ func (c *EditController) Get() {
 			coolDownDurationInSecond := int(replicationControllerAutoScaler.CoolDownDuration / time.Second)
 			c.Data["coolDownDuration"] = coolDownDurationInSecond
 			c.Data["readonly"] = "readonly"
+
+			if kind == "selector" {
+				c.Data["kindSelectorSelected"] = "selected"
+				c.Data["kindReplicationControllerSelected"] = ""
+			} else if kind == "replicationController" {
+				c.Data["kindSelectorSelected"] = ""
+				c.Data["kindReplicationControllerSelected"] = "selected"
+			}
 		}
 
 		c.Data["kind"] = kind

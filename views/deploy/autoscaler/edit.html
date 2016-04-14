@@ -13,9 +13,9 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="kind">Type:</label>
 					<div class="col-md-9">
-						<select id="kind" class="form-control" name="kind" value="{{ .kind }}" {{ .readonly }}>
-							<option value="selector">Selector</option>
-							<option value="replicationController">ReplicationController</option>
+						<select id="kind" class="form-control" name="kind" {{ .readonly }}>
+							<option value="selector" {{ .kindSelectorSelected }}>Selector</option>
+							<option value="replicationController" {{ .kindReplicationControllerSelected }}>ReplicationController</option>
 						</select>
 					</div>
 				</div>
@@ -34,13 +34,13 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="maximumReplica">MaximumReplica:</label>
 					<div class="col-md-9">
-						<input id="maximumReplica" class="form-control" type="number" name="maximumReplica" value="1" min="1" max="10" value="{{ .maximumReplica }}">
+						<input id="maximumReplica" class="form-control" type="number" name="maximumReplica" min="1" max="10" value="{{ .maximumReplica }}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="minimumReplica">MinimumReplica:</label>
 					<div class="col-md-9">
-						<input id="minimumReplica" class="form-control" type="number" name="minimumReplica" value="1" min="1" max="10" value="{{ .minimumReplica }}">
+						<input id="minimumReplica" class="form-control" type="number" name="minimumReplica" min="1" max="10" value="{{ .minimumReplica }}">
 					</div>
 				</div>
 
