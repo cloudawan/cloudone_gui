@@ -23,11 +23,17 @@
 					</div>
 				</div>
 				
+				<hr>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" >Environment Value:</label>
+				</div>
+
 				{{range $key, $value := .environment}}
 					<div class="form-group">
 						<label class="col-md-3 control-label" for="{{ $key }}">{{ $key }}:</label>
 						<div class="col-md-9">
-							<input id="{{ $key }}" class="form-control" type="text" name="{{ $key }}">
+							<input id="{{ $key }}" class="form-control" type="text" name="{{ $key }}" value="{{ $value }}">
 						</div>
 					</div>
 				{{end}}
