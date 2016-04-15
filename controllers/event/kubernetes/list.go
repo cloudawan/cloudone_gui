@@ -116,11 +116,11 @@ func (c *ListController) Get() {
 
 			firstTime, err := time.Parse(time.RFC3339, firstTimestamp)
 			if err == nil {
-				firstTime = firstTime.In(time.Local)
+				firstTime = firstTime.Local()
 			}
 			lastTime, err := time.Parse(time.RFC3339, lastTimestamp)
 			if err == nil {
-				lastTime = lastTime.In(time.Local)
+				lastTime = lastTime.Local()
 			}
 
 			kubernetesEvent := KubernetesEvent{

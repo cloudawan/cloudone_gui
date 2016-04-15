@@ -90,7 +90,7 @@ func (c *ListController) Get() {
 		guimessage.AddDanger(err.Error())
 	} else {
 		for i := 0; i < len(auditLogSlice); i++ {
-			auditLogSlice[i].CreatedTime = auditLogSlice[i].CreatedTime.In(time.Local)
+			auditLogSlice[i].CreatedTime = auditLogSlice[i].CreatedTime.Local()
 		}
 
 		previousOffset := offset - amountPerPage
