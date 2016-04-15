@@ -31,7 +31,13 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="apiSecret">APISecret:</label>
 					<div class="col-md-9">
-						<input id="apiSecret" class="form-control" type="text" name="apiSecret" required>
+						<input id="apiSecret" class="form-control" type="password" name="apiSecret" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="apiSecretConfirm">APISecret Confirm:</label>
+					<div class="col-md-9">
+						<input id="apiSecretConfirm" class="form-control" type="password" name="apiSecretConfirm" required>
 					</div>
 				</div>
 
@@ -43,4 +49,24 @@
 {{ end }}
 
 {{ define "js" }}
+
+	<script type="text/javascript">
+
+	var moduleSystemNotificationSMSCreate = (function(){
+
+		function validatePassword(e){
+			if($("#apiSecret").val() != $("#apiSecretConfirm").val()) {
+				document.getElementById("apiSecretConfirm").setCustomValidity("Passwords Don't Match");
+			} else {
+				document.getElementById("apiSecretConfirm").setCustomValidity("");
+			}
+		}
+
+		$("#apiSecret").change(validatePassword);
+		$("#apiSecretConfirm").change(validatePassword);
+
+	})();
+
+	</script>
+
 {{ end}}

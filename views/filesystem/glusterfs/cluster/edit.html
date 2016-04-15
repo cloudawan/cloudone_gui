@@ -31,33 +31,39 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label" for="sSHDialTimeoutInMilliSecond">SSH Dial Timeout(ms):</label>
+					<label class="col-md-3 control-label" for="sshDialTimeoutInMilliSecond">SSH Dial Timeout(ms):</label>
 					<div class="col-md-9">
-						<input id="sSHDialTimeoutInMilliSecond" class="form-control" type="number" name="sSHDialTimeoutInMilliSecond" value="{{ .sSHDialTimeoutInMilliSecond }}" min="100" max="30000" required>
+						<input id="sshDialTimeoutInMilliSecond" class="form-control" type="number" name="sshDialTimeoutInMilliSecond" value="{{ .sshDialTimeoutInMilliSecond }}" min="100" max="30000" required>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label" for="sSHSessionTimeoutInMilliSecond">SSH Session Timeout(ms):</label>
+					<label class="col-md-3 control-label" for="sshSessionTimeoutInMilliSecond">SSH Session Timeout(ms):</label>
 					<div class="col-md-9">
-						<input id="sSHSessionTimeoutInMilliSecond" class="form-control" type="number" name="sSHSessionTimeoutInMilliSecond" value="{{ .sSHSessionTimeoutInMilliSecond }}" min="100" max="30000" required>
+						<input id="sshSessionTimeoutInMilliSecond" class="form-control" type="number" name="sshSessionTimeoutInMilliSecond" value="{{ .sshSessionTimeoutInMilliSecond }}" min="100" max="30000" required>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label" for="sSHPort">SSH Port:</label>
+					<label class="col-md-3 control-label" for="sshPort">SSH Port:</label>
 					<div class="col-md-9">
-						<input id="sSHPort" class="form-control" type="number" name="sSHPort" value="{{ .sSHPort }}" min="22" max="65535" required>
+						<input id="sshPort" class="form-control" type="number" name="sshPort" value="{{ .sshPort }}" min="22" max="65535" required>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label" for="sSHUser">SSH User:</label>
+					<label class="col-md-3 control-label" for="sshUser">SSH User:</label>
 					<div class="col-md-9">
-						<input id="sSHUser" class="form-control" type="text" name="sSHUser" value="{{ .sSHUser }}" required>
+						<input id="sshUser" class="form-control" type="text" name="sshUser" value="{{ .sshUser }}" required>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label" for="sSHPassword">SSH Password:</label>
+					<label class="col-md-3 control-label" for="sshPassword">SSH Password:</label>
 					<div class="col-md-9">
-						<input id="sSHPassword" class="form-control" type="text" name="sSHPassword" value="" required>
+						<input id="sshPassword" class="form-control" type="password" name="sshPassword" value="" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sshPasswordConfirm">SSH Password Confirm:</label>
+					<div class="col-md-9">
+						<input id="sshPasswordConfirm" class="form-control" type="password" name="sshPasswordConfirm" value="" required>
 					</div>
 				</div>
 
@@ -69,4 +75,24 @@
 {{ end }}
 
 {{ define "js" }}
+
+	<script type="text/javascript">
+
+	var moduleFileSystemGlusterfsClusterEdit = (function(){
+
+		function validatePassword(e){
+			if($("#sshPassword").val() != $("#sshPasswordConfirm").val()) {
+				document.getElementById("sshPasswordConfirm").setCustomValidity("Passwords Don't Match");
+			} else {
+				document.getElementById("sshPasswordConfirm").setCustomValidity("");
+			}
+		}
+
+		$("#sshPassword").change(validatePassword);
+		$("#sshPasswordConfirm").change(validatePassword);
+
+	})();
+
+	</script>
+
 {{ end}}

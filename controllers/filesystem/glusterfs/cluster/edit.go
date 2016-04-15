@@ -41,9 +41,9 @@ func (c *EditController) Get() {
 		c.Data["pageHeader"] = "Create Cluster Configuration"
 		c.Data["createOrUpdate"] = "create"
 
-		c.Data["sSHDialTimeoutInMilliSecond"] = 1000
-		c.Data["sSHSessionTimeoutInMilliSecond"] = 10000
-		c.Data["sSHPort"] = 22
+		c.Data["sshDialTimeoutInMilliSecond"] = 1000
+		c.Data["sshSessionTimeoutInMilliSecond"] = 10000
+		c.Data["sshPort"] = 22
 	} else {
 		cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 		cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -86,11 +86,11 @@ func (c *EditController) Get() {
 		c.Data["name"] = glusterfsCluster.Name
 		c.Data["hostList"] = hostList
 		c.Data["path"] = glusterfsCluster.Path
-		c.Data["sSHDialTimeoutInMilliSecond"] = int64(glusterfsCluster.SSHDialTimeout / time.Millisecond)
-		c.Data["sSHSessionTimeoutInMilliSecond"] = int64(glusterfsCluster.SSHSessionTimeout / time.Millisecond)
-		c.Data["sSHPort"] = glusterfsCluster.SSHPort
-		c.Data["sSHUser"] = glusterfsCluster.SSHUser
-		c.Data["sSHPassword"] = glusterfsCluster.SSHPassword
+		c.Data["sshDialTimeoutInMilliSecond"] = int64(glusterfsCluster.SSHDialTimeout / time.Millisecond)
+		c.Data["sshSessionTimeoutInMilliSecond"] = int64(glusterfsCluster.SSHSessionTimeout / time.Millisecond)
+		c.Data["sshPort"] = glusterfsCluster.SSHPort
+		c.Data["sshUser"] = glusterfsCluster.SSHUser
+		c.Data["sshPassword"] = glusterfsCluster.SSHPassword
 
 		c.Data["nameFieldReadOnly"] = "readonly"
 	}
@@ -119,11 +119,11 @@ func (c *EditController) Post() {
 	name := c.GetString("name")
 	hostList := c.GetString("hostList")
 	path := c.GetString("path")
-	sSHDialTimeoutInMilliSecond, _ := c.GetInt("sSHDialTimeoutInMilliSecond")
-	sSHSessionTimeoutInMilliSecond, _ := c.GetInt("sSHSessionTimeoutInMilliSecond")
-	sSHPort, _ := c.GetInt("sSHPort")
-	sSHUser := c.GetString("sSHUser")
-	sSHPassword := c.GetString("sSHPassword")
+	sshDialTimeoutInMilliSecond, _ := c.GetInt("sshDialTimeoutInMilliSecond")
+	sshSessionTimeoutInMilliSecond, _ := c.GetInt("sshSessionTimeoutInMilliSecond")
+	sshPort, _ := c.GetInt("sshPort")
+	sshUser := c.GetString("sshUser")
+	sshPassword := c.GetString("sshPassword")
 	createOrUpdate := c.GetString("createOrUpdate")
 
 	hostSlice := make([]string, 0)
@@ -139,11 +139,11 @@ func (c *EditController) Post() {
 		name,
 		hostSlice,
 		path,
-		sSHDialTimeoutInMilliSecond,
-		sSHSessionTimeoutInMilliSecond,
-		sSHPort,
-		sSHUser,
-		sSHPassword}
+		sshDialTimeoutInMilliSecond,
+		sshSessionTimeoutInMilliSecond,
+		sshPort,
+		sshUser,
+		sshPassword}
 
 	if createOrUpdate == "create" {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +

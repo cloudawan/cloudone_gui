@@ -96,7 +96,13 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label" for="password">Password:</label>
 						<div class="col-md-9">
-							<input id="password" class="form-control" type="text" name="password">
+							<input id="password" class="form-control" type="password" name="password">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="passwordConfirm">Password Confirm:</label>
+						<div class="col-md-9">
+							<input id="passwordConfirm" class="form-control" type="password" name="passwordConfirm">
 						</div>
 					</div>
 					<div class="form-group">
@@ -133,13 +139,29 @@
 	<script type="text/javascript"> 
 
 	    var moduleImageInformationCreate = (function(){
+
+			function validatePassword(e){
+				if($("#password").val() != $("#passwordConfirm").val()) {
+					document.getElementById("passwordConfirm").setCustomValidity("Passwords Don't Match");
+				} else {
+					document.getElementById("passwordConfirm").setCustomValidity("");
+				}
+			}
+
+			$("#password").change(validatePassword);
+			$("#passwordConfirm").change(validatePassword);
+
 			var switchInput = function(kind) {
+				$("#password").val("")
+				$("#passwordConfirm").val("")
+
 				switch(kind) {
 					case "git":
 						$("#sourceCodeURL").prop("required", true);
 						$("#hostAndPort").prop("required", false);
 						$("#username").prop("required", false);
 						$("#password").prop("required", false);
+						$("#passwordConfirm").prop("required", false);
 						$("#sourcePath").prop("required", false);
 						$("#compressFileName").prop("required", false);
 						$("#unpackageCommand").prop("required", false);
@@ -153,6 +175,7 @@
 						$("#hostAndPort").prop("required", true);
 						$("#username").prop("required", true);
 						$("#password").prop("required", true);
+						$("#passwordConfirm").prop("required", true);
 						$("#sourcePath").prop("required", true);
 						$("#compressFileName").prop("required", true);
 						$("#unpackageCommand").prop("required", true);
@@ -166,6 +189,7 @@
 						$("#hostAndPort").prop("required", true);
 						$("#username").prop("required", true);
 						$("#password").prop("required", true);
+						$("#passwordConfirm").prop("required", true);
 						$("#sourcePath").prop("required", true);
 						$("#compressFileName").prop("required", false);
 						$("#unpackageCommand").prop("required", false);
@@ -180,6 +204,7 @@
 						$("#hostAndPort").prop("required", false);
 						$("#username").prop("required", false);
 						$("#password").prop("required", false);
+						$("#passwordConfirm").prop("required", false);
 						$("#sourcePath").prop("required", false);
 						$("#compressFileName").prop("required", false);
 						$("#unpackageCommand").prop("required", false);
