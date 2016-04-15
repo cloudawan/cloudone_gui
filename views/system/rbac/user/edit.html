@@ -15,14 +15,21 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
-						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" required {{ .readonly }}>
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" pattern=".{4,30}" title="4 to 30 characters" required {{ .readonly }}>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="password">Password:</label>
 					<div class="col-md-9">
-						<input id="password" class="form-control" type="text" name="password" required>
+						<input id="password" class="form-control" type="password" name="password" pattern=".{6,30}" title="6 to 30 characters" required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="passwordConfirm">Password Confirm:</label>
+					<div class="col-md-9">
+						<input id="passwordConfirm" class="form-control" type="password" name="passwordConfirm" pattern=".{6,30}" title="6 to 30 characters" required>
 					</div>
 				</div>
 				
@@ -71,4 +78,25 @@
 {{ end }}
 
 {{ define "js" }}
+
+	<script type="text/javascript">
+
+	var moduleSystemRBACUserEdit = (function(){
+
+		function validatePassword(e){
+			if($("#password").val() != $("#passwordConfirm").val()) {
+				document.getElementById("passwordConfirm").setCustomValidity("Passwords Don't Match");
+			} else {
+				$("#passwordConfirm").attr("title", "6 to 30 characters")
+				document.getElementById("passwordConfirm").setCustomValidity("");
+			}
+		}
+
+		$("#password").change(validatePassword);
+		$("#passwordConfirm").change(validatePassword);
+
+	})();
+
+	</script>
+
 {{ end}}
