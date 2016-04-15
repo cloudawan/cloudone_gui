@@ -21,6 +21,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"math"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -107,6 +108,20 @@ func (c *LoginController) Post() {
 
 	// Namespace
 	namespace := beego.AppConfig.String("namespace")
+	// Get first namespace
+	for _, resource := range user.ResourceSlice {
+		if resource.Component == componentName || resource.Component == "*" {
+			if strings.HasPrefix(resource.Path, "/namespaces/") {
+				splitSlice := strings.Split(resource.Path, "/")
+				name := splitSlice[2]
+				if name != "" && name != "*" {
+					namespace = name
+					break
+				}
+			}
+		}
+	}
+	// Set namespace
 	c.SetSession("namespace", namespace)
 
 	// Send audit log since this page will pass filter
