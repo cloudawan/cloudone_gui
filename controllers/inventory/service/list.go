@@ -81,6 +81,8 @@ func (c *ListController) Get() {
 		return
 	}
 
+	serverHost := c.Ctx.Input.Host()
+
 	namespace := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -110,7 +112,7 @@ func (c *ListController) Get() {
 					serviceSlice[i].PortSlice[j].HiddenTagNodePort = "hidden"
 				} else {
 					serviceSlice[i].PortSlice[j].NodePortText = strconv.Itoa(serviceSlice[i].PortSlice[j].NodePort)
-					serviceSlice[i].PortSlice[j].NodePortURL = "http://" + kubeapiHost + ":" + strconv.Itoa(serviceSlice[i].PortSlice[j].NodePort)
+					serviceSlice[i].PortSlice[j].NodePortURL = "http://" + serverHost + ":" + strconv.Itoa(serviceSlice[i].PortSlice[j].NodePort)
 				}
 			}
 
