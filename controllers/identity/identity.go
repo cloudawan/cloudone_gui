@@ -15,6 +15,7 @@
 package identity
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
@@ -75,6 +76,12 @@ func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) (re
 	path := ctx.Input.URL()
 	remoteAddress := ctx.Request.RemoteAddr
 	queryParameterMap := ctx.Request.Form
+
+	proxySlice := ctx.Input.Proxy()
+	if proxySlice != nil && len(proxySlice) > 0 {
+		proxySlice = append(proxySlice, remoteAddress)
+		remoteAddress = fmt.Sprintf("%v", proxySlice)
+	}
 
 	if saveParameter == false {
 		// Not to save parameter, such as password
