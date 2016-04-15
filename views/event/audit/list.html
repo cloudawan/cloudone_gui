@@ -7,6 +7,18 @@
 	<div class="page-header">
 		<h1>Audit List</h1>
 	</div>
+
+	<div class="row">
+		<div class="col-md-2 pull-right">
+			<select id="userName" class="form-control" onchange="window.location.href='/gui/event/audit/list?userName='+$('#userName').val();">
+			{{ range $userDataKey, $userData := .userDataSlice}}
+				<option value="{{$userData.Name}}" {{$userData.Selected}}>{{$userData.Name}}</option>
+			{{ end }}
+			</select>
+		</div>
+		<label class="col-md-0 pull-right" for="userName">User:</label>
+	</div>
+
 	<div class="row">
 		<div class="col-md-12">
 			

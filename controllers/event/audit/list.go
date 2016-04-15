@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 	"time"
@@ -48,6 +49,11 @@ const (
 	amountPerPage = 10
 )
 
+type UserData struct {
+	Name     string
+	Selected string
+}
+
 func (c *ListController) Get() {
 	c.TplName = "event/audit/list.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -60,9 +66,14 @@ func (c *ListController) Get() {
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
 	offset, _ := c.GetInt("offset")
+	userName := c.GetString("userName")
+
+	if userName == "All" {
+		userName = ""
+	}
 
 	url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
-		"/api/v1/auditlogs?size=" + strconv.Itoa(amountPerPage) + "&offset=" + strconv.Itoa(offset)
+		"/api/v1/auditlogs/" + userName + "?size=" + strconv.Itoa(amountPerPage) + "&offset=" + strconv.Itoa(offset)
 
 	auditLogSlice := make([]AuditLog, 0)
 
@@ -106,10 +117,37 @@ func (c *ListController) Get() {
 		c.Data["nextLabel"] = strconv.Itoa(nextFrom) + "~" + strconv.Itoa(nextTo)
 
 		c.Data["acknowledgeActive"] = "active"
-		c.Data["paginationUrlPrevious"] = "/gui/event/audit/list?offset=" + strconv.Itoa(previousOffset)
-		c.Data["paginationUrlNext"] = "/gui/event/audit/list?offset=" + strconv.Itoa(nextOffset)
+		c.Data["paginationUrlPrevious"] = "/gui/event/audit/list?offset=" + strconv.Itoa(previousOffset) + "&userName=" + userName
+		c.Data["paginationUrlNext"] = "/gui/event/audit/list?offset=" + strconv.Itoa(nextOffset) + "&userName=" + userName
 
 		c.Data["auditLogSlice"] = auditLogSlice
+
+		// Get user slice to select
+		cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+		cloudoneHost := beego.AppConfig.String("cloudoneHost")
+		cloudonePort := beego.AppConfig.String("cloudonePort")
+
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+			"/api/v1/authorizations/users"
+
+		userSlice := make([]rbac.User, 0)
+
+		_, err = restclient.RequestGetWithStructure(url, &userSlice, tokenHeaderMap)
+
+		if err != nil {
+			guimessage.AddDanger(err.Error())
+		} else {
+			userDataSlice := make([]UserData, 0)
+			userDataSlice = append(userDataSlice, UserData{"All", ""})
+			for _, user := range userSlice {
+				if user.Name == userName {
+					userDataSlice = append(userDataSlice, UserData{user.Name, "selected"})
+				} else {
+					userDataSlice = append(userDataSlice, UserData{user.Name, ""})
+				}
+			}
+			c.Data["userDataSlice"] = userDataSlice
+		}
 	}
 
 	guimessage.OutputMessage(c.Data)
