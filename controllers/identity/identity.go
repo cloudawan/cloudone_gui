@@ -58,7 +58,13 @@ func FilterUser(ctx *context.Context) {
 	}
 }
 
-func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) {
+func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) (returnedError error) {
+	defer func() {
+		if err := recover(); err != nil {
+			returnedError = err.(error)
+		}
+	}()
+
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
@@ -89,6 +95,9 @@ func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) {
 			if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
 				guiMessage.AddDanger("Fail to send audit log with error " + err.Error())
 			}
+			return err
 		}
 	}
+
+	return nil
 }

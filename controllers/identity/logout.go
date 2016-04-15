@@ -31,9 +31,7 @@ func (c *LogoutController) Get() {
 
 	// Send audit log since this page will pass filter
 	if ok {
-		go func() {
-			sendAuditLog(c.Ctx, user.Name, true)
-		}()
+		sendAuditLog(c.Ctx, user.Name, true)
 	}
 
 	c.DelSession("user")
