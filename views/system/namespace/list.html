@@ -38,6 +38,9 @@
 								{{ str2html $namespace.HiddenTagGuiSystemNamespaceSelect }}
 									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/select?name={{$namespace.Name}}">Select</a>
 								</div>
+								{{ str2html $namespace.HiddenTagGuiSystemNamespaceBookmark }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/namespace/bookmark?name={{$namespace.Name}}">Bookmark</a>
+								</div>
 								{{ str2html $namespace.HiddenTagGuiSystemNamespaceDelete }}
 									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$namespace.Name}}" data-color="btn-danger" data-herf="/gui/system/namespace/delete?name={{$namespace.Name}}" {{$namespace.Display}}>Delete</button>
 								</div>

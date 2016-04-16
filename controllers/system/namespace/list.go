@@ -30,11 +30,12 @@ type ListController struct {
 }
 
 type Namespace struct {
-	Name                              string
-	Selected                          bool
-	Display                           string
-	HiddenTagGuiSystemNamespaceSelect string
-	HiddenTagGuiSystemNamespaceDelete string
+	Name                                string
+	Selected                            bool
+	Display                             string
+	HiddenTagGuiSystemNamespaceSelect   string
+	HiddenTagGuiSystemNamespaceBookmark string
+	HiddenTagGuiSystemNamespaceDelete   string
 }
 
 var displayMap map[string]string = map[string]string{
@@ -59,6 +60,7 @@ func (c *ListController) Get() {
 	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNamespaceEdit", user, "GET", "/gui/system/namespace/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemNamespaceSelect := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/select")
+	hasGuiSystemNamespaceBookmark := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/bookmark")
 	hasGuiSystemNamespaceDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -95,7 +97,7 @@ func (c *ListController) Get() {
 
 		namespaceSlice := make([]Namespace, 0)
 		for _, name := range nameSlice {
-			namespace := Namespace{name, false, "", "", ""}
+			namespace := Namespace{name, false, "", "", "", ""}
 			if name == selectedNamespace {
 				namespace.Selected = true
 			}
@@ -105,6 +107,11 @@ func (c *ListController) Get() {
 				namespace.HiddenTagGuiSystemNamespaceSelect = "<div class='btn-group'>"
 			} else {
 				namespace.HiddenTagGuiSystemNamespaceSelect = "<div hidden>"
+			}
+			if hasGuiSystemNamespaceBookmark {
+				namespace.HiddenTagGuiSystemNamespaceBookmark = "<div class='btn-group'>"
+			} else {
+				namespace.HiddenTagGuiSystemNamespaceBookmark = "<div hidden>"
 			}
 			if hasGuiSystemNamespaceDelete {
 				namespace.HiddenTagGuiSystemNamespaceDelete = "<div class='btn-group'>"

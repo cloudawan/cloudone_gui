@@ -121,6 +121,16 @@ func (c *LoginController) Post() {
 			}
 		}
 	}
+	metaDataMap := user.MetaDataMap
+	if metaDataMap == nil {
+		metaDataMap = make(map[string]string)
+	}
+	// If loginNamespace is set, use it
+	loginNamespace := metaDataMap["loginNamespace"]
+	if len(loginNamespace) > 0 {
+		namespace = loginNamespace
+	}
+
 	// Set namespace
 	c.SetSession("namespace", namespace)
 

@@ -50,12 +50,23 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="role_{{ $role.Name }}">{{ $role.Name }}:</label>
 					<div class="col-md-offset-1 col-md-6 checkbox">
-						<input id="role_{{ $role.Name }}" type="checkbox" name="role_{{ $role.Name }}" {{ $role.TagChecked }}>
+						<input id="role_{{ $role.Name }}" type="checkbox" name="role_{{ $role.Name }}" {{ $role.Tag }}>
 					</div>
 				</div>
 				{{end}}
 
 				<hr>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="loginNamespace">Login Namespace:</label>
+					<div class="col-md-9">
+						<select id="loginNamespace" class="form-control" name="loginNamespace" required>
+							{{ range $loginNamespaceKey, $loginNamespace := .loginNamespaceSlice}}
+								<option value="{{ $loginNamespace.Name }}" {{ $loginNamespace.Tag }}>{{ $loginNamespace.Name }}</option>
+							{{end}}
+						</select>
+					</div>
+				</div>
 
 				<div class="form-group">
 					<label class="col-md-3 control-label" >Namespace List:</label>
@@ -65,7 +76,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="namespace_{{ $namespace.Name }}">{{ $namespace.Name }}:</label>
 					<div class="col-md-offset-1 col-md-6 checkbox">
-						<input id="namespace_{{ $namespace.Name }}" type="checkbox" name="namespace_{{ $namespace.Name }}" {{ $namespace.TagChecked }}>
+						<input id="namespace_{{ $namespace.Name }}" type="checkbox" name="namespace_{{ $namespace.Name }}" {{ $namespace.Tag }}>
 					</div>
 				</div>
 				{{end}}

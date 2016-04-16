@@ -196,6 +196,7 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/system/namespace/list", "checkedTagSystemNamespaceList", c.Data, pathMap)
 		setCheckedTag("/gui/system/namespace/edit", "checkedTagSystemNamespaceCreate", c.Data, pathMap)
 		setCheckedTag("/gui/system/namespace/select", "checkedTagSystemNamespaceSelect", c.Data, pathMap)
+		setCheckedTag("/gui/system/namespace/bookmark", "checkedTagSystemNamespaceBookmark", c.Data, pathMap)
 		setCheckedTag("/gui/system/namespace/delete", "checkedTagSystemNamespaceDelete", c.Data, pathMap)
 		setCheckedTag("/gui/system/notification", "checkedTagSystemNotification", c.Data, pathMap)
 		setHiddenTag("/gui/system/notification", "hiddenTagSystemNotification", c.Data, pathMap)
@@ -628,6 +629,10 @@ func (c *EditController) Post() {
 				permission := &rbac.Permission{"systemNamespaceSelect", identity.GetConponentName(), "GET", "/gui/system/namespace/select"}
 				permissionSlice = append(permissionSlice, permission)
 			}
+			if c.GetString("systemNamespaceBookmark") == "on" {
+				permission := &rbac.Permission{"systemNamespaceBookmark", identity.GetConponentName(), "GET", "/gui/system/namespace/bookmark"}
+				permissionSlice = append(permissionSlice, permission)
+			}
 			if c.GetString("systemNamespaceDelete") == "on" {
 				permission := &rbac.Permission{"systemNamespaceDelete", identity.GetConponentName(), "GET", "/gui/system/namespace/delete"}
 				permissionSlice = append(permissionSlice, permission)
@@ -781,7 +786,7 @@ func (c *EditController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess("Role " + name + " is created")
+		guimessage.AddSuccess("Role " + name + " is edited")
 	}
 
 	c.Ctx.Redirect(302, "/gui/system/rbac/role/list")

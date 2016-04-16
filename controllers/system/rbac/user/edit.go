@@ -15,6 +15,7 @@
 package user
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
@@ -32,12 +33,12 @@ type EditController struct {
 type Role struct {
 	Name        string
 	Description string
-	TagChecked  string
+	Tag         string
 }
 
 type Namespace struct {
-	Name       string
-	TagChecked string
+	Name string
+	Tag  string
 }
 
 func (c *EditController) Get() {
@@ -102,15 +103,18 @@ func (c *EditController) Get() {
 		return
 	}
 
+	loginNamespaceSlice := make([]Namespace, 0)
 	namespaceSlice := make([]Namespace, 0)
 	namespaceSlice = append(namespaceSlice, Namespace{"*", ""})
 	for _, namespaceName := range namespaceNameSlice {
 		namespaceSlice = append(namespaceSlice, Namespace{namespaceName, ""})
+		loginNamespaceSlice = append(loginNamespaceSlice, Namespace{namespaceName, ""})
 	}
 
 	c.Data["action"] = action
 	c.Data["roleSlice"] = roleSlice
 	c.Data["namespaceSlice"] = namespaceSlice
+	c.Data["loginNamespaceSlice"] = loginNamespaceSlice
 
 	if action == "create" {
 		c.Data["actionButtonValue"] = "Create"
@@ -138,7 +142,7 @@ func (c *EditController) Get() {
 		for i := 0; i < len(roleSlice); i++ {
 			for _, ownedRole := range user.RoleSlice {
 				if roleSlice[i].Name == ownedRole.Name {
-					roleSlice[i].TagChecked = "checked"
+					roleSlice[i].Tag = "checked"
 				}
 			}
 		}
@@ -147,18 +151,37 @@ func (c *EditController) Get() {
 			// Simplied user version so the component of the resource is *
 			if ownedResource.Path == "*" || ownedResource.Path == "/namespaces/" {
 				// The first one is * all
-				namespaceSlice[0].TagChecked = "checked"
+				namespaceSlice[0].Tag = "checked"
 			} else if strings.HasPrefix(ownedResource.Path, "/namespaces/") {
 				splitSlice := strings.Split(ownedResource.Path, "/")
 				ownedNamespaceName := splitSlice[2]
 
 				for i := 0; i < len(namespaceSlice); i++ {
 					if namespaceSlice[i].Name == ownedNamespaceName {
-						namespaceSlice[i].TagChecked = "checked"
+						namespaceSlice[i].Tag = "checked"
 					}
 				}
 			}
 		}
+
+		metaDataMap := user.MetaDataMap
+		if metaDataMap == nil {
+			metaDataMap = make(map[string]string)
+		}
+
+		loginNamespace := metaDataMap["loginNamespace"]
+		if len(loginNamespace) > 0 {
+			for i := 0; i < len(loginNamespaceSlice); i++ {
+				if loginNamespaceSlice[i].Name == loginNamespace {
+					loginNamespaceSlice[i].Tag = "selected"
+				}
+			}
+		}
+
+		fmt.Println(loginNamespace)
+		fmt.Println(metaDataMap)
+		fmt.Println(user)
+		fmt.Println(loginNamespaceSlice)
 
 		c.Data["name"] = name
 		c.Data["description"] = user.Description
@@ -178,6 +201,8 @@ func (c *EditController) Post() {
 	password := c.GetString("password")
 	description := c.GetString("description")
 	action := c.GetString("action")
+
+	loginNamespace := c.GetString("loginNamespace")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -218,12 +243,18 @@ func (c *EditController) Post() {
 		}
 	}
 
+	metaDataMap := make(map[string]string)
+	if len(loginNamespace) > 0 {
+		metaDataMap["loginNamespace"] = loginNamespace
+	}
+
 	user := rbac.User{
 		name,
 		password,
 		roleSlice,
 		resourceSlice,
 		description,
+		metaDataMap,
 	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)

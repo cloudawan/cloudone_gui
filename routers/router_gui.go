@@ -116,6 +116,7 @@ func init() {
 	beego.Router("/gui/system/namespace/list", &namespace.ListController{})
 	beego.Router("/gui/system/namespace/edit", &namespace.EditController{})
 	beego.Router("/gui/system/namespace/select", &namespace.SelectController{})
+	beego.Router("/gui/system/namespace/bookmark", &namespace.BookmarkController{})
 	beego.Router("/gui/system/namespace/delete", &namespace.DeleteController{})
 	beego.Router("/gui/system/notification/emailserver/list", &emailserver.ListController{})
 	beego.Router("/gui/system/notification/emailserver/create", &emailserver.CreateController{})
