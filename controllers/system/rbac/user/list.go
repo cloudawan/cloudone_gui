@@ -32,6 +32,8 @@ type ListController struct {
 
 type SimplifiedUser struct {
 	Name                             string
+	Disabled                         bool
+	ExpiredTime                      string
 	RoleNameSlice                    []string
 	NamespaceSlice                   []string
 	Description                      string
@@ -125,8 +127,15 @@ func (c *ListController) Get() {
 					}
 				}
 
+				expiredTimeText := ""
+				if user.ExpiredTime != nil {
+					expiredTimeText = user.ExpiredTime.String()
+				}
+
 				simplifiedUser := SimplifiedUser{
 					user.Name,
+					user.Disabled,
+					expiredTimeText,
 					roleNameSlice,
 					namespaceSlice,
 					user.Description,

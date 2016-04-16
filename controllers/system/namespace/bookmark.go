@@ -90,6 +90,10 @@ func (c *BookmarkController) Get() {
 		return
 	}
 
+	// Set session
+	sessionUser.MetaDataMap = metaDataMap
+	c.SetSession("user", sessionUser)
+
 	guimessage.AddSuccess("Bookmark the namespace " + name + " as the login namespace")
 
 	// Redirect to list

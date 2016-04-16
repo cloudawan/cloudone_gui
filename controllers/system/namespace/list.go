@@ -32,6 +32,7 @@ type ListController struct {
 type Namespace struct {
 	Name                                string
 	Selected                            bool
+	Bookmarked                          bool
 	Display                             string
 	HiddenTagGuiSystemNamespaceSelect   string
 	HiddenTagGuiSystemNamespaceBookmark string
@@ -95,13 +96,23 @@ func (c *ListController) Get() {
 	} else {
 		selectedNamespace := c.GetSession("namespace")
 
+		metaDataMap := user.MetaDataMap
+		if metaDataMap == nil {
+			metaDataMap = make(map[string]string)
+		}
+		loginNamespace := metaDataMap["loginNamespace"]
+
 		namespaceSlice := make([]Namespace, 0)
 		for _, name := range nameSlice {
-			namespace := Namespace{name, false, "", "", "", ""}
+			namespace := Namespace{name, false, false, "", "", "", ""}
 			if name == selectedNamespace {
 				namespace.Selected = true
 			}
 			namespace.Display = displayMap[name]
+
+			if len(loginNamespace) > 0 && loginNamespace == namespace.Name {
+				namespace.Bookmarked = true
+			}
 
 			if hasGuiSystemNamespaceSelect {
 				namespace.HiddenTagGuiSystemNamespaceSelect = "<div class='btn-group'>"

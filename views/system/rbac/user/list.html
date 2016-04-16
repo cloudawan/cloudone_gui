@@ -29,6 +29,8 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Password</th>
+					<th>Disabled</th>
+					<th>Expired Time</th>
 					<th>Role</th>
 					<th>Namespace</th>
 					<th>Description</th>
@@ -41,6 +43,8 @@
 						<td>{{$simplifiedUserKey}}</td>
 						<td>{{$simplifiedUser.Name}}</td>
 						<td>******</td>
+						<td>{{$simplifiedUser.Disabled}}</td>
+						<td>{{$simplifiedUser.ExpiredTime}}</td>
 						<td>
 							{{range $roleNameKey, $roleName := $simplifiedUser.RoleNameSlice}}
 								{{$roleName}}<br/>

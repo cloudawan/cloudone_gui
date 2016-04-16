@@ -66,7 +66,7 @@ func (c *EditController) Post() {
 
 	name := c.GetString("name")
 
-	namespace := Namespace{name, false, "", "", "", ""}
+	namespace := Namespace{name, false, false, "", "", "", ""}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)

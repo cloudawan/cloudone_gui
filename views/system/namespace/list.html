@@ -24,6 +24,7 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Selected</th>
+					<th>Login Namespace</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -33,6 +34,7 @@
 						<td>{{$namespaceKey}}</td>
 						<td>{{$namespace.Name}}</td>
 						<td>{{$namespace.Selected}}</td>
+						<td>{{$namespace.Bookmarked}}</td>
 						<td>
 							<div class="btn-group">
 								{{ str2html $namespace.HiddenTagGuiSystemNamespaceSelect }}
