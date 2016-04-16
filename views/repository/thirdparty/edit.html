@@ -9,7 +9,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-9">	
-			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/repository/thirdparty/edit" method="post">
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/repository/thirdparty/edit" method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
@@ -29,15 +29,33 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="col-md-3 control-label" for="fileReplicationController"></label>
+					<div class="col-md-9">
+						<input id="fileReplicationController" type="file" name="fileReplicationController">
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="col-md-3 control-label" for="serviceJson">Service:</label>
 					<div class="col-md-9">
 						<textarea id="serviceJson" class="form-control" name="serviceJson" rows="10" cols="50">{{ .serviceJson }}</textarea>
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="col-md-3 control-label" for="fileService"></label>
+					<div class="col-md-9">
+						<input id="fileService" type="file" name="fileService">
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="col-md-3 control-label" for="environment">Environment:</label>
 					<div class="col-md-9">
 						<textarea id="environment" class="form-control" name="environment" rows="10" cols="50">{{ .environment }}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="fileEnvironment"></label>
+					<div class="col-md-9">
+						<input id="fileEnvironment" type="file" name="fileEnvironment">
 					</div>
 				</div>
 				<div class="form-group">
@@ -53,6 +71,12 @@
 					<label class="col-md-3 control-label" for="scriptContent">Script Content:</label>
 					<div class="col-md-9">
 						<textarea id="scriptContent" class="form-control" name="scriptContent" rows="10" cols="50">{{ .scriptContent }}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="fileScript"></label>
+					<div class="col-md-9">
+						<input id="fileScript" type="file" name="fileScript">
 					</div>
 				</div>
 

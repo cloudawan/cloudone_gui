@@ -7,6 +7,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"github.com/ghodss/yaml"
+	"io/ioutil"
 	"regexp"
 )
 
@@ -93,6 +94,8 @@ func (c *EditController) Post() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 
+	scriptType := c.GetString("scriptType")
+
 	// Name need to be a DNS 952 label
 	match, _ := regexp.MatchString("^[a-z]{1}[a-z0-9-]{1,23}$", name)
 	if match == false {
@@ -102,25 +105,75 @@ func (c *EditController) Post() {
 		return
 	}
 
+	// Replciation Controller
 	replicationControllerJson := c.GetString("replicationControllerJson")
 	if replicationControllerJson == "" {
 		replicationControllerJson = "{}"
 	}
+
+	file, _, err := c.GetFile("fileReplicationController")
+	if err == nil {
+		byteSlice, err := ioutil.ReadAll(file)
+		if err == nil {
+			replicationControllerJson = string(byteSlice)
+		}
+	}
+	if file != nil {
+		file.Close()
+	}
+
+	// Service
 	serviceJson := c.GetString("serviceJson")
 	if serviceJson == "" {
 		serviceJson = "{}"
 	}
+
+	file, _, err = c.GetFile("fileService")
+	if err == nil {
+		byteSlice, err := ioutil.ReadAll(file)
+		if err == nil {
+			serviceJson = string(byteSlice)
+		}
+	}
+	if file != nil {
+		file.Close()
+	}
+
+	// Environment
 	environmentText := c.GetString("environment")
 	if environmentText == "" {
 		environmentText = "{}"
 	}
-	scriptType := c.GetString("scriptType")
+
+	file, _, err = c.GetFile("fileEnvironment")
+	if err == nil {
+		byteSlice, err := ioutil.ReadAll(file)
+		if err == nil {
+			environmentText = string(byteSlice)
+		}
+	}
+	if file != nil {
+		file.Close()
+	}
+
+	// Script
 	scriptContent := c.GetString("scriptContent")
+
+	file, _, err = c.GetFile("fileScript")
+	if err == nil {
+		byteSlice, err := ioutil.ReadAll(file)
+		if err == nil {
+			scriptContent = string(byteSlice)
+		}
+	}
+	if file != nil {
+		file.Close()
+	}
 
 	// Test replication controller
 	replicationControllerJsonMap := make(map[string]interface{})
 	// Try json
-	err := json.Unmarshal([]byte(replicationControllerJson), &replicationControllerJsonMap)
+	err = json.Unmarshal([]byte(replicationControllerJson), &replicationControllerJsonMap)
 	if err != nil {
 		// Try yaml
 		err := yaml.Unmarshal([]byte(replicationControllerJson), &replicationControllerJsonMap)
