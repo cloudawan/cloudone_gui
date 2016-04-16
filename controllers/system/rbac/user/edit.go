@@ -15,15 +15,16 @@
 package user
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type EditController struct {
@@ -40,6 +41,22 @@ type Namespace struct {
 	Name string
 	Tag  string
 }
+
+type ByRole []Role
+
+func (b ByRole) Len() int           { return len(b) }
+func (b ByRole) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByRole) Less(i, j int) bool { return b[i].Name < b[j].Name }
+
+type ByNamespace []Namespace
+
+func (b ByNamespace) Len() int           { return len(b) }
+func (b ByNamespace) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByNamespace) Less(i, j int) bool { return b[i].Name < b[j].Name }
+
+const (
+	guiWidgetTimePickerFormat = "01/02/2006 15:04 PM"
+)
 
 func (c *EditController) Get() {
 	c.TplName = "system/rbac/user/edit.html"
@@ -111,6 +128,9 @@ func (c *EditController) Get() {
 		loginNamespaceSlice = append(loginNamespaceSlice, Namespace{namespaceName, ""})
 	}
 
+	sort.Sort(ByRole(roleSlice))
+	sort.Sort(ByNamespace(namespaceSlice))
+
 	c.Data["action"] = action
 	c.Data["roleSlice"] = roleSlice
 	c.Data["namespaceSlice"] = namespaceSlice
@@ -178,10 +198,13 @@ func (c *EditController) Get() {
 			}
 		}
 
-		fmt.Println(loginNamespace)
-		fmt.Println(metaDataMap)
-		fmt.Println(user)
-		fmt.Println(loginNamespaceSlice)
+		if user.Disabled {
+			c.Data["disabledChecked"] = "checked"
+		}
+
+		if user.ExpiredTime != nil {
+			c.Data["expiredTime"] = user.ExpiredTime.Format(guiWidgetTimePickerFormat)
+		}
 
 		c.Data["name"] = name
 		c.Data["description"] = user.Description
@@ -199,10 +222,23 @@ func (c *EditController) Post() {
 
 	name := c.GetString("name")
 	password := c.GetString("password")
+	disabledText := c.GetString("disabled")
+	expiredTimeText := c.GetString("expiredTime")
 	description := c.GetString("description")
 	action := c.GetString("action")
 
 	loginNamespace := c.GetString("loginNamespace")
+
+	disabled := false
+	if disabledText == "on" {
+		disabled = true
+	}
+
+	var expiredTime *time.Time = nil
+	expiredTimeData, err := time.Parse(guiWidgetTimePickerFormat, expiredTimeText)
+	if err == nil {
+		expiredTime = &expiredTimeData
+	}
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -255,11 +291,12 @@ func (c *EditController) Post() {
 		resourceSlice,
 		description,
 		metaDataMap,
+		expiredTime,
+		disabled,
 	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	var err error
 	if action == "create" {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 			"/api/v1/authorizations/users"
@@ -281,7 +318,7 @@ func (c *EditController) Post() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess("User " + name + " is created")
+		guimessage.AddSuccess("User " + name + " is edited")
 	}
 
 	c.Ctx.Redirect(302, "/gui/system/rbac/user/list")

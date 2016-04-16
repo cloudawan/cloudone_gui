@@ -78,7 +78,16 @@ func (c *LoginController) Post() {
 	tokenData := TokenData{}
 	_, err = restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
 	if err != nil {
-		guimessage.AddDanger("Fail to get user with username: " + username + " with password: " + password)
+		errorMessage := err.Error()
+		if strings.Contains(errorMessage, "Incorrect User or Password") {
+			guimessage.AddDanger("Incorrect User or Password")
+		} else if strings.Contains(errorMessage, "User is expired") {
+			guimessage.AddDanger("User is expired")
+		} else if strings.Contains(errorMessage, "User is disabled") {
+			guimessage.AddDanger("User is disabled")
+		} else {
+			guimessage.AddDanger(err.Error())
+		}
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return

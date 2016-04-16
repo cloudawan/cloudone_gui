@@ -32,7 +32,26 @@
 						<input id="passwordConfirm" class="form-control" type="password" name="passwordConfirm" pattern=".{6,30}" title="6 to 30 characters" required>
 					</div>
 				</div>
-				
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="disabled">Disabled:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="disabled" type="checkbox" name="disabled" {{ .disabledChecked }}>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="expiredTime">Expired Time:</label>
+					<div class="col-lg-4">
+						<div id="datetimepickerExpiredTime" class="input-group date">
+							<input type="text" class="form-control" id="expiredTime" name="expiredTime" value="{{ .expiredTime }}"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="description">Description:</label>
 					<div class="col-md-9">
@@ -104,6 +123,9 @@
 
 		$("#password").change(validatePassword);
 		$("#passwordConfirm").change(validatePassword);
+
+		// Set time picker
+		$("#datetimepickerExpiredTime").datetimepicker();
 
 	})();
 

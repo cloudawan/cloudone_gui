@@ -37,7 +37,7 @@ func FilterUser(ctx *context.Context) {
 
 		if ok == false {
 			if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
-				guiMessage.AddDanger("Username or password is incorrect")
+				guiMessage.AddDanger("Unauthorized")
 			}
 			ctx.Redirect(302, loginPageURL)
 		} else {
