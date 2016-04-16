@@ -97,13 +97,8 @@ func sendAuditLog(ctx *context.Context, userName string, saveParameter bool) (re
 	if tokenHeaderMapOK {
 		url := cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort + "/api/v1/auditlogs"
 
-		_, err := restclient.RequestPost(url, auditLog, tokenHeaderMap, false)
-		if err != nil {
-			if guiMessage := guimessagedisplay.GetGUIMessageFromContext(ctx); guiMessage != nil {
-				guiMessage.AddDanger("Fail to send audit log with error " + err.Error())
-			}
-			return err
-		}
+		restclient.RequestPost(url, auditLog, tokenHeaderMap, false)
+		// err is logged in analysis so don't need to here
 	}
 
 	return nil
