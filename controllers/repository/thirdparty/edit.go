@@ -6,6 +6,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
+	"github.com/ghodss/yaml"
 	"regexp"
 )
 
@@ -116,14 +117,54 @@ func (c *EditController) Post() {
 	scriptType := c.GetString("scriptType")
 	scriptContent := c.GetString("scriptContent")
 
-	environmentJsonMap := make(map[string]string)
-	err := json.Unmarshal([]byte(environmentText), &environmentJsonMap)
+	// Test replication controller
+	replicationControllerJsonMap := make(map[string]interface{})
+	// Try json
+	err := json.Unmarshal([]byte(replicationControllerJson), &replicationControllerJsonMap)
 	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
-		guimessage.RedirectMessage(c)
-		return
+		// Try yaml
+		err := yaml.Unmarshal([]byte(replicationControllerJson), &replicationControllerJsonMap)
+		if err != nil {
+			// Error
+			guimessage.AddDanger("Replication controller can't be parsed by json or yaml")
+			guimessage.AddDanger(err.Error())
+			c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
+			guimessage.RedirectMessage(c)
+			return
+		}
+	}
+
+	// Test service
+	serviceJsonMap := make(map[string]interface{})
+	// Try json
+	err = json.Unmarshal([]byte(serviceJson), &serviceJsonMap)
+	if err != nil {
+		// Try yaml
+		err := yaml.Unmarshal([]byte(serviceJson), &serviceJsonMap)
+		if err != nil {
+			// Error
+			guimessage.AddDanger("Service can't be parsed by json or yaml")
+			guimessage.AddDanger(err.Error())
+			c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
+			guimessage.RedirectMessage(c)
+			return
+		}
+	}
+
+	environmentJsonMap := make(map[string]string)
+	// Try json
+	err = json.Unmarshal([]byte(environmentText), &environmentJsonMap)
+	if err != nil {
+		// Try yaml
+		err := yaml.Unmarshal([]byte(environmentText), &environmentJsonMap)
+		if err != nil {
+			// Error
+			guimessage.AddDanger("Environment can't be parsed by json or yaml")
+			guimessage.AddDanger(err.Error())
+			c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
+			guimessage.RedirectMessage(c)
+			return
+		}
 	}
 
 	cluster := Cluster{
