@@ -191,6 +191,7 @@ func (c *EditController) Get() {
 		// System
 		setCheckedTag("/gui/system", "checkedTagSystem", c.Data, pathMap)
 		setHiddenTag("/gui/system", "hiddenTagSystem", c.Data, pathMap)
+		setCheckedTag("/gui/system/about", "checkedTagSystemAbout", c.Data, pathMap)
 		setCheckedTag("/gui/system/namespace", "checkedTagSystemNamespace", c.Data, pathMap)
 		setHiddenTag("/gui/system/namespace", "hiddenTagSystemNamespace", c.Data, pathMap)
 		setCheckedTag("/gui/system/namespace/list", "checkedTagSystemNamespaceList", c.Data, pathMap)
@@ -613,6 +614,11 @@ func (c *EditController) Post() {
 		permission := &rbac.Permission{"system", identity.GetConponentName(), "GET", "/gui/system"}
 		permissionSlice = append(permissionSlice, permission)
 	} else {
+		if c.GetString("systemAbout") == "on" {
+			permission := &rbac.Permission{"systemAbout", identity.GetConponentName(), "GET", "/gui/system/about"}
+			permissionSlice = append(permissionSlice, permission)
+		}
+
 		if c.GetString("systemNamespace") == "on" {
 			permission := &rbac.Permission{"systemNamespace", identity.GetConponentName(), "GET", "/gui/system/namespace"}
 			permissionSlice = append(permissionSlice, permission)
