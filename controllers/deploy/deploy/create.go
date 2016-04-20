@@ -37,6 +37,7 @@ type DeployCreateInput struct {
 	PortSlice            []DeployContainerPort
 	EnvironmentSlice     []ReplicationControllerContainerEnvironment
 	ResourceMap          map[string]interface{}
+	ExtraJsonMap         map[string]interface{}
 }
 
 type DeployContainerPort struct {
@@ -71,6 +72,29 @@ func (b ByImageRecord) Len() int           { return len(b) }
 func (b ByImageRecord) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
 func (b ByImageRecord) Less(i, j int) bool { return b[i].Version > b[j].Version } // Use > to list from latest to oldest
 
+type Region struct {
+	Name           string
+	LocationTagged bool
+	ZoneSlice      []Zone
+}
+
+type Zone struct {
+	Name           string
+	LocationTagged bool
+	NodeSlice      []Node
+}
+
+type Node struct {
+	Name     string
+	Address  string
+	Capacity Capacity
+}
+
+type Capacity struct {
+	Cpu    string
+	Memory string
+}
+
 func (c *CreateController) Get() {
 	c.TplName = "deploy/deploy/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
@@ -101,10 +125,43 @@ func (c *CreateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		sort.Sort(ByImageRecord(imageRecordSlice))
+		kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+		if err != nil {
+			// Error
+			guimessage.AddDanger(err.Error())
+			guimessage.OutputMessage(c.Data)
+			return
+		}
 
-		c.Data["imageInformationName"] = name
-		c.Data["imageRecordSlice"] = imageRecordSlice
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+			"/api/v1/nodes/topology?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+
+		regionSlice := make([]Region, 0)
+
+		_, err = restclient.RequestGetWithStructure(url, &regionSlice, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
+		if err != nil {
+			// Error
+			guimessage.AddDanger(err.Error())
+		} else {
+			filteredRegionSlice := make([]Region, 0)
+			for _, region := range regionSlice {
+				if region.LocationTagged {
+					filteredRegionSlice = append(filteredRegionSlice, region)
+				}
+			}
+
+			c.Data["regionSlice"] = filteredRegionSlice
+
+			sort.Sort(ByImageRecord(imageRecordSlice))
+
+			c.Data["imageInformationName"] = name
+			c.Data["imageRecordSlice"] = imageRecordSlice
+		}
 	}
 
 	guimessage.OutputMessage(c.Data)
@@ -131,6 +188,16 @@ func (c *CreateController) Post() {
 	version := c.GetString("version")
 	description := c.GetString("description")
 	replicaAmount, _ := c.GetInt("replicaAmount")
+
+	region := c.GetString("region")
+	zone := c.GetString("zone")
+
+	if region == "Any" {
+		region = ""
+	}
+	if zone == "Any" {
+		zone = ""
+	}
 
 	resourceCPURequest, resourceCPURequestError := c.GetFloat("resourceCPURequest")
 	resourceCPULimit, resourceCPULimitError := c.GetFloat("resourceCPULimit")
@@ -207,6 +274,21 @@ func (c *CreateController) Post() {
 		}
 	}
 
+	extraJsonMap := make(map[string]interface{})
+	if len(region) > 0 {
+		extraJsonMap["spec"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"] = make(map[string]interface{})
+
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"].(map[string]interface{})["region"] = region
+		if len(zone) > 0 {
+			extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"].(map[string]interface{})["zone"] = zone
+		}
+	} else {
+		extraJsonMap = nil
+	}
+
 	deployCreateInput := DeployCreateInput{
 		imageInformationName,
 		version,
@@ -215,6 +297,7 @@ func (c *CreateController) Post() {
 		deployContainerPortSlice,
 		environmentSlice,
 		resourceMap,
+		extraJsonMap,
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +

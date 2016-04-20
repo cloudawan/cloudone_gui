@@ -34,6 +34,7 @@ type DeployCreateInput struct {
 	ReplicaAmount        int
 	PortSlice            []ReplicationControllerContainerPort
 	EnvironmentSlice     []ReplicationControllerContainerEnvironment
+	ExtraJsonMap         map[string]interface{}
 }
 
 type ReplicationControllerContainerPort struct {

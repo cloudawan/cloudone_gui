@@ -34,6 +34,12 @@ type Cluster struct {
 	ScriptContent             string
 }
 
+type ClusterLaunch struct {
+	Size                              int
+	EnvironmentSlice                  []interface{}
+	ReplicationControllerExtraJsonMap map[string]interface{}
+}
+
 type LaunchController struct {
 	beego.Controller
 }
@@ -86,7 +92,7 @@ func (c *LaunchController) Get() {
 // @router /launch/ [post]
 func (c *LaunchController) Post() {
 	name := c.GetString("name")
-	size := c.GetString("size")
+	size, _ := c.GetInt("size")
 
 	inputBody := c.Ctx.Input.RequestBody
 	environmentSlice := make([]interface{}, 0)
@@ -107,14 +113,20 @@ func (c *LaunchController) Post() {
 
 	namespace, _ := c.GetSession("namespace").(string)
 
+	clusterLaunch := ClusterLaunch{
+		size,
+		environmentSlice,
+		nil,
+	}
+
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	jsonMap := make(map[string]interface{})
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap, tokenHeaderMap)
+	_, err = restclient.RequestPostWithStructure(url, clusterLaunch, &jsonMap, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

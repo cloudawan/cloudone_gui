@@ -34,6 +34,35 @@ type Cluster struct {
 	ScriptContent             string
 }
 
+type ClusterLaunch struct {
+	Size                              int
+	EnvironmentSlice                  []interface{}
+	ReplicationControllerExtraJsonMap map[string]interface{}
+}
+
+type Region struct {
+	Name           string
+	LocationTagged bool
+	ZoneSlice      []Zone
+}
+
+type Zone struct {
+	Name           string
+	LocationTagged bool
+	NodeSlice      []Node
+}
+
+type Node struct {
+	Name     string
+	Address  string
+	Capacity Capacity
+}
+
+type Capacity struct {
+	Cpu    string
+	Memory string
+}
+
 type LaunchController struct {
 	beego.Controller
 }
@@ -64,19 +93,59 @@ func (c *LaunchController) Get() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger("Fail to get with error" + err.Error())
+		guimessage.AddDanger("Fail to get data with error" + err.Error())
 		// Redirect to list
 		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
 		guimessage.RedirectMessage(c)
-	} else {
-		c.Data["actionButtonValue"] = "Launch"
-		c.Data["pageHeader"] = "Launch third party service"
-		c.Data["thirdPartyApplicationName"] = name
-		c.Data["environment"] = cluster.Environment
-
-		guimessage.OutputMessage(c.Data)
+		return
 	}
+
+	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
+	if err != nil {
+		// Error
+		guimessage.AddDanger("No availabe host and port with error " + err.Error())
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
+
+		guimessage.RedirectMessage(c)
+		return
+	}
+
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/nodes/topology?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+
+	regionSlice := make([]Region, 0)
+
+	_, err = restclient.RequestGetWithStructure(url, &regionSlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
+	if err != nil {
+		guimessage.AddDanger("Fail to get node topology with error" + err.Error())
+		// Redirect to list
+		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
+
+		guimessage.RedirectMessage(c)
+		return
+	}
+
+	filteredRegionSlice := make([]Region, 0)
+	for _, region := range regionSlice {
+		if region.LocationTagged {
+			filteredRegionSlice = append(filteredRegionSlice, region)
+		}
+	}
+
+	c.Data["actionButtonValue"] = "Launch"
+	c.Data["pageHeader"] = "Launch third party service"
+	c.Data["thirdPartyApplicationName"] = name
+	c.Data["environment"] = cluster.Environment
+	c.Data["regionSlice"] = filteredRegionSlice
+
+	guimessage.OutputMessage(c.Data)
 }
 
 func (c *LaunchController) Post() {
@@ -97,14 +166,24 @@ func (c *LaunchController) Post() {
 
 	namespace, _ := c.GetSession("namespace").(string)
 	name := c.GetString("name")
-	size := c.GetString("size")
+	size, _ := c.GetInt("size")
+
+	region := c.GetString("region")
+	zone := c.GetString("zone")
+
+	if region == "Any" {
+		region = ""
+	}
+	if zone == "Any" {
+		zone = ""
+	}
 
 	keySlice := make([]string, 0)
 	inputMap := c.Input()
 	if inputMap != nil {
 		for key, _ := range inputMap {
 			// Ignore the non environment field
-			if key != "name" && key != "size" {
+			if strings.HasPrefix(key, "environment_") {
 				keySlice = append(keySlice, key)
 			}
 		}
@@ -115,20 +194,41 @@ func (c *LaunchController) Post() {
 		value := c.GetString(key)
 		if len(value) > 0 {
 			environmentMap := make(map[string]string)
-			environmentMap["name"] = key
+			environmentMap["name"] = key[len("environment_"):]
 			environmentMap["value"] = value
 			environmentSlice = append(environmentSlice, environmentMap)
 		}
 	}
 
+	extraJsonMap := make(map[string]interface{})
+	if len(region) > 0 {
+		extraJsonMap["spec"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"] = make(map[string]interface{})
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"] = make(map[string]interface{})
+
+		extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"].(map[string]interface{})["region"] = region
+		if len(zone) > 0 {
+			extraJsonMap["spec"].(map[string]interface{})["template"].(map[string]interface{})["spec"].(map[string]interface{})["nodeSelector"].(map[string]interface{})["zone"] = zone
+		}
+	} else {
+		extraJsonMap = nil
+	}
+
+	clusterLaunch := ClusterLaunch{
+		size,
+		environmentSlice,
+		extraJsonMap,
+	}
+
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
+		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 	jsonMap := make(map[string]interface{})
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPostWithStructure(url, environmentSlice, &jsonMap, tokenHeaderMap)
+	_, err = restclient.RequestPostWithStructure(url, clusterLaunch, &jsonMap, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

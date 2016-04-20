@@ -22,6 +22,38 @@
 						<input id="size" class="form-control" type="number" name="size" value="1" min="1" max="100" >
 					</div>
 				</div>
+
+				<hr>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" >Location Affinity:</label>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="region">Region:</label>
+					<div class="col-md-9">
+						<select id="region" class="form-control" name="region" onchange="$('.cssSelectionZone').hide();$('.cssSelectionZone' + this.value).show();if(this.value=='Any'){$('#formGroupZone').hide();}else{$('#formGroupZone').show();}$('#zone').val('Any');">
+							<option value="Any">Any</option>
+							{{ range $regionKey, $region := .regionSlice}}
+							<option value="{{ $region.Name }}">{{ $region.Name }}</option>
+							{{end}}
+						</select>
+					</div>
+				</div>
+
+				<div id="formGroupZone" class="form-group" hidden>
+					<label class="col-md-3 control-label" for="zone">Zone:</label>
+					<div class="col-md-9">
+						<select id="zone" class="form-control" name="zone">
+							<option value="Any">Any</option>
+							{{ range $regionKey, $region := .regionSlice}}
+								{{ range $zoneKey, $zone := $region.ZoneSlice}}
+								<option class="cssSelectionZone cssSelectionZone{{ $region.Name }}" value="{{ $zone.Name }}">{{ $zone.Name }}</option>
+								{{end}}
+							{{end}}
+						</select>
+					</div>
+				</div>
 				
 				<hr>
 
@@ -31,9 +63,9 @@
 
 				{{range $key, $value := .environment}}
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="{{ $key }}">{{ $key }}:</label>
+						<label class="col-md-3 control-label" for="environment_{{ $key }}">{{ $key }}:</label>
 						<div class="col-md-9">
-							<input id="{{ $key }}" class="form-control" type="text" name="{{ $key }}" value="{{ $value }}">
+							<input id="environment_{{ $key }}" class="form-control" type="text" name="environment_{{ $key }}" value="{{ $value }}">
 						</div>
 					</div>
 				{{end}}
