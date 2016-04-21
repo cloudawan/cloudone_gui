@@ -139,6 +139,20 @@ func (c *LaunchController) Get() {
 		}
 	}
 
+	if cluster.Environment != nil {
+		namespace, _ := c.GetSession("namespace").(string)
+
+		// Try to set the known common parameter
+		for key, _ := range cluster.Environment {
+			if key == "SERVICE_NAME" {
+				cluster.Environment[key] = name
+			}
+			if key == "NAMESPACE" {
+				cluster.Environment[key] = namespace
+			}
+		}
+	}
+
 	c.Data["actionButtonValue"] = "Launch"
 	c.Data["pageHeader"] = "Launch third party service"
 	c.Data["thirdPartyApplicationName"] = name
