@@ -22,6 +22,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/healthcheck"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/topology"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/autoscaler"
+	"github.com/cloudawan/cloudone_gui/controllers/deploy/clone"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploy"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deploybluegreen"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deployclusterapplication"
@@ -85,6 +86,8 @@ func init() {
 	beego.Router("/gui/deploy/deployclusterapplication/list", &deployclusterapplication.ListController{})
 	beego.Router("/gui/deploy/deployclusterapplication/size", &deployclusterapplication.SizeController{})
 	beego.Router("/gui/deploy/deployclusterapplication/delete", &deployclusterapplication.DeleteController{})
+	beego.Router("/gui/deploy/clone/select", &clone.SelectController{})
+	beego.Router("/gui/deploy/clone/topology", &clone.TopologyController{})
 	beego.Router("/gui/inventory/replicationcontroller/list", &replicationcontroller.ListController{})
 	beego.Router("/gui/inventory/replicationcontroller/edit", &replicationcontroller.EditController{})
 	beego.Router("/gui/inventory/replicationcontroller/size", &replicationcontroller.SizeController{})

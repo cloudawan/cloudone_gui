@@ -289,7 +289,7 @@ func (c *DataController) Get() {
 		thirdpartyNamespaceJsonMap["children"] = make([]interface{}, 0)
 
 		url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/deployclusterapplications/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/deployclusterapplications/" + namespace
 
 		deployClusterApplicationSlice := make([]DeployClusterApplication, 0)
 

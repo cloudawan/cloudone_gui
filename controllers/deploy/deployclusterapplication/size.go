@@ -121,7 +121,7 @@ func (c *SizeController) Get() {
 
 	// Get configured environment from any one of replication controller belonging to this cluster application
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deployclusterapplications/" + namespace + "/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deployclusterapplications/" + namespace + "/" + name
 	deployClusterApplication := DeployClusterApplication{}
 
 	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplication, tokenHeaderMap)

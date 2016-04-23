@@ -1,0 +1,155 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Clone Topology</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/deploy/clone/topology" method="post">
+				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sourceNamespace">From namespace:</label>
+					<div class="col-md-9">
+						<input id="sourceNamespace" class="form-control" type="text" name="sourceNamespace" value="{{.sourceNamespace}}" readonly>
+					</div>
+				</div>
+
+				<hr>
+
+				{{range $cloneKey, $clone := .cloneSlice}}
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="cloneUse{{$clone.Name}}">Use:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="cloneUse{{$clone.Name}}" type="checkbox" name="cloneUse{{$clone.Name}}" onclick="$('#regionClone{{$clone.Name}}').toggle();" checked>
+					</div>
+				</div>
+				
+				<div id="regionClone{{$clone.Name}}">
+
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="cloneOrder{{$clone.Name}}">Order:</label>
+						<div class="col-md-9">
+							<input id="cloneOrder{{$clone.Name}}" class="form-control" type="number" name="cloneOrder{{$clone.Name}}" value="{{$clone.Order}}" min="1" max="100">
+						</div>
+					</div>
+	
+					<div {{ $clone.DeployClusterApplicationHidden }}>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterName{{$clone.DeployClusterApplication.Name}}">Name:</label>
+							<div class="col-md-9">
+								<input id="clusterName{{$clone.DeployClusterApplication.Name}}" class="form-control" type="text" name="clusterName{{$clone.DeployClusterApplication.Name}}" value="{{$clone.DeployClusterApplication.Name}}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterSize{{$clone.DeployClusterApplication.Name}}">Size:</label>
+							<div class="col-md-9">
+								<input id="clusterSize{{$clone.DeployClusterApplication.Name}}" class="form-control" type="number" name="clusterSize{{$clone.DeployClusterApplication.Name}}" value="{{$clone.DeployClusterApplication.Size}}" min="1" max="100">
+							</div>
+						</div>
+		
+						<div class="form-group">
+							<label class="col-md-3 control-label" >Environment Value:</label>
+						</div>
+		
+						{{range $key, $value := $clone.DeployClusterApplication.EnvironmentMap}}
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}">{{ $key }}:</label>
+							<div class="col-md-9">
+								<input id="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}" class="form-control" type="text" name="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}" value="{{ $value }}">
+							</div>
+						</div>
+						{{end}}
+	
+					</div>
+	
+					<div {{ $clone.DeployInformationHidden }}>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationImageInformationName{{$clone.DeployInformation.ImageInformationName}}">Image Information Name:</label>
+							<div class="col-md-9">
+								<input id="applicationImageInformationName{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="text" name="applicationImageInformationName{{$clone.DeployInformation.ImageInformationName}}" value="{{$clone.DeployInformation.ImageInformationName}}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationVersion{{$clone.DeployInformation.ImageInformationName}}">Version:</label>
+							<div class="col-md-9">
+								<input id="applicationVersion{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="text" name="applicationVersion{{$clone.DeployInformation.ImageInformationName}}" value="{{ $clone.DeployInformation.CurrentVersion }}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationDescription{{$clone.DeployInformation.ImageInformationName}}">Description:</label>
+							<div class="col-md-9">
+								<input id="applicationDescription{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="text" name="applicationDescription{{$clone.DeployInformation.ImageInformationName}}" value="{{ $clone.DeployInformation.Description }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}">Size:</label>
+							<div class="col-md-9">
+								<input id="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="number" name="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" value="{{ $clone.DeployInformation.ReplicaAmount }}" min="1" max="10">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3 control-label" >Environment Value:</label>
+						</div>
+		
+						{{range $environmentKey, $environment := $clone.DeployInformation.EnvironmentSlice}}
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}">{{ $environment.Name }}:</label>
+							<div class="col-md-9">
+								<input id="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}" class="form-control" type="text" name="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}" value="{{ $environment.Value }}">
+							</div>
+						</div>
+						{{end}}
+	
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3 control-label" >Location Affinity:</label>
+					</div>
+		
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="clusterRegion{{$clone.Name}}">Region:</label>
+						<div class="col-md-9">
+							<select id="clusterRegion{{$clone.Name}}" class="form-control" name="clusterRegion{{$clone.Name}}" onchange="$('.cssSelectionClusterZone{{$clone.Name}}').hide();$('.cssSelectionClusterZone{{$clone.Name}}' + this.value).show();if(this.value=='Any'){$('#formGroupClusterZone{{$clone.Name}}').hide();}else{$('#formGroupClusterZone{{$clone.Name}}').show();}$('#clusterZone{{$clone.Name}}').val('Any');">
+								<option value="Any">Any</option>
+								{{ range $regionKey, $region := $clone.RegionSlice}}
+								<option value="{{ $region.Name }}">{{ $region.Name }}</option>
+								{{end}}
+							</select>
+						</div>
+					</div>
+		
+					<div id="formGroupClusterZone{{$clone.Name}}" class="form-group" hidden>
+						<label class="col-md-3 control-label" for="clusterZone{{$clone.Name}}">Zone:</label>
+						<div class="col-md-9">
+							<select id="clusterZone{{$clone.Name}}" class="form-control" name="clusterZone{{$clone.Name}}">
+								<option value="Any">Any</option>
+								{{ range $regionKey, $region := $clone.RegionSlice}}
+									{{ range $zoneKey, $zone := $region.ZoneSlice}}
+									<option class="cssSelectionClusterZone{{$clone.Name}} cssSelectionClusterZone{{$clone.Name}}{{ $region.Name }}" value="{{ $zone.Name }}">{{ $zone.Name }}</option>
+									{{end}}
+								{{end}}
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+				<hr>
+
+				{{end}}
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/clone/select">Cancel</a>
+				<input class="btn btn-md btn-success pull-right" type="submit" value="Clone">
+				
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

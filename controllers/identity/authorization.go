@@ -84,6 +84,9 @@ func GetLayoutMenu(user *rbac.User) string {
 	if user.HasPermission(componentName, "GET", "/gui/deploy/deployclusterapplication/list") {
 		buffer.WriteString("							<li><a href='/gui/deploy/deployclusterapplication/list'>Third-party Services</a></li>\n")
 	}
+	if user.HasPermission(componentName, "GET", "/gui/deploy/clone/topology") {
+		buffer.WriteString("							<li><a href='/gui/deploy/clone/select'>Clone Topology</a></li>\n")
+	}
 	// Parent
 	if user.HasChildPermission(componentName, "GET", "/gui/deploy") {
 		buffer.WriteString("						</ul>\n")

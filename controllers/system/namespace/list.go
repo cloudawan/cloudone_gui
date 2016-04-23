@@ -70,10 +70,8 @@ func (c *ListController) Get() {
 	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
 	if err != nil {
 		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
-		c.Data["json"] = errorJsonMap
-		c.ServeJSON()
+		guimessage.AddDanger(err.Error())
+		guimessage.OutputMessage(c.Data)
 		return
 	}
 

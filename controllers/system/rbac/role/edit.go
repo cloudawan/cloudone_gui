@@ -112,6 +112,7 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/deploy/deploy/update", "checkedTagDeployDeployUpdate", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploy/delete", "checkedTagDeployDeployDelete", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploybluegreen", "checkedTagDeployDeployBlueGreen", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/clone", "checkedTagDeployClone", c.Data, pathMap)
 		setHiddenTag("/gui/deploy/deploybluegreen", "hiddenTagDeployDeployBlueGreen", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploybluegreen/list", "checkedTagDeployDeployBlueGreenList", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploybluegreen/select", "checkedTagDeployDeployBlueGreenSelect", c.Data, pathMap)
@@ -438,6 +439,11 @@ func (c *EditController) Post() {
 				permission := &rbac.Permission{"deployDeployClusterApplicationDelete", identity.GetConponentName(), "GET", "/gui/deploy/deployclusterapplication/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
+		}
+
+		if c.GetString("deployClone") == "on" {
+			permission := &rbac.Permission{"deployClone", identity.GetConponentName(), "GET", "/gui/deploy/clone"}
+			permissionSlice = append(permissionSlice, permission)
 		}
 	}
 

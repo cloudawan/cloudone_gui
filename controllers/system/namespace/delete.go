@@ -52,7 +52,7 @@ func (c *DeleteController) Get() {
 
 	// Delete deploy
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/"
+		"/api/v1/deploys/" + name
 
 	deployInformationSlice := make([]deploy.DeployInformation, 0)
 
@@ -69,26 +69,24 @@ func (c *DeleteController) Get() {
 		guimessage.AddDanger(err.Error())
 	} else {
 		for _, deployInformation := range deployInformationSlice {
-			if deployInformation.Namespace == name {
-				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-					"/api/v1/deploys/" + name + "/" + deployInformation.ImageInformationName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+				"/api/v1/deploys/" + name + "/" + deployInformation.ImageInformationName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-				_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
+			_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
 
-				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
-					return
-				}
+			if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+				return
+			}
 
-				if err != nil {
-					guimessage.AddDanger(err.Error())
-				}
+			if err != nil {
+				guimessage.AddDanger(err.Error())
 			}
 		}
 	}
 
 	// Delete third party service
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deployclusterapplications/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deployclusterapplications/" + name
 
 	deployClusterApplicationSlice := make([]deployclusterapplication.DeployClusterApplication, 0)
 	_, err = restclient.RequestGetWithStructure(url, &deployClusterApplicationSlice, tokenHeaderMap)

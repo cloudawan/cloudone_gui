@@ -41,10 +41,10 @@ func (c *ListController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	namespaces, _ := c.GetSession("namespace").(string)
+	namespace, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/"
+		"/api/v1/deploys/" + namespace
 
 	deployInformationSlice := make([]DeployInformation, 0)
 
@@ -67,9 +67,7 @@ func (c *ListController) Get() {
 		// Only show those belonging to this namespace
 		filteredDeployInformationSlice := make([]DeployInformation, 0)
 		for _, deployInformation := range deployInformationSlice {
-			if deployInformation.Namespace == namespaces {
-				filteredDeployInformationSlice = append(filteredDeployInformationSlice, deployInformation)
-			}
+			filteredDeployInformationSlice = append(filteredDeployInformationSlice, deployInformation)
 		}
 
 		c.Data["json"] = filteredDeployInformationSlice
