@@ -14,7 +14,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="name">Name:</label>
 					<div class="col-md-9">
-						<input id="name" class="form-control" type="text" name="name" required>
+						<input id="name" class="form-control" type="text" name="name" pattern="[a-z]{1}[a-z0-9-]{1,23}" title="The name need to be a DNS 952 label [a-z]{1}[a-z0-9-]{1,23}" required>
 					</div>
 				</div>
 				<div class="form-group">
