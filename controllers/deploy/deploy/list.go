@@ -33,7 +33,9 @@ type DeployInformation struct {
 	CurrentVersion                 string
 	CurrentVersionDescription      string
 	Description                    string
+	ReplicaAmount                  int
 	HiddenTagGuiDeployDeployUpdate string
+	HiddenTagGuiDeployDeployResize string
 	HiddenTagGuiDeployDeployDelete string
 }
 
@@ -56,6 +58,7 @@ func (c *ListController) Get() {
 	user, _ := c.GetSession("user").(*rbac.User)
 	// Tag won't work in loop so need to be placed in data
 	hiddenTagGuiDeployDeployUpdate := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/update")
+	hiddenTagGuiDeployDeployResize := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/resize")
 	hiddenTagGuiDeployDeployDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -88,6 +91,11 @@ func (c *ListController) Get() {
 				deployInformation.HiddenTagGuiDeployDeployUpdate = "<div class='btn-group'>"
 			} else {
 				deployInformation.HiddenTagGuiDeployDeployUpdate = "<div hidden>"
+			}
+			if hiddenTagGuiDeployDeployResize {
+				deployInformation.HiddenTagGuiDeployDeployResize = "<div class='btn-group'>"
+			} else {
+				deployInformation.HiddenTagGuiDeployDeployResize = "<div hidden>"
 			}
 			if hiddenTagGuiDeployDeployDelete {
 				deployInformation.HiddenTagGuiDeployDeployDelete = "<div class='btn-group'>"

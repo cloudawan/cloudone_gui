@@ -110,6 +110,7 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/deploy/deploy/list", "checkedTagDeployDeployList", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploy/create", "checkedTagDeployDeployCreate", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploy/update", "checkedTagDeployDeployUpdate", c.Data, pathMap)
+		setCheckedTag("/gui/deploy/deploy/resize", "checkedTagDeployDeployResize", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploy/delete", "checkedTagDeployDeployDelete", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/deploybluegreen", "checkedTagDeployDeployBlueGreen", c.Data, pathMap)
 		setCheckedTag("/gui/deploy/clone", "checkedTagDeployClone", c.Data, pathMap)
@@ -379,6 +380,10 @@ func (c *EditController) Post() {
 			}
 			if c.GetString("deployDeployUpdate") == "on" {
 				permission := &rbac.Permission{"deployDeployUpdate", identity.GetConponentName(), "GET", "/gui/deploy/deploy/update"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+			if c.GetString("deployDeployResize") == "on" {
+				permission := &rbac.Permission{"deployDeployResize", identity.GetConponentName(), "GET", "/gui/deploy/deploy/resize"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("deployDeployDelete") == "on" {

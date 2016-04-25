@@ -17,6 +17,7 @@
 					<th>Name</th>
 					<th>CurrentVersion</th>
 					<th>CurrentVersionDescription</th>
+					<th>Size</th>
 					<th>Description</th>
 					<th>Action</th>
 				</tr>
@@ -28,11 +29,15 @@
 						<td>{{$deployInformation.ImageInformationName}}</td>
 						<td>{{$deployInformation.CurrentVersion}}</td>
 						<td>{{$deployInformation.CurrentVersionDescription}}</td>
+						<td>{{$deployInformation.ReplicaAmount}}</td>
 						<td>{{$deployInformation.Description}}</td>
 						<td>
 							<div class="btn-group">
 								{{ str2html $deployInformation.HiddenTagGuiDeployDeployUpdate }}
 									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/update?name={{$deployInformation.ImageInformationName}}&oldVersion={{$deployInformation.CurrentVersion}}">Update/Rollback</a>
+								</div>
+								{{ str2html $deployInformation.HiddenTagGuiDeployDeployResize }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/resize?name={{$deployInformation.ImageInformationName}}&size={{$deployInformation.ReplicaAmount}}">Resize</a>
 								</div>
 								{{ str2html $deployInformation.HiddenTagGuiDeployDeployDelete }}
 									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$deployInformation.ImageInformationName}}" data-color="btn-danger" data-herf="/gui/deploy/deploy/delete?name={{$deployInformation.ImageInformationName}}">Delete</button>

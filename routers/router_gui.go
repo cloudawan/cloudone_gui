@@ -76,6 +76,7 @@ func init() {
 	beego.Router("/gui/deploy/deploy/list", &deploy.ListController{})
 	beego.Router("/gui/deploy/deploy/create", &deploy.CreateController{})
 	beego.Router("/gui/deploy/deploy/update", &deploy.UpdateController{})
+	beego.Router("/gui/deploy/deploy/resize", &deploy.ResizeController{})
 	beego.Router("/gui/deploy/deploy/delete", &deploy.DeleteController{})
 	beego.Router("/gui/deploy/deploybluegreen/list", &deploybluegreen.ListController{})
 	beego.Router("/gui/deploy/deploybluegreen/select", &deploybluegreen.SelectController{})
