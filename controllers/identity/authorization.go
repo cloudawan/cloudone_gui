@@ -261,6 +261,13 @@ func GetDashboardTabMenu(user *rbac.User, activeTab string) string {
 			buffer.WriteString("			<li role='presentation'><a href='/gui/dashboard/appservice/' role='tab' >AppService</a></li>\n")
 		}
 	}
+	if user.HasPermission(componentName, "GET", "/gui/dashboard/deploy") {
+		if activeTab == "deploy" {
+			buffer.WriteString("			<li role='presentation' class='active'><a href='#' role='tab' >Deployment</a></li>\n")
+		} else {
+			buffer.WriteString("			<li role='presentation'><a href='/gui/dashboard/deploy/' role='tab' >Deployment</a></li>\n")
+		}
+	}
 
 	return buffer.String()
 }

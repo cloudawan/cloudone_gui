@@ -81,6 +81,7 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/dashboard/healthcheck", "checkedTagDashboardHealthCheck", c.Data, pathMap)
 		setCheckedTag("/gui/dashboard/bluegreen", "checkedTagDashboardBlueGreen", c.Data, pathMap)
 		setCheckedTag("/gui/dashboard/appservice", "checkedTagDashboardAppService", c.Data, pathMap)
+		setCheckedTag("/gui/dashboard/deploy", "checkedTagDashboardDeploy", c.Data, pathMap)
 
 		// Repository
 		setCheckedTag("/gui/repository", "checkedTagRepository", c.Data, pathMap)
@@ -293,6 +294,10 @@ func (c *EditController) Post() {
 		}
 		if c.GetString("dashboardAppService") == "on" {
 			permission := &rbac.Permission{"dashboardAppService", identity.GetConponentName(), "GET", "/gui/dashboard/appservice"}
+			permissionSlice = append(permissionSlice, permission)
+		}
+		if c.GetString("dashboardDeploy") == "on" {
+			permission := &rbac.Permission{"dashboardDeploy", identity.GetConponentName(), "GET", "/gui/dashboard/deploy"}
 			permissionSlice = append(permissionSlice, permission)
 		}
 	}

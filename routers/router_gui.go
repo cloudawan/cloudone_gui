@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/appservice"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/bluegreen"
+	dashboarddeploy "github.com/cloudawan/cloudone_gui/controllers/dashboard/deploy"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/healthcheck"
 	"github.com/cloudawan/cloudone_gui/controllers/dashboard/topology"
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/autoscaler"
@@ -63,6 +64,8 @@ func init() {
 	beego.Router("/gui/dashboard/bluegreen/data", &bluegreen.DataController{})
 	beego.Router("/gui/dashboard/appservice", &appservice.IndexController{})
 	beego.Router("/gui/dashboard/appservice/data", &appservice.DataController{})
+	beego.Router("/gui/dashboard/deploy", &dashboarddeploy.IndexController{})
+	beego.Router("/gui/dashboard/deploy/data", &dashboarddeploy.DataController{})
 	beego.Router("/gui/repository/imageinformation/list", &imageinformation.ListController{})
 	beego.Router("/gui/repository/imageinformation/create", &imageinformation.CreateController{})
 	beego.Router("/gui/repository/imageinformation/upgrade", &imageinformation.UpgradeController{})
