@@ -50,9 +50,9 @@ func GetGUIMessage(sessionUtility SessionUtility) *GUIMessage {
 
 func (guiMessage *GUIMessage) CleanAllMessage() {
 	guiMessage.successSlice = guiMessage.successSlice[:0]
-	guiMessage.infoSlice = guiMessage.successSlice[:0]
-	guiMessage.warningSlice = guiMessage.successSlice[:0]
-	guiMessage.dangerSlice = guiMessage.successSlice[:0]
+	guiMessage.infoSlice = guiMessage.infoSlice[:0]
+	guiMessage.warningSlice = guiMessage.warningSlice[:0]
+	guiMessage.dangerSlice = guiMessage.dangerSlice[:0]
 }
 
 func (guiMessage *GUIMessage) AddSuccess(text string) {
