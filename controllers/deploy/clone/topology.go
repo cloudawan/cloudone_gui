@@ -454,6 +454,13 @@ func (c *TopologyController) Post() {
 						environmentSlice = append(environmentSlice, ReplicationControllerContainerEnvironment{key, value})
 					}
 
+					// Change the assigned Node Port to auto generated
+					for i, containerPort := range deployInformation.ContainerPortSlice {
+						if containerPort.NodePort > 0 {
+							deployInformation.ContainerPortSlice[i].NodePort = 0
+						}
+					}
+
 					deployCreateInput := &DeployCreateInput{
 						applicationImageInformationName,
 						applicationVersion,
