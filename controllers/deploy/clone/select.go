@@ -72,13 +72,12 @@ func (c *SelectController) Get() {
 
 	namespaceSlice := make([]string, 0)
 	for _, name := range nameSlice {
-		if name != currentNamespace {
-			if user.HasResource(identity.GetConponentName(), "/namespaces/"+name) {
-				namespaceSlice = append(namespaceSlice, name)
-			}
+		if user.HasResource(identity.GetConponentName(), "/namespaces/"+name) {
+			namespaceSlice = append(namespaceSlice, name)
 		}
 	}
 
+	c.Data["currentNamespace"] = currentNamespace
 	c.Data["namespaceSlice"] = namespaceSlice
 
 	guimessage.OutputMessage(c.Data)
@@ -87,7 +86,8 @@ func (c *SelectController) Get() {
 
 func (c *SelectController) Post() {
 	namespace := c.GetString("namespace")
+	action := c.GetString("action")
 
 	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/deploy/clone/topology?namespace="+namespace)
+	c.Ctx.Redirect(302, "/gui/deploy/clone/topology?namespace="+namespace+"&action="+action)
 }

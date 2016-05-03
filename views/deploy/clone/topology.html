@@ -10,7 +10,31 @@
 	<div class="row">
 		<div class="col-md-9">	
 			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/deploy/clone/topology" method="post">
-				
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="action">Action:</label>
+					<div class="col-md-9">
+						<input id="action" class="form-control" type="text" name="action" value="{{ .action }}" readonly>
+					</div>
+				</div>
+
+				<div id="regionTemplate" {{ .hiddenTagRegionTemplate }}>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="templateName">Template Name:</label>
+						<div class="col-md-9">
+							<input id="templateName" class="form-control" type="text" name="templateName" value="" {{ .templateNameRequired }}>
+						</div>
+					</div>
+	
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="templateDescription">Template Description:</label>
+						<div class="col-md-9">
+							<input id="templateDescription" class="form-control" type="text" name="templateDescription" value="">
+						</div>
+					</div>
+	
+					<hr>
+				</div>
+
 				<div class="form-group">
 					<label class="col-md-3 control-label" for="sourceNamespace">From namespace:</label>
 					<div class="col-md-9">
@@ -57,9 +81,9 @@
 		
 						{{range $key, $value := $clone.DeployClusterApplication.EnvironmentMap}}
 						<div class="form-group">
-							<label class="col-md-3 control-label" for="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}">{{ $key }}:</label>
+							<label class="col-md-3 control-label" for="clusterEnvironment{{$clone.DeployClusterApplication.Name}}{{ $key }}">{{ $key }}:</label>
 							<div class="col-md-9">
-								<input id="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}" class="form-control" type="text" name="clusterEnvironment{{$clone.DeployClusterApplication.Name}}_{{ $key }}" value="{{ $value }}">
+								<input id="clusterEnvironment{{$clone.DeployClusterApplication.Name}}{{ $key }}" class="form-control" type="text" name="clusterEnvironment{{$clone.DeployClusterApplication.Name}}{{ $key }}" value="{{ $value }}">
 							</div>
 						</div>
 						{{end}}
@@ -88,7 +112,7 @@
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}">Size:</label>
 							<div class="col-md-9">
-								<input id="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="number" name="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" value="{{ $clone.DeployInformation.ReplicaAmount }}" min="1" max="10">
+								<input id="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" class="form-control" type="number" name="applicationReplicaAmount{{$clone.DeployInformation.ImageInformationName}}" value="{{ $clone.DeployInformation.ReplicaAmount }}" min="1" max="100">
 							</div>
 						</div>
 						
@@ -98,9 +122,9 @@
 		
 						{{range $environmentKey, $environment := $clone.DeployInformation.EnvironmentSlice}}
 						<div class="form-group">
-							<label class="col-md-3 control-label" for="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}">{{ $environment.Name }}:</label>
+							<label class="col-md-3 control-label" for="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}{{ $environment.Name }}">{{ $environment.Name }}:</label>
 							<div class="col-md-9">
-								<input id="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}" class="form-control" type="text" name="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}_{{ $environment.Name }}" value="{{ $environment.Value }}">
+								<input id="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}{{ $environment.Name }}" class="form-control" type="text" name="applicationEnvironment{{$clone.DeployInformation.ImageInformationName}}{{ $environment.Name }}" value="{{ $environment.Value }}">
 							</div>
 						</div>
 						{{end}}
@@ -144,8 +168,7 @@
 				{{end}}
 
 				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/clone/select">Cancel</a>
-				<input class="btn btn-md btn-success pull-right" type="submit" value="Clone">
-				
+				<input id="actionButton" class="btn btn-md btn-success pull-right" type="submit" value="{{ .actionButtonValue }}">
 			</form>
 		</div>
 	</div>

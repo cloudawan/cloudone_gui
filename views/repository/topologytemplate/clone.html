@@ -1,0 +1,158 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Clone Topology</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/repository/topologytemplate/clone" method="post">
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{.topology.Name}}" readonly>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="sourceNamespace">From namespace:</label>
+					<div class="col-md-9">
+						<input id="sourceNamespace" class="form-control" type="text" name="sourceNamespace" value="{{.topology.SourceNamespace}}" readonly>
+					</div>
+				</div>
+
+				<hr>
+
+				{{range $launchKey, $launch := .topology.LaunchSlice}}
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="launchUse{{$launch.Name}}">Use:</label>
+					<div class="col-md-offset-1 col-md-6 checkbox">
+						<input id="launchUse{{$launch.Name}}" type="checkbox" name="launchUse{{$launch.Name}}" onclick="$('#regionLaunch{{$launch.Name}}').toggle();" checked>
+					</div>
+				</div>
+
+				<div id="regionLaunch{{$launch.Name}}">
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="launchOrder{{$launch.Name}}">Order:</label>
+						<div class="col-md-9">
+							<input id="launchOrder{{$launch.Name}}" class="form-control" type="number" name="launchOrder{{$launch.Name}}" value="{{$launch.Order}}" min="1" max="100">
+						</div>
+					</div>
+					
+					<div {{ $launch.HiddenTagLaunchClusterApplication }}>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterName{{$launch.LaunchClusterApplication.Name}}">Name:</label>
+							<div class="col-md-9">
+								<input id="clusterName{{$launch.LaunchClusterApplication.Name}}" class="form-control" type="text" name="clusterName{{$launch.LaunchClusterApplication.Name}}" value="{{$launch.LaunchClusterApplication.Name}}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterSize{{$launch.LaunchClusterApplication.Name}}">Size:</label>
+							<div class="col-md-9">
+								<input id="clusterSize{{$launch.LaunchClusterApplication.Name}}" class="form-control" type="number" name="clusterSize{{$launch.LaunchClusterApplication.Name}}" value="{{$launch.LaunchClusterApplication.Size}}" min="1" max="100">
+							</div>
+						</div>
+		
+						<div class="form-group">
+							<label class="col-md-3 control-label" >Environment Value:</label>
+						</div>
+		
+						{{range $environmentKey, $environment := $launch.LaunchClusterApplication.EnvironmentSlice}}
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="clusterEnvironment{{$launch.LaunchClusterApplication.Name}}{{ $environment.name }}">{{ $environment.name }}:</label>
+							<div class="col-md-9">
+								<input id="clusterEnvironment{{$launch.LaunchClusterApplication.Name}}{{ $environment.name }}" class="form-control" type="text" name="clusterEnvironment{{$launch.LaunchClusterApplication.Name}}{{ $environment.name }}" value="{{ $environment.value }}">
+							</div>
+						</div>
+						{{end}}
+					</div>
+					
+					<div {{ $launch.HiddenTagLaunchApplication }}>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationImageInformationName{{$launch.LaunchApplication.ImageInformationName}}">Image Information Name:</label>
+							<div class="col-md-9">
+								<input id="applicationImageInformationName{{$launch.LaunchApplication.ImageInformationName}}" class="form-control" type="text" name="applicationImageInformationName{{$launch.LaunchApplication.ImageInformationName}}" value="{{$launch.LaunchApplication.ImageInformationName}}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationVersion{{$launch.LaunchApplication.ImageInformationName}}">Version:</label>
+							<div class="col-md-9">
+								<input id="applicationVersion{{$launch.LaunchApplication.ImageInformationName}}" class="form-control" type="text" name="applicationVersion{{$launch.LaunchApplication.ImageInformationName}}" value="{{ $launch.LaunchApplication.Version }}" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationDescription{{$launch.LaunchApplication.ImageInformationName}}">Description:</label>
+							<div class="col-md-9">
+								<input id="applicationDescription{{$launch.LaunchApplication.ImageInformationName}}" class="form-control" type="text" name="applicationDescription{{$launch.LaunchApplication.ImageInformationName}}" value="{{ $launch.LaunchApplication.Description }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationReplicaAmount{{$launch.LaunchApplication.ImageInformationName}}">Size:</label>
+							<div class="col-md-9">
+								<input id="applicationReplicaAmount{{$launch.LaunchApplication.ImageInformationName}}" class="form-control" type="number" name="applicationReplicaAmount{{$launch.LaunchApplication.ImageInformationName}}" value="{{ $launch.LaunchApplication.ReplicaAmount }}" min="1" max="100">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3 control-label" >Environment Value:</label>
+						</div>
+		
+						{{range $environmentKey, $environment := $launch.LaunchApplication.EnvironmentSlice}}
+						<div class="form-group">
+							<label class="col-md-3 control-label" for="applicationEnvironment{{$launch.LaunchApplication.ImageInformationName}}{{ $environment.Name }}">{{ $environment.Name }}:</label>
+							<div class="col-md-9">
+								<input id="applicationEnvironment{{$launch.LaunchApplication.ImageInformationName}}{{ $environment.Name }}" class="form-control" type="text" name="applicationEnvironment{{$launch.LaunchApplication.ImageInformationName}}{{ $environment.Name }}" value="{{ $environment.Value }}">
+							</div>
+						</div>
+						{{end}}
+	
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3 control-label" >Location Affinity:</label>
+					</div>
+		
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="launchRegion{{$launch.Name}}">Region:</label>
+						<div class="col-md-9">
+							<select id="launchRegion{{$launch.Name}}" class="form-control" name="launchRegion{{$launch.Name}}" onchange="$('.cssSelectionLaunchZone{{$launch.Name}}').hide();$('.cssSelectionLaunchZone{{$launch.Name}}' + this.value).show();if(this.value=='Any'){$('#formGroupLaunchZone{{$launch.Name}}').hide();}else{$('#formGroupLaunchZone{{$launch.Name}}').show();}$('#launchZone{{$launch.Name}}').val('Any');">
+								<option value="Any">Any</option>
+								{{ range $regionKey, $region := $launch.RegionSlice}}
+								<option value="{{ $region.Name }}">{{ $region.Name }}</option>
+								{{end}}
+							</select>
+						</div>
+					</div>
+		
+					<div id="formGroupLaunchZone{{$launch.Name}}" class="form-group" hidden>
+						<label class="col-md-3 control-label" for="launchZone{{$launch.Name}}">Zone:</label>
+						<div class="col-md-9">
+							<select id="launchZone{{$launch.Name}}" class="form-control" name="launchZone{{$launch.Name}}">
+								<option value="Any">Any</option>
+								{{ range $regionKey, $region := $launch.RegionSlice}}
+									{{ range $zoneKey, $zone := $region.ZoneSlice}}
+									<option class="cssSelectionLaunchZone{{$launch.Name}} cssSelectionLaunchZone{{$launch.Name}}{{ $region.Name }}" value="{{ $zone.Name }}">{{ $zone.Name }}</option>
+									{{end}}
+								{{end}}
+							</select>
+						</div>
+					</div>
+				</div>				
+
+				<hr>
+
+				{{end}}
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/topologytemplate/list">Cancel</a>
+				<input id="actionButton" class="btn btn-md btn-success pull-right" type="submit" value="Clone">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

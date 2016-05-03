@@ -1,0 +1,60 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Topology Template List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Source Namespace</th>
+					<th>Created User</th>
+					<th>Created Date</th>
+					<th>Description</th>
+					<th>Launch Component</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $topologyKey, $topology := .topologySlice}}
+					<tr>
+						<td>{{$topologyKey}}</td>
+						<td>{{$topology.Name}}</td>
+						<td>{{$topology.SourceNamespace}}</td>
+						<td>{{$topology.CreatedUser}}</td>
+						<td>{{$topology.CreatedDate}}</td>
+						<td>{{$topology.Description}}</td>
+						<td>
+							{{range $launchKey, $launch := $topology.LaunchSlice}}
+								{{$launch.Information}}<br/>
+							{{end}}
+						</td>
+						
+						<td>
+							<div class="btn-group ">
+								{{ str2html $topology.HiddenTagGuiRepositoryTopologyTemplateClone }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/topologytemplate/clone?name={{$topology.Name}}">Clone</a>	
+								</div>
+								{{ str2html $topology.HiddenTagGuiRepositoryTopologyTemplateDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$topology.Name}}" data-color="btn-danger" data-herf="/gui/repository/topologytemplate/delete?name={{$topology.Name}}">Delete</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

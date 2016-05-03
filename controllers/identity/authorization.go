@@ -58,6 +58,9 @@ func GetLayoutMenu(user *rbac.User) string {
 	if user.HasPermission(componentName, "GET", "/gui/repository/thirdparty/list") {
 		buffer.WriteString("							<li><a href='/gui/repository/thirdparty/list'>Third-party Services</a></li>\n")
 	}
+	if user.HasPermission(componentName, "GET", "/gui/repository/topologytemplate/list") {
+		buffer.WriteString("							<li><a href='/gui/repository/topologytemplate/list'>Topology template</a></li>\n")
+	}
 	// Parent
 	if user.HasChildPermission(componentName, "GET", "/gui/repository") {
 		buffer.WriteString("						</ul>\n")

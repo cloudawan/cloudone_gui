@@ -41,6 +41,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imageinformation"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/imagerecord"
 	"github.com/cloudawan/cloudone_gui/controllers/repository/thirdparty"
+	"github.com/cloudawan/cloudone_gui/controllers/repository/topologytemplate"
 	"github.com/cloudawan/cloudone_gui/controllers/system/about"
 	"github.com/cloudawan/cloudone_gui/controllers/system/host/credential"
 	"github.com/cloudawan/cloudone_gui/controllers/system/namespace"
@@ -76,6 +77,9 @@ func init() {
 	beego.Router("/gui/repository/thirdparty/edit", &thirdparty.EditController{})
 	beego.Router("/gui/repository/thirdparty/launch", &thirdparty.LaunchController{})
 	beego.Router("/gui/repository/thirdparty/delete", &thirdparty.DeleteController{})
+	beego.Router("/gui/repository/topologytemplate/list", &topologytemplate.ListController{})
+	beego.Router("/gui/repository/topologytemplate/delete", &topologytemplate.DeleteController{})
+	beego.Router("/gui/repository/topologytemplate/clone", &topologytemplate.CloneController{})
 	beego.Router("/gui/deploy/deploy/list", &deploy.ListController{})
 	beego.Router("/gui/deploy/deploy/create", &deploy.CreateController{})
 	beego.Router("/gui/deploy/deploy/update", &deploy.UpdateController{})

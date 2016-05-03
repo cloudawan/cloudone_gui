@@ -19,6 +19,7 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
 	"strconv"
@@ -103,10 +104,19 @@ type ReplicationControllerContainerEnvironment struct {
 	Value string
 }
 
+type Topology struct {
+	Name            string
+	SourceNamespace string
+	CreatedUser     string
+	CreatedDate     time.Time
+	Description     string
+	LaunchSlice     []Launch
+}
+
 type Launch struct {
-	Order             int
-	DeployCreateInput *DeployCreateInput
-	ClusterLaunch     *ClusterLaunch
+	Order                    int
+	LaunchApplication        *LaunchApplication
+	LaunchClusterApplication *LaunchClusterApplication
 }
 
 type ByLaunch []Launch
@@ -115,7 +125,7 @@ func (b ByLaunch) Len() int           { return len(b) }
 func (b ByLaunch) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
 func (b ByLaunch) Less(i, j int) bool { return b[i].Order < b[j].Order }
 
-type DeployCreateInput struct {
+type LaunchApplication struct {
 	ImageInformationName string
 	Version              string
 	Description          string
@@ -126,7 +136,7 @@ type DeployCreateInput struct {
 	ExtraJsonMap         map[string]interface{}
 }
 
-type ClusterLaunch struct {
+type LaunchClusterApplication struct {
 	Name                              string
 	Size                              int
 	EnvironmentSlice                  []interface{}
@@ -156,6 +166,18 @@ func (c *TopologyController) Get() {
 	}
 
 	currentNamespace, _ := c.GetSession("namespace").(string)
+
+	action := c.GetString("action")
+	c.Data["action"] = action
+	if action == "clone" {
+		c.Data["hiddenTagRegionTemplate"] = "hidden"
+		c.Data["templateNameRequired"] = ""
+		c.Data["actionButtonValue"] = "Clone"
+	} else if action == "template" {
+		c.Data["hiddenTagRegionTemplate"] = ""
+		c.Data["templateNameRequired"] = "required"
+		c.Data["actionButtonValue"] = "Create Template"
+	}
 
 	namespace := c.GetString("namespace")
 	c.Data["sourceNamespace"] = namespace
@@ -328,6 +350,9 @@ func (c *TopologyController) Post() {
 		return
 	}
 
+	action := c.GetString("action")
+
+	// Generate topology order
 	inputMap := c.Input()
 	cloneNameSlice := make([]string, 0)
 	environmentMap := make(map[string]string)
@@ -335,9 +360,9 @@ func (c *TopologyController) Post() {
 		for key, _ := range inputMap {
 			// Collect the clone name
 			if strings.HasPrefix(key, "cloneUse") {
-				cloudName := key[len("cloneUse"):]
-				if c.GetString(key) == "on" && len(cloudName) > 0 {
-					cloneNameSlice = append(cloneNameSlice, cloudName)
+				cloneName := key[len("cloneUse"):]
+				if c.GetString(key) == "on" && len(cloneName) > 0 {
+					cloneNameSlice = append(cloneNameSlice, cloneName)
 				}
 				// Collect environment
 			} else if strings.HasPrefix(key, "clusterEnvironment") {
@@ -373,32 +398,32 @@ func (c *TopologyController) Post() {
 	}
 
 	launchSlice := make([]Launch, 0)
-	for _, cloudName := range cloneNameSlice {
-		cloneOrder, _ := c.GetInt("cloneOrder" + cloudName)
+	for _, cloneName := range cloneNameSlice {
+		cloneOrder, _ := c.GetInt("cloneOrder" + cloneName)
 
-		clusterName := c.GetString("clusterName" + cloudName)
-		clusterSize, _ := c.GetInt("clusterSize" + cloudName)
+		clusterName := c.GetString("clusterName" + cloneName)
+		clusterSize, _ := c.GetInt("clusterSize" + cloneName)
 
-		applicationImageInformationName := c.GetString("applicationImageInformationName" + cloudName)
-		applicationVersion := c.GetString("applicationVersion" + cloudName)
-		applicationDescription := c.GetString("applicationDescription" + cloudName)
-		applicationReplicaAmount, _ := c.GetInt("applicationReplicaAmount" + cloudName)
+		applicationImageInformationName := c.GetString("applicationImageInformationName" + cloneName)
+		applicationVersion := c.GetString("applicationVersion" + cloneName)
+		applicationDescription := c.GetString("applicationDescription" + cloneName)
+		applicationReplicaAmount, _ := c.GetInt("applicationReplicaAmount" + cloneName)
 
 		clusterEnvironmentMap := make(map[string]string)
 		applicationEnvironmentMap := make(map[string]string)
 		for key, value := range environmentMap {
-			if strings.HasPrefix(key, "clusterEnvironment"+cloudName) {
-				environemntKey := key[len("clusterEnvironment"+cloudName):]
+			if strings.HasPrefix(key, "clusterEnvironment"+cloneName) {
+				environemntKey := key[len("clusterEnvironment"+cloneName):]
 				clusterEnvironmentMap[environemntKey] = value
-			} else if strings.HasPrefix(key, "applicationEnvironment"+cloudName) {
-				environemntKey := key[len("applicationEnvironment"+cloudName):]
+			} else if strings.HasPrefix(key, "applicationEnvironment"+cloneName) {
+				environemntKey := key[len("applicationEnvironment"+cloneName):]
 				applicationEnvironmentMap[environemntKey] = value
 			}
 		}
 
 		// Location Affinity
-		region := c.GetString("clusterRegion" + cloudName)
-		zone := c.GetString("clusterZone" + cloudName)
+		region := c.GetString("clusterRegion" + cloneName)
+		zone := c.GetString("clusterZone" + cloneName)
 
 		if region == "Any" {
 			region = ""
@@ -432,7 +457,7 @@ func (c *TopologyController) Post() {
 				environmentSlice = append(environmentSlice, environmentJsonMap)
 			}
 
-			clusterLaunch := &ClusterLaunch{
+			clusterLaunch := &LaunchClusterApplication{
 				clusterName,
 				clusterSize,
 				environmentSlice,
@@ -461,7 +486,7 @@ func (c *TopologyController) Post() {
 						}
 					}
 
-					deployCreateInput := &DeployCreateInput{
+					launchApplication := &LaunchApplication{
 						applicationImageInformationName,
 						applicationVersion,
 						applicationDescription,
@@ -474,7 +499,7 @@ func (c *TopologyController) Post() {
 
 					launch := Launch{
 						cloneOrder,
-						deployCreateInput,
+						launchApplication,
 						nil,
 					}
 
@@ -488,58 +513,100 @@ func (c *TopologyController) Post() {
 
 	sort.Sort(ByLaunch(launchSlice))
 
-	namespace, _ := c.GetSession("namespace").(string)
+	// Action: clone or create tempalte
+	if action == "clone" {
+		namespace, _ := c.GetSession("namespace").(string)
 
-	for _, launch := range launchSlice {
-		if launch.DeployCreateInput != nil {
-			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/deploys/create/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		for _, launch := range launchSlice {
+			if launch.LaunchApplication != nil {
+				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+					"/api/v1/deploys/create/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
 
-			_, err = restclient.RequestPostWithStructure(url, launch.DeployCreateInput, nil, tokenHeaderMap)
+				_, err = restclient.RequestPostWithStructure(url, launch.LaunchApplication, nil, tokenHeaderMap)
 
-			if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
-				return
-			}
-
-			if err != nil {
-				// Error
-				guimessage.AddDanger(err.Error())
-				guimessage.RedirectMessage(c)
-				c.Ctx.Redirect(302, "/gui/deploy/clone/select")
-				return
-			}
-		}
-		if launch.ClusterLaunch != nil {
-			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.ClusterLaunch.Name +
-				"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
-			jsonMap := make(map[string]interface{})
-
-			_, err = restclient.RequestPostWithStructure(url, launch.ClusterLaunch, &jsonMap, tokenHeaderMap)
-
-			if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
-				return
-			}
-
-			if err != nil {
-				// Error
-				errorMessage, _ := jsonMap["Error"].(string)
-				if strings.HasPrefix(errorMessage, "Replication controller already exists") {
-					guimessage.AddDanger("Replication controller " + launch.ClusterLaunch.Name + " already exists")
-				} else {
-					guimessage.AddDanger(err.Error())
+				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+					return
 				}
 
-				guimessage.RedirectMessage(c)
-				c.Ctx.Redirect(302, "/gui/deploy/clone/select")
-				return
+				if err != nil {
+					// Error
+					guimessage.AddDanger(err.Error())
+					guimessage.RedirectMessage(c)
+					c.Ctx.Redirect(302, "/gui/deploy/clone/select")
+					return
+				}
+			}
+			if launch.LaunchClusterApplication != nil {
+				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+					"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.LaunchClusterApplication.Name +
+					"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				jsonMap := make(map[string]interface{})
+
+				_, err = restclient.RequestPostWithStructure(url, launch.LaunchClusterApplication, &jsonMap, tokenHeaderMap)
+
+				if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+					return
+				}
+
+				if err != nil {
+					// Error
+					errorMessage, _ := jsonMap["Error"].(string)
+					if strings.HasPrefix(errorMessage, "Replication controller already exists") {
+						guimessage.AddDanger("Replication controller " + launch.LaunchClusterApplication.Name + " already exists")
+					} else {
+						guimessage.AddDanger(err.Error())
+					}
+
+					guimessage.RedirectMessage(c)
+					c.Ctx.Redirect(302, "/gui/deploy/clone/select")
+					return
+				}
 			}
 		}
+
+		guimessage.AddSuccess("Clone the namespace " + sourceNamespace + " to the namespace " + namespace)
+	} else if action == "template" {
+		templateName := c.GetString("templateName")
+		templateDescription := c.GetString("templateDescription")
+
+		createdUserName := ""
+		user, ok := c.GetSession("user").(*rbac.User)
+		if ok {
+			createdUserName = user.Name
+		}
+
+		topology := Topology{
+			templateName,
+			sourceNamespace,
+			createdUserName,
+			time.Now(),
+			templateDescription,
+			launchSlice,
+		}
+
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+			"/api/v1/topology/"
+
+		_, err = restclient.RequestPostWithStructure(url, topology, nil, tokenHeaderMap)
+
+		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+			return
+		}
+
+		if err != nil {
+			// Error
+			guimessage.AddDanger(err.Error())
+			guimessage.RedirectMessage(c)
+			c.Ctx.Redirect(302, "/gui/deploy/clone/select")
+			return
+		}
+
+		guimessage.AddSuccess("Create topology template from the namespace " + sourceNamespace + " as the template " + templateName)
+	} else {
+		guimessage.AddDanger("No such action: " + action)
 	}
 
 	c.Ctx.Redirect(302, "/gui/deploy/clone/select")
-
-	guimessage.AddSuccess("Clone the namespace " + sourceNamespace + " to the namespace " + namespace)
 
 	guimessage.RedirectMessage(c)
 }

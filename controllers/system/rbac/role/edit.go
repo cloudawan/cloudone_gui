@@ -102,6 +102,11 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/repository/thirdparty/edit", "checkedTagRepositoryThirdPartyServiceCreate", c.Data, pathMap)
 		setCheckedTag("/gui/repository/thirdparty/launch", "checkedTagRepositoryThirdPartyServiceLaunch", c.Data, pathMap)
 		setCheckedTag("/gui/repository/thirdparty/delete", "checkedTagRepositoryThirdPartyServiceDelete", c.Data, pathMap)
+		setCheckedTag("/gui/repository/topologytemplate", "checkedTagRepositoryTopologyTemplate", c.Data, pathMap)
+		setHiddenTag("/gui/repository/topologytemplate", "hiddenTagRepositoryTopologyTemplate", c.Data, pathMap)
+		setCheckedTag("/gui/repository/topologytemplate/list", "checkedTagRepositoryTopologyTemplateList", c.Data, pathMap)
+		setCheckedTag("/gui/repository/topologytemplate/clone", "checkedTagRepositoryTopologyTemplateClone", c.Data, pathMap)
+		setCheckedTag("/gui/repository/topologytemplate/delete", "checkedTagRepositoryTopologyTemplateDelete", c.Data, pathMap)
 
 		// Deploy
 		setCheckedTag("/gui/deploy", "checkedTagDeploy", c.Data, pathMap)
@@ -361,6 +366,24 @@ func (c *EditController) Post() {
 			}
 			if c.GetString("repositoryThirdPartyServiceDelete") == "on" {
 				permission := &rbac.Permission{"repositoryThirdPartyServiceDelete", identity.GetConponentName(), "GET", "/gui/repository/thirdparty/delete"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+		}
+
+		if c.GetString("repositoryTopologyTemplate") == "on" {
+			permission := &rbac.Permission{"repositoryTopologyTemplate", identity.GetConponentName(), "GET", "/gui/repository/topologytemplate"}
+			permissionSlice = append(permissionSlice, permission)
+		} else {
+			if c.GetString("repositoryTopologyTemplateList") == "on" {
+				permission := &rbac.Permission{"repositoryTopologyTemplateList", identity.GetConponentName(), "GET", "/gui/repository/topologytemplate/list"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+			if c.GetString("repositoryTopologyTemplateClone") == "on" {
+				permission := &rbac.Permission{"repositoryTopologyTemplateClone", identity.GetConponentName(), "GET", "/gui/repository/topologytemplate/clone"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+			if c.GetString("repositoryTopologyTemplateDelete") == "on" {
+				permission := &rbac.Permission{"repositoryTopologyTemplateDelete", identity.GetConponentName(), "GET", "/gui/repository/topologytemplate/delete"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 		}
@@ -775,8 +798,9 @@ func (c *EditController) Post() {
 	// For simplified version, only check GUI. The others are all allowed
 	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone-all", "cloudone", "*", "*"})
 	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_analysis-all", "cloudone_analysis", "*", "*"})
+	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_gui-POST", identity.GetConponentName(), "POST", "*"})
 	// Essentail one
-	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_gui_logout", identity.GetConponentName(), "GET", "/gui/logout"})
+	permissionSlice = append(permissionSlice, &rbac.Permission{"cloudone_gui-logout", identity.GetConponentName(), "GET", "/gui/logout"})
 
 	role := rbac.Role{
 		name,
