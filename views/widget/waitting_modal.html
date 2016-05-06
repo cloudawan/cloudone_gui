@@ -12,3 +12,13 @@
 			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+	var moduleWaittingPanel = (function(){
+		window.onpageshow  = function() {
+			// This is used for Firefox back button since there is no load event
+			// Other browsers don't need it and won't be affected since the onload will hide the panel
+			$("#idWaitingPanel").modal("hide");
+		}
+	})();
+	</script>
