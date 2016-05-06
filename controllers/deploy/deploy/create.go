@@ -204,6 +204,27 @@ func (c *CreateController) Post() {
 	resourceMemoryRequest, resourceMemoryRequestError := c.GetInt("resourceMemoryRequest")
 	resourceMemoryLimit, resourceMemoryLimitError := c.GetInt("resourceMemoryLimit")
 
+	// Limit must be bigger than request
+	if resourceCPURequestError == nil && resourceCPULimitError == nil {
+		if resourceCPURequest > resourceCPULimit {
+			// Error
+			guimessage.AddDanger("CPU request must be smaller or equal to CPU limit")
+			guimessage.RedirectMessage(c)
+			c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
+			return
+		}
+	}
+
+	if resourceMemoryRequestError == nil && resourceMemoryLimitError == nil {
+		if resourceMemoryRequest > resourceMemoryLimit {
+			// Error
+			guimessage.AddDanger("Memory request must be smaller or equal to Memory limit")
+			guimessage.RedirectMessage(c)
+			c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
+			return
+		}
+	}
+
 	portName := "generated"
 
 	indexContainerPortMap := make(map[string]int)
