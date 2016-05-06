@@ -104,9 +104,11 @@ func (c *CreateController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imageinformations/create/"
 
+	resultJsonMap := make(map[string]interface{})
+
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err := restclient.RequestPostWithStructure(url, imageInformation, nil, tokenHeaderMap)
+	_, err := restclient.RequestPostWithStructure(url, imageInformation, &resultJsonMap, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -115,11 +117,24 @@ func (c *CreateController) Post() {
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
+
+		errorMessage, ok := resultJsonMap["Error"].(string)
+		if ok {
+			guimessage.AddDanger(errorMessage)
+		}
 	} else {
 		guimessage.AddSuccess("Create  " + name + " success")
 	}
 
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
+	// Pass build result
+	logKey := "buildResultOutputMessage" + random.UUID()
+
+	outputMessage, ok := resultJsonMap["OutputMessage"].(string)
+	if ok {
+		c.SetSession(logKey, outputMessage)
+	}
+
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
 
 	guimessage.RedirectMessage(c)
 }

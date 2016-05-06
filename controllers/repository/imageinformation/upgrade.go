@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/cloudawan/cloudone_utility/random"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -58,9 +59,11 @@ func (c *UpgradeController) Post() {
 
 	deployUpgradeInput := DeployUpgradeInput{imageInformationName, description}
 
+	resultJsonMap := make(map[string]interface{})
+
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err := restclient.RequestPutWithStructure(url, deployUpgradeInput, nil, tokenHeaderMap)
+	_, err := restclient.RequestPutWithStructure(url, deployUpgradeInput, &resultJsonMap, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -69,12 +72,24 @@ func (c *UpgradeController) Post() {
 	if err != nil {
 		// Error
 		guimessage.AddDanger(err.Error())
+
+		errorMessage, ok := resultJsonMap["Error"].(string)
+		if ok {
+			guimessage.AddDanger(errorMessage)
+		}
 	} else {
 		guimessage.AddSuccess(imageInformationName + " upgrade success")
 	}
 
-	// Redirect to list
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
+	// Pass build result
+	logKey := "buildResultOutputMessage" + random.UUID()
+
+	outputMessage, ok := resultJsonMap["OutputMessage"].(string)
+	if ok {
+		c.SetSession(logKey, outputMessage)
+	}
+
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
 
 	guimessage.RedirectMessage(c)
 }

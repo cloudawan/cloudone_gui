@@ -1,0 +1,24 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Build Log</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">	
+			<form class="">		
+				<div class="form-group">
+					<textarea class="col-md-12" readonly rows="30" >{{ .log }}</textarea>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/list">Cancel</a>
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}
