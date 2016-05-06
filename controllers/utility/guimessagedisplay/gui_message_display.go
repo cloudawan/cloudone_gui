@@ -92,7 +92,7 @@ func (guiMessage *GUIMessage) OutputMessage(data map[interface{}]interface{}) bo
 	} else {
 		// Show global data
 		if guiMessage.sessionUtility != nil {
-			data["currentNamespace"] = guiMessage.sessionUtility.GetSession("namespace")
+			data["layoutLabelCurrentNamespace"] = guiMessage.sessionUtility.GetSession("namespace")
 		}
 
 		has := false
