@@ -53,7 +53,10 @@
 						<td>{{$imageRecord.Description}}</td>
 						<td>{{$imageRecord.CreatedTime}}</td>
 						<td>
-							<div class="btn-group">
+							<div class="btn-group-vertical">
+								{{ str2html $imageRecord.HiddenTagGuiRepositoryImageRecordLog }}
+									<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imagerecord/log?imageInformation={{$imageRecord.ImageInformation}}&version={{$imageRecord.Version}}">Build Log</a>
+								</div>
 								{{ str2html $imageRecord.HiddenTagGuiRepositoryImageRecordDelete }}
 									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$imageRecord.ImageInformation}} {{$imageRecord.Version}}" data-color="btn-danger" data-herf="/gui/repository/imagerecord/delete?name={{$imageRecord.ImageInformation}}&version={{$imageRecord.Version}}">Delete</button>
 								</div>

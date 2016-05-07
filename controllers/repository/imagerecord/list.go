@@ -35,6 +35,7 @@ type ImageRecord struct {
 	Environment                             map[string]string
 	Description                             string
 	CreatedTime                             string
+	HiddenTagGuiRepositoryImageRecordLog    string
 	HiddenTagGuiRepositoryImageRecordDelete string
 }
 
@@ -54,6 +55,7 @@ func (c *ListController) Get() {
 	user, _ := c.GetSession("user").(*rbac.User)
 	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiRepositoryImageInformationList", user, "GET", "/gui/repository/imageinformation/list")
 	// Tag won't work in loop so need to be placed in data
+	hasGuiRepositoryImageRecordLog := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/log")
 	hasGuiRepositoryImageRecordDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -80,6 +82,11 @@ func (c *ListController) Get() {
 		guimessage.AddDanger(err.Error())
 	} else {
 		for i := 0; i < len(imageRecordSlice); i++ {
+			if hasGuiRepositoryImageRecordLog {
+				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div class='btn-group'>"
+			} else {
+				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div hidden>"
+			}
 			if hasGuiRepositoryImageRecordDelete {
 				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordDelete = "<div class='btn-group'>"
 			} else {

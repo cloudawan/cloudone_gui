@@ -73,6 +73,7 @@ func init() {
 	beego.Router("/gui/repository/imageinformation/delete", &imageinformation.DeleteController{})
 	beego.Router("/gui/repository/imageinformation/log", &imageinformation.LogController{})
 	beego.Router("/gui/repository/imagerecord/list", &imagerecord.ListController{})
+	beego.Router("/gui/repository/imagerecord/log", &imagerecord.LogController{})
 	beego.Router("/gui/repository/imagerecord/delete", &imagerecord.DeleteController{})
 	beego.Router("/gui/repository/thirdparty/list", &thirdparty.ListController{})
 	beego.Router("/gui/repository/thirdparty/edit", &thirdparty.EditController{})

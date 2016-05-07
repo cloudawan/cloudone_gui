@@ -95,6 +95,7 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/repository/imagerecord", "checkedTagRepositoryImageRecord", c.Data, pathMap)
 		setHiddenTag("/gui/repository/imagerecord", "hiddenTagRepositoryImageRecord", c.Data, pathMap)
 		setCheckedTag("/gui/repository/imagerecord/list", "checkedTagRepositoryImageRecordList", c.Data, pathMap)
+		setCheckedTag("/gui/repository/imagerecord/log", "checkedTagRepositoryImageRecordLog", c.Data, pathMap)
 		setCheckedTag("/gui/repository/imagerecord/delete", "checkedTagRepositoryImageRecordDelete", c.Data, pathMap)
 		setCheckedTag("/gui/repository/thirdparty", "checkedTagRepositoryThirdPartyService", c.Data, pathMap)
 		setHiddenTag("/gui/repository/thirdparty", "hiddenTagRepositoryThirdPartyService", c.Data, pathMap)
@@ -340,6 +341,10 @@ func (c *EditController) Post() {
 		} else {
 			if c.GetString("repositoryImageRecordList") == "on" {
 				permission := &rbac.Permission{"repositoryImageRecordList", identity.GetConponentName(), "GET", "/gui/repository/imagerecord/list"}
+				permissionSlice = append(permissionSlice, permission)
+			}
+			if c.GetString("repositoryImageRecordLog") == "on" {
+				permission := &rbac.Permission{"repositoryImageRecordLog", identity.GetConponentName(), "GET", "/gui/repository/imagerecord/log"}
 				permissionSlice = append(permissionSlice, permission)
 			}
 			if c.GetString("repositoryImageRecordDelete") == "on" {
