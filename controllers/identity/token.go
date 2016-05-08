@@ -17,16 +17,32 @@ package identity
 import (
 	"github.com/astaxie/beego/context"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
-	"strings"
+	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
 func IsTokenInvalid(err error) bool {
 	if err == nil {
 		return false
-	} else if strings.Contains(err.Error(), "Token is incorrect or expired") {
-		return true
 	} else {
-		return false
+		requestError, ok := err.(restclient.RequestError)
+		if ok {
+			if requestError.ResponseData != nil {
+				responseData, ok := requestError.ResponseData.(map[string]interface{})
+				if ok {
+					if responseData["Error"] == "Token doesn't exist" {
+						return true
+					} else {
+						return false
+					}
+				} else {
+					return false
+				}
+			} else {
+				return false
+			}
+		} else {
+			return false
+		}
 	}
 }
 

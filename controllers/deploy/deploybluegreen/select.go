@@ -64,7 +64,7 @@ func (c *SelectController) Get() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	statusCode, _, err, _ := restclient.RequestWithStructure("GET", url, nil, &deployBlueGreen, tokenHeaderMap)
+	statusCode, _, _, err := restclient.RequestWithStructure("GET", url, nil, &deployBlueGreen, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

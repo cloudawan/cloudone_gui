@@ -85,18 +85,17 @@ func (c *LoginController) Post() {
 		"/api/v1/authorizations/tokens/"
 	userData := UserData{username, password}
 	tokenData := TokenData{}
-	_, err = restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
+	errorInterface, err := restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
+	errorJsonMap, _ := errorInterface.(map[string]interface{})
+
 	if err != nil {
-		errorMessage := err.Error()
-		if strings.Contains(errorMessage, "Incorrect User or Password") {
-			guimessage.AddDanger("Incorrect User or Password")
-		} else if strings.Contains(errorMessage, "User is expired") {
-			guimessage.AddDanger("User is expired")
-		} else if strings.Contains(errorMessage, "User is disabled") {
-			guimessage.AddDanger("User is disabled")
+		if errorJsonMap != nil {
+			errorMessage, _ := errorJsonMap["ErrorMessage"].(string)
+			guimessage.AddDanger(errorMessage)
 		} else {
 			guimessage.AddDanger(err.Error())
 		}
+
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return
