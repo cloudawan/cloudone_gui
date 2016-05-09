@@ -251,8 +251,8 @@ func (c *LaunchController) Post() {
 	if err != nil {
 		// Error
 		errorMessage, _ := jsonMap["Error"].(string)
-		if strings.HasPrefix(errorMessage, "Replication controller already exists") {
-			guimessage.AddDanger("Replication controller " + name + " already exists")
+		if errorMessage == "The cluster application already exists" {
+			guimessage.AddDanger("Cluster application " + name + " already exists")
 		} else {
 			guimessage.AddDanger(err.Error())
 		}
