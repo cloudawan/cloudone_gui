@@ -186,6 +186,10 @@
 					//alert(xhr.status); 
 					//alert(ajaxOptions); 
 					//alert(thrownError); 
+					// Redirect so reload to logout
+					if (xhr.status == 200) {
+						location.reload();
+					}
 				}
 			});
 		};

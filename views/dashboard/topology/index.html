@@ -72,7 +72,11 @@
 				error:function(xhr, ajaxOptions, thrownError){ 
 					//alert(xhr.status); 
 					//alert(ajaxOptions); 
-					//alert(thrownError); 
+					//alert(thrownError);
+					// Redirect so reload to logout
+					if (xhr.status == 200) {
+						location.reload();
+					}
 				}
 			});
 		};
