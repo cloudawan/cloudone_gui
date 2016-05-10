@@ -1,6 +1,16 @@
 body {
-  padding-top: 50px;
+  /*padding-top: 50px;*/
 }
+
+.navbar-default {
+  font-size: 12px;
+}
+
+.navbar-text {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 .starter-template {
   padding: 40px 15px;
   text-align: center;

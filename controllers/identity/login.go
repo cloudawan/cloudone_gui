@@ -115,6 +115,7 @@ func (c *LoginController) Post() {
 	// Set session
 	// User is used by this component to authorize
 	c.SetSession("user", user)
+	c.SetSession("username", user.Name)
 	// Token is used to submit to other componentes to authorize
 	headerMap := make(map[string]string)
 	headerMap["token"] = tokenData.Token

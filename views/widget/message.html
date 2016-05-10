@@ -1,7 +1,5 @@
-	<div class="container">
 	<!-- Display message -->
 	<div {{ .messageDisplay }} id="messageDisplay">
-		<p></p>
 		{{range $key, $guiMessageSuccess := .guiMessageSuccessSlice}}
 			<div class="alert alert-success fade in">
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -26,5 +24,4 @@
 				<strong>Danger!</strong> {{ $guiMessageDanger }}
 			</div>
 		{{end}}
-	</div>
 	</div>

@@ -35,6 +35,7 @@ func (c *LogoutController) Get() {
 	}
 
 	c.DelSession("user")
+	c.DelSession("username")
 	c.DelSession("tokenHeaderMap")
 	c.DelSession("layoutMenu")
 
