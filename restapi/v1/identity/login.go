@@ -17,15 +17,20 @@ package identity
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
 type LoginController struct {
 	beego.Controller
 }
 
-type LoginRequestInput struct {
+type UserData struct {
 	Username string
 	Password string
+}
+
+type TokenData struct {
+	Token string
 }
 
 func (c *LoginController) Get() {
@@ -37,32 +42,44 @@ func (c *LoginController) Get() {
 }
 
 func (c *LoginController) Post() {
-	loginRequestInput := LoginRequestInput{}
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &loginRequestInput)
+	userData := UserData{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &userData)
 	if err != nil {
 		// Error
 		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
+		errorJsonMap["ErrorMessage"] = err.Error()
 		c.Data["json"] = errorJsonMap
 		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
 
-	tokenString, err := createToken(loginRequestInput.Username, loginRequestInput.Password)
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	// User
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/authorizations/tokens/"
+
+	tokenData := TokenData{}
+	errorInterface, err := restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
+	errorJsonMap, _ := errorInterface.(map[string]interface{})
 
 	if err != nil {
 		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
 		c.ServeJSON()
 		c.Abort("401")
 		return
 	}
+
+	headerMap := make(map[string]string)
+	headerMap["token"] = tokenData.Token
+	c.SetSession("tokenHeaderMap", headerMap)
 
 	jsonMap := make(map[string]interface{})
-	jsonMap["token"] = tokenString
+	jsonMap["Token"] = tokenData.Token
 	c.Data["json"] = jsonMap
 
 	c.ServeJSON()
