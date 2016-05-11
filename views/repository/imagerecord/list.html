@@ -25,6 +25,7 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Version</th>
+					<th>Failure</th>
 					<th>Path</th>
 					<th>VersionInfo</th>
 					<th>Environment</th>
@@ -39,6 +40,7 @@
 						<td>{{$imageRecordKey}}</td>
 						<td>{{$imageRecord.ImageInformation}}</td>
 						<td>{{$imageRecord.Version}}</td>
+						<td>{{$imageRecord.Failure}}</td>
 						<td>{{$imageRecord.Path}}</td>
 						<td>
 							{{range $versionKey, $versionValue := $imageRecord.VersionInfo}}

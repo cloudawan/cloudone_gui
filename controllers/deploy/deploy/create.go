@@ -64,6 +64,7 @@ type ImageRecord struct {
 	Environment      map[string]string
 	Description      string
 	CreatedTime      string
+	Failure          bool
 }
 
 type ByImageRecord []ImageRecord
@@ -157,10 +158,17 @@ func (c *CreateController) Get() {
 
 			c.Data["regionSlice"] = filteredRegionSlice
 
-			sort.Sort(ByImageRecord(imageRecordSlice))
+			filteredImageRecordSlice := make([]ImageRecord, 0)
+			for _, imageRecord := range imageRecordSlice {
+				if imageRecord.Failure == false {
+					filteredImageRecordSlice = append(filteredImageRecordSlice, imageRecord)
+				}
+			}
+
+			sort.Sort(ByImageRecord(filteredImageRecordSlice))
 
 			c.Data["imageInformationName"] = name
-			c.Data["imageRecordSlice"] = imageRecordSlice
+			c.Data["imageRecordSlice"] = filteredImageRecordSlice
 		}
 	}
 

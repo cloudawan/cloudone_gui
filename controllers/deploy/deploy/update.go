@@ -131,7 +131,7 @@ func (c *UpdateController) Get() {
 	} else {
 		filteredImageRecordSlice := make([]ImageRecord, 0)
 		for _, imageRecord := range imageRecordSlice {
-			if imageRecord.Version != oldVersion {
+			if imageRecord.Version != oldVersion && imageRecord.Failure == false {
 				for key, _ := range imageRecord.Environment {
 					// clean all environment field
 					imageRecord.Environment[key] = ""

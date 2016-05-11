@@ -35,6 +35,7 @@ type ImageRecord struct {
 	Environment                             map[string]string
 	Description                             string
 	CreatedTime                             string
+	Failure                                 bool
 	HiddenTagGuiRepositoryImageRecordLog    string
 	HiddenTagGuiRepositoryImageRecordDelete string
 }
