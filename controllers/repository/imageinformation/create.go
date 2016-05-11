@@ -116,9 +116,11 @@ func (c *CreateController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
-
-		errorMessage, ok := resultJsonMap["Error"].(string)
+		errorWord, ok := resultJsonMap["Error"].(string)
+		if ok {
+			guimessage.AddDanger(errorWord)
+		}
+		errorMessage, ok := resultJsonMap["ErrorMessage"].(string)
 		if ok {
 			guimessage.AddDanger(errorMessage)
 		}
