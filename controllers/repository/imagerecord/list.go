@@ -21,6 +21,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
+	"strings"
 )
 
 type ListController struct {
@@ -72,32 +73,38 @@ func (c *ListController) Get() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err := restclient.RequestGetWithStructure(url, &imageRecordSlice, tokenHeaderMap)
+	returnedJsonMap, err := restclient.RequestGetWithStructure(url, &imageRecordSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
 	}
 
 	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-	} else {
-		for i := 0; i < len(imageRecordSlice); i++ {
-			if hasGuiRepositoryImageRecordLog {
-				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div class='btn-group'>"
-			} else {
-				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div hidden>"
-			}
-			if hasGuiRepositoryImageRecordDelete {
-				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordDelete = "<div class='btn-group'>"
-			} else {
-				imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordDelete = "<div hidden>"
-			}
-		}
+		errorJsonMap, _ := returnedJsonMap.(map[string]interface{})
+		errorMessage, _ := errorJsonMap["ErrorMessage"].(string)
+		if strings.HasPrefix(errorMessage, "100: Key not found") {
 
-		sort.Sort(ByImageRecord(imageRecordSlice))
-		c.Data["imageRecordSlice"] = imageRecordSlice
+		} else {
+			// Error
+			guimessage.AddDanger(err.Error())
+		}
 	}
+
+	for i := 0; i < len(imageRecordSlice); i++ {
+		if hasGuiRepositoryImageRecordLog {
+			imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div class='btn-group'>"
+		} else {
+			imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div hidden>"
+		}
+		if hasGuiRepositoryImageRecordDelete {
+			imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordDelete = "<div class='btn-group'>"
+		} else {
+			imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordDelete = "<div hidden>"
+		}
+	}
+
+	sort.Sort(ByImageRecord(imageRecordSlice))
+	c.Data["imageRecordSlice"] = imageRecordSlice
 
 	guimessage.OutputMessage(c.Data)
 }

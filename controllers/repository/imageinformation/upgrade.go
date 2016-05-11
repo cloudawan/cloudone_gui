@@ -18,7 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
-	"github.com/cloudawan/cloudone_utility/random"
+	//"github.com/cloudawan/cloudone_utility/random"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -70,28 +70,39 @@ func (c *UpgradeController) Post() {
 	}
 
 	if err != nil {
-		// Error
-		errorWord, ok := resultJsonMap["Error"].(string)
-		if ok {
-			guimessage.AddDanger(errorWord)
-		}
-		errorMessage, ok := resultJsonMap["ErrorMessage"].(string)
-		if ok {
-			guimessage.AddDanger(errorMessage)
-		}
+		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess(imageInformationName + " upgrade success")
+		guimessage.AddSuccess(imageInformationName + " is launched")
 	}
 
-	// Pass build result
-	logKey := "buildResultOutputMessage" + random.UUID()
-
-	outputMessage, ok := resultJsonMap["OutputMessage"].(string)
-	if ok {
-		c.SetSession(logKey, outputMessage)
-	}
-
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 
 	guimessage.RedirectMessage(c)
+	/*
+		if err != nil {
+			// Error
+			errorWord, ok := resultJsonMap["Error"].(string)
+			if ok {
+				guimessage.AddDanger(errorWord)
+			}
+			errorMessage, ok := resultJsonMap["ErrorMessage"].(string)
+			if ok {
+				guimessage.AddDanger(errorMessage)
+			}
+		} else {
+			guimessage.AddSuccess(imageInformationName + " upgrade success")
+		}
+
+		// Pass build result
+		logKey := "buildResultOutputMessage" + random.UUID()
+
+		outputMessage, ok := resultJsonMap["OutputMessage"].(string)
+		if ok {
+			c.SetSession(logKey, outputMessage)
+		}
+
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
+
+		guimessage.RedirectMessage(c)
+	*/
 }

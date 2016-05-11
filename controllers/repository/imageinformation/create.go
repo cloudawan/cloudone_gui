@@ -115,28 +115,40 @@ func (c *CreateController) Post() {
 	}
 
 	if err != nil {
-		// Error
-		errorWord, ok := resultJsonMap["Error"].(string)
-		if ok {
-			guimessage.AddDanger(errorWord)
-		}
-		errorMessage, ok := resultJsonMap["ErrorMessage"].(string)
-		if ok {
-			guimessage.AddDanger(errorMessage)
-		}
+		guimessage.AddDanger(err.Error())
 	} else {
-		guimessage.AddSuccess("Create  " + name + " success")
+		guimessage.AddSuccess(name + " is launched")
 	}
 
-	// Pass build result
-	logKey := "buildResultOutputMessage" + random.UUID()
-
-	outputMessage, ok := resultJsonMap["OutputMessage"].(string)
-	if ok {
-		c.SetSession(logKey, outputMessage)
-	}
-
-	c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
+	c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 
 	guimessage.RedirectMessage(c)
+
+	/*
+		if err != nil {
+			// Error
+			errorWord, ok := resultJsonMap["Error"].(string)
+			if ok {
+				guimessage.AddDanger(errorWord)
+			}
+			errorMessage, ok := resultJsonMap["ErrorMessage"].(string)
+			if ok {
+				guimessage.AddDanger(errorMessage)
+			}
+		} else {
+			guimessage.AddSuccess("Create  " + name + " success")
+		}
+
+		// Pass build result
+		logKey := "buildResultOutputMessage" + random.UUID()
+
+		outputMessage, ok := resultJsonMap["OutputMessage"].(string)
+		if ok {
+			c.SetSession(logKey, outputMessage)
+		}
+
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?logKey="+logKey)
+
+		guimessage.RedirectMessage(c)
+	*/
 }
