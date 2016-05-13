@@ -35,6 +35,7 @@ type ImageInformation struct {
 	BuildParameter                                map[string]string
 	HiddenTagGuiRepositoryImageRecordList         string
 	HiddenTagGuiRepositoryImageInformationUpgrade string
+	HiddenTagGuiRepositoryImageInformationLog     string
 	HiddenTagGuiDeployDeployCreate                string
 	HiddenTagGuiDeployDeployBlueGreenSelect       string
 	HiddenTagGuiRepositoryImageInformationDelete  string
@@ -58,6 +59,7 @@ func (c *ListController) Get() {
 	// Tag won't work in loop so need to be placed in data
 	hasGuiRepositoryImageRecordList := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/list")
 	hasGuiRepositoryImageInformationUpgrade := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imageinformation/upgrade")
+	hasGuiRepositoryImageInformationLog := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imageinformation/log")
 	hasGuiDeployDeployCreate := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploy/create")
 	hasGuiDeployDeployBlueGreenSelect := user.HasPermission(identity.GetConponentName(), "GET", "/gui/deploy/deploybluegreen/select")
 	hasGuiRepositoryImageInformationDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imageinformation/delete")
@@ -93,6 +95,11 @@ func (c *ListController) Get() {
 				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationUpgrade = "<div class='btn-group'>"
 			} else {
 				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationUpgrade = "<div hidden>"
+			}
+			if hasGuiRepositoryImageInformationLog {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationLog = "<div class='btn-group'>"
+			} else {
+				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationLog = "<div hidden>"
 			}
 			if hasGuiDeployDeployCreate {
 				imageInformationSlice[i].HiddenTagGuiDeployDeployCreate = "<div class='btn-group'>"

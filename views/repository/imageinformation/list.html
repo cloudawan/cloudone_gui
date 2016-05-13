@@ -53,6 +53,9 @@
 								{{ str2html $imageInformation.HiddenTagGuiRepositoryImageInformationUpgrade }}
 									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/upgrade?name={{$imageInformation.Name}}">Upgrade</a>
 								</div>
+								{{ str2html $imageInformation.HiddenTagGuiRepositoryImageInformationLog }}
+									<a class="btn btn-xs btn-primary" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/log?imageInformation={{$imageInformation.Name}}">Ongoing Build</a>
+								</div>
 								{{ str2html $imageInformation.HiddenTagGuiDeployDeployCreate }}
 									<a class="btn btn-xs btn-success" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/deploy/deploy/create?name={{$imageInformation.Name}}">Deploy</a>
 								</div>

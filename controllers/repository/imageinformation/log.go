@@ -17,10 +17,21 @@ package imageinformation
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
+	"github.com/hpcloud/tail"
+	"golang.org/x/net/websocket"
+	"os"
 )
 
 type LogController struct {
 	beego.Controller
+}
+
+const (
+	processOutMessageFilePathAndNamePrefix = "/tmp/processingBuildLog"
+)
+
+func GetProcessingOutMessageFilePathAndName(imageInformationName string) string {
+	return processOutMessageFilePathAndNamePrefix + imageInformationName
 }
 
 func (c *LogController) Get() {
@@ -30,19 +41,64 @@ func (c *LogController) Get() {
 	// Authorization for web page display
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
-	logKey := c.GetString("logKey")
+	cloudoneGUIHost := c.Ctx.Input.Host()
+	cloudoneGUIPort := c.Ctx.Input.Port()
 
-	if logKey == "" {
-		guimessage.AddDanger("No log key is passed")
-		guimessage.OutputMessage(c.Data)
+	imageInformation := c.GetString("imageInformation")
+
+	if _, err := os.Stat(GetProcessingOutMessageFilePathAndName(imageInformation)); os.IsNotExist(err) {
+		// does not exist
+		guimessage.AddInfo("No ongoing building process.")
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
+		guimessage.RedirectMessage(c)
 		return
 	}
 
-	outputMessage := c.GetSession(logKey)
-
-	c.DelSession(logKey)
-
-	c.Data["log"] = outputMessage
+	c.Data["cloudoneGUIHost"] = cloudoneGUIHost
+	c.Data["cloudoneGUIPort"] = cloudoneGUIPort
+	c.Data["imageInformation"] = imageInformation
 
 	guimessage.OutputMessage(c.Data)
+}
+
+type WebSocketController struct {
+	beego.Controller
+}
+
+func (c *WebSocketController) Get() {
+	server := websocket.Server{Handler: ProxyServer}
+	server.ServeHTTP(c.Ctx.ResponseWriter, c.Ctx.Request)
+}
+
+func getParameter(parameterMap map[string][]string, name string) string {
+	slice := parameterMap[name]
+	if len(slice) == 1 {
+		return slice[0]
+	} else {
+		return ""
+	}
+}
+
+func ProxyServer(ws *websocket.Conn) {
+	parameterMap := ws.Request().URL.Query()
+	imageInformation := getParameter(parameterMap, "imageInformation")
+
+	filename := GetProcessingOutMessageFilePathAndName(imageInformation)
+
+	// TODO The data should be from cloudon. Since they share the same file system now, read from here now.
+	t, err := tail.TailFile(filename, tail.Config{Follow: true, Poll: true})
+	if err != nil {
+		ws.Write([]byte(err.Error()))
+		ws.Close()
+		return
+	}
+
+	for line := range t.Lines {
+		ws.Write([]byte(line.Text))
+		ws.Write([]byte("\n"))
+	}
+
+	t.Cleanup()
+
+	ws.Close()
 }

@@ -11,7 +11,7 @@
 		<div class="col-md-12">	
 			<form class="">		
 				<div class="form-group">
-					<textarea class="col-md-12" readonly rows="30" >{{ .log }}</textarea>
+					<textarea id="outputTextarea" class="col-md-12" readonly rows="30" >{{ .log }}</textarea>
 				</div>
 
 				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/repository/imageinformation/list">Cancel</a>
@@ -21,4 +21,43 @@
 {{ end }}
 
 {{ define "js" }}
+	<script type="text/javascript">
+	
+	var moduleRepositoryImageInformationLog = (function(){
+		var parameter = {};
+		
+		var query = function(parameter) {
+			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/repository/imageinformation/websocket?imageInformation=" + {{ .imageInformation }};
+
+			parameter.websocket = new WebSocket(wsUri);
+			parameter.websocket.onopen = function(evt) { onOpen(evt) };
+			parameter.websocket.onclose = function(evt) { onClose(evt) };
+			parameter.websocket.onmessage = function(evt) { onMessage(evt) };
+			parameter.websocket.onerror = function(evt) { onError(evt) };
+			
+			function onOpen(evt)
+			{
+				$("#outputTextarea").val($("#outputTextarea").val() + "=====open=====\n\n");
+			}
+		
+			function onClose(evt)
+			{
+				$("#outputTextarea").val($("#outputTextarea").val() + "\n\n=====close=====\n");
+			}
+			
+			function onMessage(evt)
+			{
+				$("#outputTextarea").val($("#outputTextarea").val() + evt.data);
+			}
+		
+			function onError(evt)
+			{
+				//alert(evt);
+			}
+		};
+		
+		query(parameter);
+	})();
+
+	</script>
 {{ end}}
