@@ -36,6 +36,7 @@ type GlusterfsVolume struct {
 	Bricks                                      []string
 	Size                                        int
 	ClusterName                                 string
+	HiddenTagGuiFileSystemGlusterfsVolumeReset  string
 	HiddenTagGuiFileSystemGlusterfsVolumeDelete string
 }
 
@@ -50,6 +51,7 @@ func (c *ListController) Get() {
 	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiFileSystemGlusterfsClusterList", user, "GET", "/gui/filesystem/glusterfs/cluster/list")
 	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuifFileSystemGlusterfsVolumeCreate", user, "GET", "/gui/filesystem/glusterfs/volume/create")
 	// Tag won't work in loop so need to be placed in data
+	hasHiddenTagGuiFileSystemGlusterfsVolumeReset := user.HasPermission(identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/reset")
 	hasHiddenTagGuiFileSystemGlusterfsVolumeDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -78,6 +80,11 @@ func (c *ListController) Get() {
 		for i := 0; i < len(glusterfsVolumeSlice); i++ {
 			glusterfsVolumeSlice[i].ClusterName = clusterName
 
+			if hasHiddenTagGuiFileSystemGlusterfsVolumeReset {
+				glusterfsVolumeSlice[i].HiddenTagGuiFileSystemGlusterfsVolumeReset = "<div class='btn-group'>"
+			} else {
+				glusterfsVolumeSlice[i].HiddenTagGuiFileSystemGlusterfsVolumeReset = "<div hidden>"
+			}
 			if hasHiddenTagGuiFileSystemGlusterfsVolumeDelete {
 				glusterfsVolumeSlice[i].HiddenTagGuiFileSystemGlusterfsVolumeDelete = "<div class='btn-group'>"
 			} else {

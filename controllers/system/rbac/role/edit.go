@@ -169,6 +169,7 @@ func (c *EditController) Get() {
 		setHiddenTag("/gui/filesystem/glusterfs/volume", "hiddenTagFilesystemGlusterfsVolume", c.Data, pathMap)
 		setCheckedTag("/gui/filesystem/glusterfs/volume/list", "checkedTagFilesystemGlusterfsVolumeList", c.Data, pathMap)
 		setCheckedTag("/gui/filesystem/glusterfs/volume/create", "checkedTagFilesystemGlusterfsVolumeCreate", c.Data, pathMap)
+		setCheckedTag("/gui/filesystem/glusterfs/volume/reset", "checkedTagFilesystemGlusterfsVolumeReset", c.Data, pathMap)
 		setCheckedTag("/gui/filesystem/glusterfs/volume/delete", "checkedTagFilesystemGlusterfsVolumeDelete", c.Data, pathMap)
 
 		// Monitor
@@ -585,6 +586,10 @@ func (c *EditController) Post() {
 				}
 				if c.GetString("filesystemGlusterfsVolumeCreate") == "on" {
 					permission := &rbac.Permission{"filesystemGlusterfsVolumeCreate", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/create"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("filesystemGlusterfsVolumeReset") == "on" {
+					permission := &rbac.Permission{"filesystemGlusterfsVolumeReset", identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/reset"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("filesystemGlusterfsVolumeDelete") == "on" {

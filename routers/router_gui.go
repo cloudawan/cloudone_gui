@@ -115,6 +115,7 @@ func init() {
 	beego.Router("/gui/filesystem/glusterfs/cluster/delete", &cluster.DeleteController{})
 	beego.Router("/gui/filesystem/glusterfs/volume/list", &volume.ListController{})
 	beego.Router("/gui/filesystem/glusterfs/volume/create", &volume.CreateController{})
+	beego.Router("/gui/filesystem/glusterfs/volume/reset", &volume.ResetController{})
 	beego.Router("/gui/filesystem/glusterfs/volume/delete", &volume.DeleteController{})
 	beego.Router("/gui/monitor/node", &node.IndexController{})
 	beego.Router("/gui/monitor/node/data", &node.DataController{})

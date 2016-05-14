@@ -23,12 +23,17 @@ import (
 	"strings"
 )
 
-type GlusterfsVolumeInput struct {
-	Name      string
-	Stripe    int
-	Replica   int
-	Transport string
-	HostSlice []string
+type GlusterfsVolumeCreateParameter struct {
+	ClusterName  string
+	VolumeName   string
+	Stripe       int
+	Replica      int
+	Arbiter      int
+	Disperse     int
+	DisperseData int
+	Redundancy   int
+	Transport    string
+	HostSlice    []string
 }
 
 type CreateController struct {
@@ -96,6 +101,10 @@ func (c *CreateController) Post() {
 	name := c.GetString("name")
 	stripe, _ := c.GetInt("stripe")
 	replica, _ := c.GetInt("replica")
+	arbiter, _ := c.GetInt("arbiter")
+	disperse, _ := c.GetInt("disperse")
+	disperseData, _ := c.GetInt("disperseData")
+	redundancy, _ := c.GetInt("redundancy")
 	transport := c.GetString("transport")
 
 	allHostSlice := strings.Split(hostList, ",")
@@ -111,17 +120,22 @@ func (c *CreateController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/glusterfs/clusters/" + clusterName + "/volumes/"
 
-	glusterfsVolumeInput := GlusterfsVolumeInput{
+	glusterfsVolumeCreateParameter := GlusterfsVolumeCreateParameter{
+		clusterName,
 		name,
 		stripe,
 		replica,
+		arbiter,
+		disperse,
+		disperseData,
+		redundancy,
 		transport,
 		hostSlice,
 	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeInput, nil, tokenHeaderMap)
+	_, err := restclient.RequestPostWithStructure(url, glusterfsVolumeCreateParameter, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
