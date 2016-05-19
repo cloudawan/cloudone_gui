@@ -291,6 +291,7 @@ func (c *DataController) Get() {
 		// Third-party view
 		thirdpartyNamespaceJsonMap := make(map[string]interface{})
 		thirdpartyNamespaceJsonMap["name"] = namespace
+		thirdpartyNamespaceJsonMap["color"] = dashboard.TextColorNamespace
 		thirdpartyNamespaceJsonMap["children"] = make([]interface{}, 0)
 
 		url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
