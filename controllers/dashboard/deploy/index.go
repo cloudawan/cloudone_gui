@@ -22,6 +22,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
+	"strings"
 )
 
 type DeployInformation struct {
@@ -37,6 +38,7 @@ type DeployClusterApplication struct {
 	Name                           string
 	Namespace                      string
 	Size                           int
+	EnvironmentSlice               []interface{}
 	ServiceName                    string
 	ReplicationControllerNameSlice []string
 }
@@ -175,10 +177,46 @@ func (c *DataController) Get() {
 			namespaceJsonMap["name"] = deployClusterApplication.Namespace + " (" + strconv.Itoa(deployClusterApplication.Size) + ")"
 			namespaceJsonMap["children"] = make([]interface{}, 0)
 
+			// Retrieve environment
+			glusterfsEndpoint := ""
+			glusterfsPathList := ""
+			for _, environment := range deployClusterApplication.EnvironmentSlice {
+				environmentJsonMap, _ := environment.(map[string]interface{})
+				name, _ := environmentJsonMap["name"].(string)
+				value, _ := environmentJsonMap["value"].(string)
+
+				if name == "GLUSTERFS_ENDPOINTS" {
+					glusterfsEndpoint = value
+				} else if name == "GLUSTERFS_PATH_LIST" {
+					glusterfsPathList = value
+				}
+			}
+
+			// Glusterfs
+			glusterfsPathSlice := make([]string, 0)
+			if len(glusterfsEndpoint) > 0 && len(glusterfsPathList) > 0 {
+				glusterfsPathSplits := strings.Split(glusterfsPathList, ",")
+				for _, glusterfsPathSplit := range glusterfsPathSplits {
+					glusterfsPathSlice = append(glusterfsPathSlice, strings.TrimSpace(glusterfsPathSplit))
+				}
+			}
+
 			for _, replicationControllerName := range deployClusterApplication.ReplicationControllerNameSlice {
 				replicationControllerNameJsonMap := make(map[string]interface{})
 				replicationControllerNameJsonMap["name"] = replicationControllerName
 				replicationControllerNameJsonMap["children"] = make([]interface{}, 0)
+
+				// Glusterfs
+				if len(glusterfsPathSlice) > 0 {
+					nameSplits := strings.Split(replicationControllerName, "-")
+					index, err := strconv.Atoi(nameSplits[len(nameSplits)-1])
+					if err == nil && index < len(glusterfsPathSlice) {
+						glusterfsJsonMap := make(map[string]interface{})
+						glusterfsJsonMap["name"] = glusterfsEndpoint + " / " + glusterfsPathSlice[index]
+						glusterfsJsonMap["children"] = make([]interface{}, 0)
+						replicationControllerNameJsonMap["children"] = append(replicationControllerNameJsonMap["children"].([]interface{}), glusterfsJsonMap)
+					}
+				}
 
 				namespaceJsonMap["children"] = append(namespaceJsonMap["children"].([]interface{}), replicationControllerNameJsonMap)
 
