@@ -154,6 +154,7 @@ func (c *DataController) Get() {
 		} else {
 			blueGreenJsonMap := make(map[string]interface{})
 			blueGreenJsonMap["name"] = deployBlueGreen.ImageInformation
+			blueGreenJsonMap["color"] = dashboard.TextColorBlueGreen
 			blueGreenJsonMap["children"] = make([]interface{}, 0)
 			for _, namespace := range namespaceSlice {
 				deployInformation := deployInformationMap[deployBlueGreen.ImageInformation+"-"+namespace]
@@ -164,13 +165,16 @@ func (c *DataController) Get() {
 				} else {
 					namespaceJsonMap := make(map[string]interface{})
 					namespaceJsonMap["name"] = namespace
+					namespaceJsonMap["color"] = dashboard.TextColorNamespace
 					namespaceJsonMap["children"] = make([]interface{}, 0)
 					deployInformationJsonMap := make(map[string]interface{})
 					deployInformationJsonMap["name"] = deployInformation.CurrentVersion + " " + deployInformation.CurrentVersionDescription
+					deployInformationJsonMap["color"] = dashboard.TextColorDeployInformation
 					if namespace == deployBlueGreen.Namespace {
 						deployInformationJsonMap["children"] = make([]interface{}, 0)
 						nodePortJsonMap := make(map[string]interface{})
 						nodePortJsonMap["name"] = "bg_" + deployBlueGreen.ImageInformation + " " + strconv.Itoa(deployBlueGreen.NodePort)
+						nodePortJsonMap["color"] = dashboard.TextColorPort
 						deployInformationJsonMap["children"] = append(deployInformationJsonMap["children"].([]interface{}), nodePortJsonMap)
 					}
 					namespaceJsonMap["children"] = append(namespaceJsonMap["children"].([]interface{}), deployInformationJsonMap)

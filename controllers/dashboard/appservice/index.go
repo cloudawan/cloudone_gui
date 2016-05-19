@@ -198,6 +198,7 @@ func (c *DataController) Get() {
 		// Application view
 		applicationNamespaceJsonMap := make(map[string]interface{})
 		applicationNamespaceJsonMap["name"] = namespace
+		applicationNamespaceJsonMap["color"] = dashboard.TextColorNamespace
 		applicationNamespaceJsonMap["children"] = make([]interface{}, 0)
 
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -253,6 +254,7 @@ func (c *DataController) Get() {
 
 						serviceJsonMap := make(map[string]interface{})
 						serviceJsonMap["name"] = serviceName
+						serviceJsonMap["color"] = dashboard.TextColorService
 						serviceJsonMap["children"] = make([]interface{}, 0)
 
 						applicationNameJsonMap := make(map[string]interface{})
@@ -264,6 +266,7 @@ func (c *DataController) Get() {
 								instanceAmount = replicationControllerAndRelatedPod.ReplicaAmount
 								replicationControllerJsonMap := make(map[string]interface{})
 								replicationControllerJsonMap["name"] = replicationControllerAndRelatedPod.Name + " (" + strconv.Itoa(instanceAmount) + ")"
+								replicationControllerJsonMap["color"] = dashboard.TextColorReplicationController
 								replicationControllerJsonMap["children"] = make([]interface{}, 0)
 								applicationNameJsonMap["children"] = append(applicationNameJsonMap["children"].([]interface{}), replicationControllerJsonMap)
 								applicationViewLeafAmount++
@@ -271,6 +274,7 @@ func (c *DataController) Get() {
 						}
 
 						applicationNameJsonMap["name"] = deployInformation.ImageInformationName + " (" + strconv.Itoa(instanceAmount) + ")"
+						applicationNameJsonMap["color"] = dashboard.TextColorDeployInformation
 						serviceJsonMap["children"] = append(serviceJsonMap["children"].([]interface{}), applicationNameJsonMap)
 						applicationNamespaceJsonMap["children"] = append(applicationNamespaceJsonMap["children"].([]interface{}), serviceJsonMap)
 					}
@@ -322,16 +326,19 @@ func (c *DataController) Get() {
 
 				serviceJsonMap := make(map[string]interface{})
 				serviceJsonMap["name"] = serviceName
+				serviceJsonMap["color"] = dashboard.TextColorService
 				serviceJsonMap["children"] = make([]interface{}, 0)
 
 				thirdpartyNameJsonMap := make(map[string]interface{})
 				thirdpartyNameJsonMap["name"] = deployClusterApplication.Name + " (" + strconv.Itoa(deployClusterApplication.Size) + ")"
+				thirdpartyNameJsonMap["color"] = dashboard.TextColorDeployClusterApplication
 				thirdpartyNameJsonMap["children"] = make([]interface{}, 0)
 
 				replicationControllerNameAmount := len(deployClusterApplication.ReplicationControllerNameSlice)
 				for _, replicationControllerName := range deployClusterApplication.ReplicationControllerNameSlice {
 					replicationControllerJsonMap := make(map[string]interface{})
 					replicationControllerJsonMap["name"] = replicationControllerName + " (" + strconv.Itoa(deployClusterApplication.Size/replicationControllerNameAmount) + ")"
+					replicationControllerJsonMap["color"] = dashboard.TextColorReplicationController
 					replicationControllerJsonMap["children"] = make([]interface{}, 0)
 					thirdpartyNameJsonMap["children"] = append(thirdpartyNameJsonMap["children"].([]interface{}), replicationControllerJsonMap)
 					thirdpartyViewLeafAmount++

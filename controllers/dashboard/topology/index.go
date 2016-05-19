@@ -161,22 +161,27 @@ func (c *DataController) Get() {
 			// Logical view
 			logicalTopologyNamespaceJsonMap := make(map[string]interface{})
 			logicalTopologyNamespaceJsonMap["name"] = namespace
+			logicalTopologyNamespaceJsonMap["color"] = dashboard.TextColorNamespace
 			logicalTopologyNamespaceJsonMap["children"] = make([]interface{}, 0)
 			for _, replicationControllerAndRelatedPod := range replicationControllerAndRelatedPodSlice {
 				replicationControllerJsonMap := make(map[string]interface{})
 				replicationControllerJsonMap["name"] = replicationControllerAndRelatedPod.Name
+				replicationControllerJsonMap["color"] = dashboard.TextColorReplicationController
 				replicationControllerJsonMap["children"] = make([]interface{}, 0)
 				for _, pod := range replicationControllerAndRelatedPod.PodSlice {
 					podJsonMap := make(map[string]interface{})
 					podJsonMap["name"] = pod.Name
+					podJsonMap["color"] = dashboard.TextColorPod
 					podJsonMap["children"] = make([]interface{}, 0)
 					for _, container := range pod.ContainerSlice {
 						containerJsonMap := make(map[string]interface{})
 						containerJsonMap["name"] = container.Name
+						containerJsonMap["color"] = dashboard.TextColorContainer
 						containerJsonMap["children"] = make([]interface{}, 0)
 						for _, port := range container.PortSlice {
 							portJsonMap := make(map[string]interface{})
 							portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
+							portJsonMap["color"] = dashboard.TextColorPort
 							containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
 							leafAmount++
 						}
@@ -207,6 +212,7 @@ func (c *DataController) Get() {
 
 				if exist == false {
 					nodeJsonMap["name"] = node
+					nodeJsonMap["color"] = dashboard.TextColorNode
 					nodeJsonMap["children"] = make([]interface{}, 0)
 				}
 
@@ -215,14 +221,17 @@ func (c *DataController) Get() {
 						if pod.HostIP == node {
 							podJsonMap := make(map[string]interface{})
 							podJsonMap["name"] = pod.Name
+							podJsonMap["color"] = dashboard.TextColorPod
 							podJsonMap["children"] = make([]interface{}, 0)
 							for _, container := range pod.ContainerSlice {
 								containerJsonMap := make(map[string]interface{})
 								containerJsonMap["name"] = container.Name
+								containerJsonMap["color"] = dashboard.TextColorContainer
 								containerJsonMap["children"] = make([]interface{}, 0)
 								for _, port := range container.PortSlice {
 									portJsonMap := make(map[string]interface{})
 									portJsonMap["name"] = port.Name + " " + port.Protocol + " " + strconv.Itoa(port.ContainerPort)
+									portJsonMap["color"] = dashboard.TextColorPort
 									containerJsonMap["children"] = append(containerJsonMap["children"].([]interface{}), portJsonMap)
 								}
 								podJsonMap["children"] = append(podJsonMap["children"].([]interface{}), containerJsonMap)

@@ -116,15 +116,18 @@ func (c *DataController) Get() {
 	for key, deployInformationSlice := range deployInformationMap {
 		deployInformationJsonMap := make(map[string]interface{})
 		deployInformationJsonMap["name"] = key
+		deployInformationJsonMap["color"] = dashboard.TextColorDeployInformation
 		deployInformationJsonMap["children"] = make([]interface{}, 0)
 
 		for _, deployInformation := range deployInformationSlice {
 			namespaceJsonMap := make(map[string]interface{})
 			namespaceJsonMap["name"] = deployInformation.Namespace + " (" + strconv.Itoa(deployInformation.ReplicaAmount) + ")"
+			namespaceJsonMap["color"] = dashboard.TextColorNamespace
 			namespaceJsonMap["children"] = make([]interface{}, 0)
 
 			versionJsonMap := make(map[string]interface{})
 			versionJsonMap["name"] = deployInformation.CurrentVersion + " " + deployInformation.CurrentVersionDescription
+			versionJsonMap["color"] = dashboard.TextColorVersion
 			versionJsonMap["children"] = make([]interface{}, 0)
 
 			namespaceJsonMap["children"] = append(namespaceJsonMap["children"].([]interface{}), versionJsonMap)
@@ -170,11 +173,13 @@ func (c *DataController) Get() {
 	for deployClusterApplicationName, deployClusterApplicationSlice := range deployClusterApplicationMap {
 		deployClusterApplicationJsonMap := make(map[string]interface{})
 		deployClusterApplicationJsonMap["name"] = deployClusterApplicationName
+		deployClusterApplicationJsonMap["color"] = dashboard.TextColorDeployClusterApplication
 		deployClusterApplicationJsonMap["children"] = make([]interface{}, 0)
 
 		for _, deployClusterApplication := range deployClusterApplicationSlice {
 			namespaceJsonMap := make(map[string]interface{})
 			namespaceJsonMap["name"] = deployClusterApplication.Namespace + " (" + strconv.Itoa(deployClusterApplication.Size) + ")"
+			namespaceJsonMap["color"] = dashboard.TextColorNamespace
 			namespaceJsonMap["children"] = make([]interface{}, 0)
 
 			// Retrieve environment
@@ -204,6 +209,7 @@ func (c *DataController) Get() {
 			for _, replicationControllerName := range deployClusterApplication.ReplicationControllerNameSlice {
 				replicationControllerNameJsonMap := make(map[string]interface{})
 				replicationControllerNameJsonMap["name"] = replicationControllerName
+				replicationControllerNameJsonMap["color"] = dashboard.TextColorReplicationController
 				replicationControllerNameJsonMap["children"] = make([]interface{}, 0)
 
 				// Glusterfs
@@ -213,6 +219,7 @@ func (c *DataController) Get() {
 					if err == nil && index < len(glusterfsPathSlice) {
 						glusterfsJsonMap := make(map[string]interface{})
 						glusterfsJsonMap["name"] = glusterfsEndpoint + " / " + glusterfsPathSlice[index]
+						glusterfsJsonMap["color"] = dashboard.TextColorGlusterfs
 						glusterfsJsonMap["children"] = make([]interface{}, 0)
 						replicationControllerNameJsonMap["children"] = append(replicationControllerNameJsonMap["children"].([]interface{}), glusterfsJsonMap)
 					}
