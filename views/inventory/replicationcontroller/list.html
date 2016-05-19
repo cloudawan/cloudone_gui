@@ -25,7 +25,9 @@
 					<th>#</th>
 					<th>ReplicationControllerName</th>
 					<th>Selector</th>
-					<th>Size (Active/All)</th>
+					<th>Size (Launched/All)</th>
+					<th></th>
+					<th></th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -40,6 +42,8 @@
 							{{end}}
 						</td>
 						<td>{{$replicationControllerAndRelatedPod.AliveReplicaAmount}}/{{$replicationControllerAndRelatedPod.ReplicaAmount}}</td>
+						<td></td>
+						<td></td>
 						<td>
 							<div class="btn-group ">
 								{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerSize }}
@@ -58,6 +62,8 @@
 							<th>Name</th>
 							<th>HostIP</th>
 							<th>PodIP</th>
+							<th>Phase</th>
+							<th>Age</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -68,6 +74,8 @@
 							<td>{{$pod.Name}}</td>
 							<td>{{$pod.HostIP}}</td>
 							<td>{{$pod.PodIP}}</td>
+							<td>{{$pod.Phase}}</td>
+							<td>{{$pod.Age}}</td>
 							<td>
 								<div class="btn-group ">
 									{{ str2html $replicationControllerAndRelatedPod.HiddenTagGuiInventoryReplicationControllerPodlog }}
@@ -85,6 +93,8 @@
 								<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</th>
 								<th>Name</th>
 								<th>Image</th>
+								<th>Restarts</th>
+								<th>Ready</th>
 								<th></th>
 								<th>Action</th>
 							</tr>
@@ -95,6 +105,8 @@
 								<td>{{$containerKey}}</td>
 								<td>{{$container.Name}}</td>
 								<td>{{$container.Image}}</td>
+								<td>{{$container.RestartCount}}</td>
+								<td>{{$container.Ready}}</td>
 								<td></td>
 								<td>
 									<div class="btn-group ">

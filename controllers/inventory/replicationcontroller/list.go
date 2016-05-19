@@ -49,14 +49,18 @@ type Pod struct {
 	Namespace      string
 	HostIP         string
 	PodIP          string
+	Phase          string
+	Age            string
 	ContainerSlice []PodContainer
 }
 
 type PodContainer struct {
-	Name        string
-	Image       string
-	ContainerID string
-	PortSlice   []PodContainerPort
+	Name         string
+	Image        string
+	ContainerID  string
+	RestartCount int
+	Ready        bool
+	PortSlice    []PodContainerPort
 }
 
 type PodContainerPort struct {
