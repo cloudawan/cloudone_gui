@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -181,6 +182,8 @@ func (c *DataController) Get() {
 		}
 	}
 	c.Data["json"].(map[string]interface{})["leafAmount"] = leafAmount
+
+	dashboard.RecursiveSortTheDataInGraphJsonMap(c.Data["json"].(map[string]interface{}))
 
 	c.ServeJSON()
 }

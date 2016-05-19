@@ -17,10 +17,10 @@ package appservice
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"sort"
 	"strconv"
 )
 
@@ -32,14 +32,6 @@ type DeployInformation struct {
 	Description               string
 	ReplicaAmount             int
 }
-type ByDeployInformation []DeployInformation
-
-func (b ByDeployInformation) Len() int           { return len(b) }
-func (b ByDeployInformation) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
-func (b ByDeployInformation) Less(i, j int) bool { return b.getIdentifier(i) < b.getIdentifier(j) }
-func (b ByDeployInformation) getIdentifier(i int) string {
-	return b[i].ImageInformationName + "_" + b[i].Namespace + "_" + b[i].CurrentVersion
-}
 
 type DeployClusterApplication struct {
 	Name                           string
@@ -47,17 +39,6 @@ type DeployClusterApplication struct {
 	Size                           int
 	ServiceName                    string
 	ReplicationControllerNameSlice []string
-}
-
-type ByDeployClusterApplication []DeployClusterApplication
-
-func (b ByDeployClusterApplication) Len() int      { return len(b) }
-func (b ByDeployClusterApplication) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
-func (b ByDeployClusterApplication) Less(i, j int) bool {
-	return b.getIdentifier(i) < b.getIdentifier(j)
-}
-func (b ByDeployClusterApplication) getIdentifier(i int) string {
-	return b[i].Name + "_" + b[i].Namespace
 }
 
 type IndexController struct {
@@ -121,8 +102,6 @@ func (c *DataController) Get() {
 		return
 	}
 
-	sort.Sort(ByDeployInformation(deployInformationSlice))
-
 	deployInformationMap := make(map[string][]DeployInformation)
 	for _, deployInformation := range deployInformationSlice {
 		if deployInformationMap[deployInformation.ImageInformationName] == nil {
@@ -177,8 +156,6 @@ func (c *DataController) Get() {
 		return
 	}
 
-	sort.Sort(ByDeployClusterApplication(deployClusterApplicationSlice))
-
 	deployClusterApplicationMap := make(map[string][]DeployClusterApplication)
 	for _, deployClusterApplication := range deployClusterApplicationSlice {
 		if deployClusterApplicationMap[deployClusterApplication.Name] == nil {
@@ -216,6 +193,8 @@ func (c *DataController) Get() {
 
 	c.Data["json"].(map[string]interface{})["applicationViewLeafAmount"] = applicationViewLeafAmount
 	c.Data["json"].(map[string]interface{})["thirdpartyViewLeafAmount"] = thirdpartyViewLeafAmount
+
+	dashboard.RecursiveSortTheDataInGraphJsonMap(c.Data["json"].(map[string]interface{}))
 
 	c.ServeJSON()
 }
