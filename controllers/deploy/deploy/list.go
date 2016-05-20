@@ -34,6 +34,7 @@ type DeployInformation struct {
 	CurrentVersionDescription      string
 	Description                    string
 	ReplicaAmount                  int
+	AutoUpdateForNewBuild          bool
 	HiddenTagGuiDeployDeployUpdate string
 	HiddenTagGuiDeployDeployResize string
 	HiddenTagGuiDeployDeployDelete string

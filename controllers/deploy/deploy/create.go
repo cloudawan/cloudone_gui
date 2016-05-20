@@ -30,14 +30,15 @@ type CreateController struct {
 }
 
 type DeployCreateInput struct {
-	ImageInformationName string
-	Version              string
-	Description          string
-	ReplicaAmount        int
-	PortSlice            []DeployContainerPort
-	EnvironmentSlice     []ReplicationControllerContainerEnvironment
-	ResourceMap          map[string]interface{}
-	ExtraJsonMap         map[string]interface{}
+	ImageInformationName  string
+	Version               string
+	Description           string
+	ReplicaAmount         int
+	PortSlice             []DeployContainerPort
+	EnvironmentSlice      []ReplicationControllerContainerEnvironment
+	ResourceMap           map[string]interface{}
+	ExtraJsonMap          map[string]interface{}
+	AutoUpdateForNewBuild bool
 }
 
 type DeployContainerPort struct {
@@ -197,6 +198,13 @@ func (c *CreateController) Post() {
 	description := c.GetString("description")
 	replicaAmount, _ := c.GetInt("replicaAmount")
 
+	autoUpdateForNewBuildText := c.GetString("autoUpdateForNewBuild")
+
+	autoUpdateForNewBuild := false
+	if autoUpdateForNewBuildText == "on" {
+		autoUpdateForNewBuild = true
+	}
+
 	region := c.GetString("region")
 	zone := c.GetString("zone")
 
@@ -327,6 +335,7 @@ func (c *CreateController) Post() {
 		environmentSlice,
 		resourceMap,
 		extraJsonMap,
+		autoUpdateForNewBuild,
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
