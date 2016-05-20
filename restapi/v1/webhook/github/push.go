@@ -15,7 +15,6 @@
 package github
 
 import (
-	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
@@ -61,8 +60,9 @@ func (c *PushController) Post() {
 		// Error
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
-		byteSlice, _ := json.Marshal(errorJsonMap)
-		c.CustomAbort(422, string(byteSlice))
+		c.Data["json"] = errorJsonMap
+		c.Ctx.Output.Status = 401
+		c.ServeJSON()
 		return
 	}
 
