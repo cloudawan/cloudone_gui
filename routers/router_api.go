@@ -18,9 +18,11 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/restapi/v1/identity"
 	"github.com/cloudawan/cloudone_gui/restapi/v1/imageinformation"
+	"github.com/cloudawan/cloudone_gui/restapi/v1/webhook/github"
 )
 
 func init() {
 	beego.Router("/api/v1/identity/login", &identity.LoginController{})
 	beego.Router("/api/v1/imageinformation/upgrade", &imageinformation.UpdateController{})
+	beego.Router("/api/v1/webhook/github", &github.PushController{})
 }

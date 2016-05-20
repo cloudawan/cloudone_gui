@@ -20,11 +20,12 @@ import (
 )
 
 const (
-	loginURL = "/api/v1/identity/login"
+	loginURL         = "/api/v1/identity/login"
+	webhookGithubURL = "/api/v1/webhook/github" // The webhook has its own verification
 )
 
 func FilterToken(ctx *context.Context) {
-	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && ctx.Input.URL() == loginURL {
+	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && (ctx.Input.URL() == loginURL || ctx.Input.URL() == webhookGithubURL) {
 		// Don't redirect itself to prevent the circle
 	} else {
 		token := ctx.Input.Header("token")

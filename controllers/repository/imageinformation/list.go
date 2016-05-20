@@ -21,6 +21,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
+	"strconv"
 )
 
 type ListController struct {
@@ -67,6 +68,10 @@ func (c *ListController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
+	cloudoneGUIHost := c.Ctx.Input.Host()
+	cloudoneGUIPort := c.Ctx.Input.Port()
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imageinformations/"
@@ -115,6 +120,12 @@ func (c *ListController) Get() {
 				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationDelete = "<div class='btn-group'>"
 			} else {
 				imageInformationSlice[i].HiddenTagGuiRepositoryImageInformationDelete = "<div hidden>"
+			}
+
+			// Add git webhook information
+			if imageInformationSlice[i].Kind == "git" {
+				githubWebhookUrl := cloudoneGUIProtocol + "://" + cloudoneGUIHost + ":" + strconv.Itoa(cloudoneGUIPort) + "/api/v1/webhook/github?user=" + user.Name + "&imageInformation=" + imageInformationSlice[i].Name
+				imageInformationSlice[i].BuildParameter["githubWebhookUrl"] = githubWebhookUrl
 			}
 		}
 

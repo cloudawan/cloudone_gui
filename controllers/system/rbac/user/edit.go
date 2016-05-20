@@ -208,6 +208,7 @@ func (c *EditController) Get() {
 
 		c.Data["name"] = name
 		c.Data["description"] = user.Description
+		c.Data["githubWebhookSecret"] = user.MetaDataMap["githubWebhookSecret"]
 		c.Data["readonly"] = "readonly"
 
 		c.Data["actionButtonValue"] = "Update"
@@ -225,6 +226,7 @@ func (c *EditController) Post() {
 	disabledText := c.GetString("disabled")
 	expiredTimeText := c.GetString("expiredTime")
 	description := c.GetString("description")
+	githubWebhookSecret := c.GetString("githubWebhookSecret")
 	action := c.GetString("action")
 
 	loginNamespace := c.GetString("loginNamespace")
@@ -282,6 +284,10 @@ func (c *EditController) Post() {
 	metaDataMap := make(map[string]string)
 	if len(loginNamespace) > 0 {
 		metaDataMap["loginNamespace"] = loginNamespace
+	}
+
+	if len(githubWebhookSecret) > 0 {
+		metaDataMap["githubWebhookSecret"] = githubWebhookSecret
 	}
 
 	user := rbac.User{
