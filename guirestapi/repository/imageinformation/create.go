@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -32,7 +33,7 @@ type CreateController struct {
 // @Failure 404 error reason
 // @router / [post]
 func (c *CreateController) Post() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	imageInformation := ImageInformation{}
 	err := json.Unmarshal(inputBody, &imageInformation)
 	if err != nil {

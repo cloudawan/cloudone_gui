@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -37,7 +38,7 @@ type DeployUpgradeInput struct {
 // @Failure 404 error reason
 // @router /upgrade/ [put]
 func (c *UpgradeController) Put() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	deployUpgradeInput := DeployUpgradeInput{}
 	err := json.Unmarshal(inputBody, &deployUpgradeInput)
 	if err != nil {

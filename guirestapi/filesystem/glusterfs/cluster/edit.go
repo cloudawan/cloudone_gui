@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -82,7 +83,7 @@ type GlusterfsClusterInput struct {
 // @Failure 404 error reason
 // @router / [post]
 func (c *EditController) Post() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	glusterfsClusterInput := GlusterfsClusterInput{}
 	err := json.Unmarshal(inputBody, &glusterfsClusterInput)
 	if err != nil {
@@ -129,7 +130,7 @@ func (c *EditController) Post() {
 // @Failure 404 error reason
 // @router / [put]
 func (c *EditController) Put() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	glusterfsClusterInput := GlusterfsClusterInput{}
 	err := json.Unmarshal(inputBody, &glusterfsClusterInput)
 	if err != nil {

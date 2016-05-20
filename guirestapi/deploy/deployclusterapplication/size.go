@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -186,7 +187,7 @@ func (c *SizeController) Get() {
 // @Failure 404 error reason
 // @router /size/:name [put]
 func (c *SizeController) Put() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	environmentSlice := make([]Environment, 0)
 	err := json.Unmarshal(inputBody, &environmentSlice)
 	if err != nil {

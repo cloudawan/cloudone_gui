@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -31,13 +32,14 @@ type DeployUpgradeInput struct {
 }
 
 func (c *UpdateController) Post() {
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
 	deployUpgradeInput := DeployUpgradeInput{}
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &deployUpgradeInput)
+	err := json.Unmarshal(inputBody, &deployUpgradeInput)
 	if err != nil {
 		// Error
 		errorJsonMap := make(map[string]interface{})

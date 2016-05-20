@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 	"strings"
@@ -94,7 +95,7 @@ func (c *LaunchController) Post() {
 	name := c.GetString("name")
 	size, _ := c.GetInt("size")
 
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	environmentSlice := make([]interface{}, 0)
 	err := json.Unmarshal(inputBody, &environmentSlice)
 	if err != nil {

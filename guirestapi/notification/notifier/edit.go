@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -154,7 +155,7 @@ func (c *EditController) Get() {
 // @Failure 404 error reason
 // @router / [put]
 func (c *EditController) Put() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	replicationControllerNotifier := ReplicationControllerNotifier{}
 	err := json.Unmarshal(inputBody, &replicationControllerNotifier)
 	if err != nil {

@@ -17,6 +17,7 @@ package identity
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -42,8 +43,9 @@ func (c *LoginController) Get() {
 }
 
 func (c *LoginController) Post() {
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	userData := UserData{}
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &userData)
+	err := json.Unmarshal(inputBody, &userData)
 	if err != nil {
 		// Error
 		errorJsonMap := make(map[string]interface{})

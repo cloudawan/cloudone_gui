@@ -16,6 +16,7 @@ package github
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 )
 
@@ -38,7 +39,7 @@ func (c *PushController) Post() {
 	user := c.GetString("user")
 	imageInformation := c.GetString("imageInformation")
 	signature := c.Ctx.Input.Header("X-Hub-Signature")
-	payload := string(c.Ctx.Input.CopyBody(10 * 1024 * 1024))
+	payload := string(c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum))
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/webhooks/github/"

@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -75,7 +76,7 @@ func (c *SelectController) Get() {
 // @Failure 404 error reason
 // @router / [put]
 func (c *SelectController) Put() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	deployBlueGreen := DeployBlueGreen{}
 	err := json.Unmarshal(inputBody, &deployBlueGreen)
 	if err != nil {

@@ -19,6 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -34,7 +35,7 @@ type EditController struct {
 // @Failure 404 error reason
 // @router / [post]
 func (c *EditController) Post() {
-	inputBody := c.Ctx.Input.RequestBody
+	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 	service := Service{}
 	err := json.Unmarshal(inputBody, &service)
 	if err != nil {
