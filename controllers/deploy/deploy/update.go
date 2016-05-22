@@ -17,11 +17,9 @@ package deploy
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -73,16 +71,6 @@ func (c *UpdateController) Get() {
 
 	namespace, _ := c.GetSession("namespace").(string)
 
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
-		return
-	}
-
 	name := c.GetString("name")
 	oldVersion := c.GetString("oldVersion")
 
@@ -90,13 +78,13 @@ func (c *UpdateController) Get() {
 
 	// Retrieve the current environment setting
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName
+
 	replicationController := ReplicationController{}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -161,14 +149,7 @@ func (c *UpdateController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
-		return
-	}
+
 	namespaces, _ := c.GetSession("namespace").(string)
 
 	imageInformationName := c.GetString("name")
@@ -197,13 +178,13 @@ func (c *UpdateController) Post() {
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/update/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deploys/update/" + namespaces
 
 	deployUpdateInput := DeployUpdateInput{imageInformationName, version, description, environmentSlice}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPutWithStructure(url, deployUpdateInput, nil, tokenHeaderMap)
+	_, err := restclient.RequestPutWithStructure(url, deployUpdateInput, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

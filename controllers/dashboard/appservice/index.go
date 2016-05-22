@@ -17,7 +17,6 @@ package appservice
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
@@ -126,20 +125,13 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		c.Data["json"].(map[string]interface{})["error"] = err.Error()
-		c.ServeJSON()
-		return
-	}
 
 	scope := c.GetString("scope")
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
 	namespaceSlice := make([]string, 0)
 	if scope == allKeyword {
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/namespaces/"
 
 		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice, tokenHeaderMap)
 
@@ -162,7 +154,7 @@ func (c *DataController) Get() {
 
 	deployInformationSlice := make([]DeployInformation, 0)
 
-	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -202,7 +194,7 @@ func (c *DataController) Get() {
 		applicationNamespaceJsonMap["children"] = make([]interface{}, 0)
 
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/services/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/services/" + namespace
 
 		serviceSlice := make([]Service, 0)
 
@@ -218,7 +210,7 @@ func (c *DataController) Get() {
 			c.Data["json"].(map[string]interface{})["errorMap"].(map[string]interface{})[namespace] = err.Error()
 		} else {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				"/api/v1/replicationcontrollers/" + namespace
 
 			replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
 

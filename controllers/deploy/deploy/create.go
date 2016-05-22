@@ -17,7 +17,6 @@ package deploy
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
@@ -127,16 +126,8 @@ func (c *CreateController) Get() {
 		// Error
 		guimessage.AddDanger(err.Error())
 	} else {
-		kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-		if err != nil {
-			// Error
-			guimessage.AddDanger(err.Error())
-			guimessage.OutputMessage(c.Data)
-			return
-		}
 
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/nodes/topology?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/nodes/topology"
 
 		regionSlice := make([]Region, 0)
 
@@ -182,14 +173,6 @@ func (c *CreateController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
-		return
-	}
 
 	namespaces, _ := c.GetSession("namespace").(string)
 
@@ -338,12 +321,11 @@ func (c *CreateController) Post() {
 		autoUpdateForNewBuild,
 	}
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/create/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/deploys/create/" + namespaces
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPostWithStructure(url, deployCreateInput, nil, tokenHeaderMap)
+	_, err := restclient.RequestPostWithStructure(url, deployCreateInput, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

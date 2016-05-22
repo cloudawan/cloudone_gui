@@ -17,7 +17,6 @@ package bluegreen
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
@@ -74,22 +73,14 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		c.Data["json"].(map[string]interface{})["error"] = err.Error()
-		c.ServeJSON()
-		return
-	}
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/"
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/deploybluegreens/"
 
 	deployBlueGreenSlice := make([]DeployBlueGreen, 0)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &deployBlueGreenSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &deployBlueGreenSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -102,8 +93,7 @@ func (c *DataController) Get() {
 		return
 	}
 
-	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/"
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/deploys/"
 
 	deployInformationSlice := make([]DeployInformation, 0)
 
@@ -138,7 +128,7 @@ func (c *DataController) Get() {
 	leafAmount := 0
 	for _, deployBlueGreen := range deployBlueGreenSlice {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/deploybluegreens/deployable/" + deployBlueGreen.ImageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/deploybluegreens/deployable/" + deployBlueGreen.ImageInformation
 
 		namespaceSlice := make([]string, 0)
 

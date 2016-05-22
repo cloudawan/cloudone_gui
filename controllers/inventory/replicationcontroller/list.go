@@ -17,11 +17,9 @@ package replicationcontroller
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type ListController struct {
@@ -94,24 +92,17 @@ func (c *ListController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
-	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespace
 
 	replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

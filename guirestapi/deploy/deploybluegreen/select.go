@@ -18,10 +18,8 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type SelectController struct {
@@ -40,10 +38,9 @@ func (c *SelectController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/deployable/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deploybluegreens/deployable/" + imageInformation
 
 	namespaceSlice := make([]string, 0)
 
@@ -91,10 +88,9 @@ func (c *SelectController) Put() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deploybluegreens/"
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 

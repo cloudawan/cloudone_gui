@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strings"
@@ -301,15 +300,6 @@ func (c *EditController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
-		c.Data["json"] = errorJsonMap
-		c.ServeJSON()
-		return
-	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -382,15 +372,26 @@ func (c *EditController) Post() {
 	}
 
 	replicationControllerNotifier := ReplicationControllerNotifier{
-		true, time.Duration(coolDownDuration) * time.Second, 0, kubeapiHost,
-		kubeapiPort, namespace, kind, name, notifierSlice, indicatorSlice, "", ""}
+		true,
+		time.Duration(coolDownDuration) * time.Second,
+		0,
+		"",
+		"",
+		namespace,
+		kind,
+		name,
+		notifierSlice,
+		indicatorSlice,
+		"",
+		"",
+	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/notifiers/"
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil, tokenHeaderMap)
+	_, err := restclient.RequestPutWithStructure(url, replicationControllerNotifier, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

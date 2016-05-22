@@ -17,12 +17,10 @@ package user
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -71,14 +69,6 @@ func (c *EditController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		c.Ctx.Redirect(302, "/gui/system/rbac/user/list")
-		guimessage.RedirectMessage(c)
-		return
-	}
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
@@ -87,7 +77,7 @@ func (c *EditController) Get() {
 
 	roleSlice := make([]Role, 0)
 
-	_, err = restclient.RequestGetWithStructure(url, &roleSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &roleSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -101,8 +91,7 @@ func (c *EditController) Get() {
 		return
 	}
 
-	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/namespaces" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/namespaces"
 
 	namespaceNameSlice := make([]string, 0)
 

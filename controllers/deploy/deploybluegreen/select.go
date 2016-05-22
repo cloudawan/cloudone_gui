@@ -17,10 +17,8 @@ package deploybluegreen
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type SelectController struct {
@@ -40,22 +38,6 @@ func (c *SelectController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger("Fail to get deployable namespace")
-
-		// Redirect to list
-		if source == "repository" {
-			c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
-		} else {
-			c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/list")
-		}
-
-		guimessage.RedirectMessage(c)
-
-		return
-	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/deploybluegreens/" + imageInformation
@@ -122,7 +104,7 @@ func (c *SelectController) Get() {
 	}
 
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/deployable/" + imageInformation + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deploybluegreens/deployable/" + imageInformation
 
 	namespaceSlice := make([]string, 0)
 
@@ -173,14 +155,6 @@ func (c *SelectController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deploybluegreen/list")
-		return
-	}
 
 	imageInformation := c.GetString("imageInformation")
 	namespace := c.GetString("namespace")
@@ -199,12 +173,11 @@ func (c *SelectController) Post() {
 		"",
 	}
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploybluegreens/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/deploybluegreens/"
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPutWithStructure(url, deployBlueGreen, nil, tokenHeaderMap)
+	_, err := restclient.RequestPutWithStructure(url, deployBlueGreen, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

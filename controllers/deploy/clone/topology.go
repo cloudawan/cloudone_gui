@@ -17,12 +17,10 @@ package clone
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -157,13 +155,6 @@ func (c *TopologyController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
-	}
 
 	currentNamespace, _ := c.GetSession("namespace").(string)
 
@@ -182,14 +173,13 @@ func (c *TopologyController) Get() {
 	namespace := c.GetString("namespace")
 	c.Data["sourceNamespace"] = namespace
 
-	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/nodes/topology?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/nodes/topology"
 
 	regionSlice := make([]Region, 0)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &regionSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &regionSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -341,15 +331,6 @@ func (c *TopologyController) Post() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/clone/select")
-		return
-	}
-
 	action := c.GetString("action")
 
 	// Generate topology order
@@ -383,7 +364,7 @@ func (c *TopologyController) Post() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -519,8 +500,7 @@ func (c *TopologyController) Post() {
 
 		for _, launch := range launchSlice {
 			if launch.LaunchApplication != nil {
-				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-					"/api/v1/deploys/create/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/deploys/create/" + namespace
 
 				_, err = restclient.RequestPostWithStructure(url, launch.LaunchApplication, nil, tokenHeaderMap)
 
@@ -538,8 +518,8 @@ func (c *TopologyController) Post() {
 			}
 			if launch.LaunchClusterApplication != nil {
 				url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-					"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.LaunchClusterApplication.Name +
-					"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+					"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.LaunchClusterApplication.Name
+
 				jsonMap := make(map[string]interface{})
 
 				_, err = restclient.RequestPostWithStructure(url, launch.LaunchClusterApplication, &jsonMap, tokenHeaderMap)
@@ -584,8 +564,7 @@ func (c *TopologyController) Post() {
 			launchSlice,
 		}
 
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/topology/"
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/topology/"
 
 		_, err = restclient.RequestPostWithStructure(url, topology, nil, tokenHeaderMap)
 

@@ -17,10 +17,8 @@ package node
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 	"time"
 )
 
@@ -68,24 +66,15 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
-		c.Data["json"] = errorJsonMap
-		c.ServeJSON()
-		return
-	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/nodemetrics/?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/nodemetrics"
 
 	nodeMetricSlice := make([]NodeMetric, 0)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &nodeMetricSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &nodeMetricSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

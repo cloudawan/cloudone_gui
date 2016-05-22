@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"net/url"
@@ -99,15 +98,6 @@ func (c *DataController) Get() {
 	cloudoneAnalysisProtocol := beego.AppConfig.String("cloudoneAnalysisProtocol")
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
-		c.Data["json"] = errorJsonMap
-		c.ServeJSON()
-		return
-	}
 
 	namespaces, _ := c.GetSession("namespace").(string)
 	timeZoneOffset, _ := c.GetSession("timeZoneOffset").(int)
@@ -183,8 +173,6 @@ func (c *DataController) Get() {
 		encodingUrl, _ := url.Parse(cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 			"/api/v1/historicalreplicationcontrollermetrics/" + namespaces + "/" + replicationControllerName)
 		parameters := url.Values{}
-		parameters.Add("kubeapihost", kubeapiHost)
-		parameters.Add("kubeapiport", strconv.Itoa(kubeapiPort))
 		parameters.Add("from", fromInRFC3339Nano)
 		parameters.Add("to", toInRFC3339Nano)
 		parameters.Add("aggregationAmount", strconv.Itoa(aggregationAmount))
@@ -212,8 +200,6 @@ func (c *DataController) Get() {
 		encodingUrl, _ := url.Parse(cloudoneAnalysisProtocol + "://" + cloudoneAnalysisHost + ":" + cloudoneAnalysisPort +
 			"/api/v1/historicalreplicationcontrollermetrics/" + namespaces)
 		parameters := url.Values{}
-		parameters.Add("kubeapihost", kubeapiHost)
-		parameters.Add("kubeapiport", strconv.Itoa(kubeapiPort))
 		parameters.Add("from", fromInRFC3339Nano)
 		parameters.Add("to", toInRFC3339Nano)
 		parameters.Add("aggregationAmount", strconv.Itoa(aggregationAmount))

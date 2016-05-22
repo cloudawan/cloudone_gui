@@ -17,9 +17,7 @@ package container
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 	"time"
 )
 
@@ -73,7 +71,6 @@ func (c *IndexController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
 	cloudoneGUIPort := c.Ctx.Input.Port()
@@ -81,7 +78,7 @@ func (c *IndexController) Get() {
 	namespaces, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespaces
 
 	jsonMapSlice := make([]interface{}, 0)
 
@@ -136,7 +133,6 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespaces, _ := c.GetSession("namespace").(string)
 
@@ -145,7 +141,7 @@ func (c *DataController) Get() {
 	if replicationControllerName != "" && replicationControllerName != allKeyword {
 		replicationControllerMetric := ReplicationControllerMetric{}
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollermetrics/" + namespaces + "/" + replicationControllerName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollermetrics/" + namespaces + "/" + replicationControllerName
 
 		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
@@ -167,7 +163,7 @@ func (c *DataController) Get() {
 		replicationControllerMetricAmount = 1
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollermetrics/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollermetrics/" + namespaces
 
 		replicationControllerMetricList := ReplicationControllerMetricList{}
 

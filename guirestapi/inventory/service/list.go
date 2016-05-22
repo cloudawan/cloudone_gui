@@ -17,9 +17,7 @@ package service
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type ListController struct {
@@ -54,12 +52,10 @@ func (c *ListController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
-
 	namespace := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/services/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/services/" + namespace
 
 	serviceSlice := make([]Service, 0)
 

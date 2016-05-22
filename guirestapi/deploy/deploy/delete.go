@@ -17,9 +17,7 @@ package deploy
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type DeleteController struct {
@@ -38,12 +36,11 @@ func (c *DeleteController) Delete() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deploys/" + namespace + "/" + imageDeployName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/deploys/" + namespace + "/" + imageDeployName
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 

@@ -17,7 +17,6 @@ package topology
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"strconv"
 )
@@ -65,12 +64,10 @@ func (c *IndexController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
-
 	namespace, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespace
 
 	replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
 

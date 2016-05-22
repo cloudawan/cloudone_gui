@@ -17,7 +17,6 @@ package topology
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
@@ -92,12 +91,6 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		c.Data["json"].(map[string]interface{})["error"] = err.Error()
-		c.ServeJSON()
-		return
-	}
 
 	scope := c.GetString("scope")
 
@@ -105,8 +98,7 @@ func (c *DataController) Get() {
 
 	namespaceSlice := make([]string, 0)
 	if scope == allKeyword {
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/namespaces/"
 		_, err := restclient.RequestGetWithStructure(url, &namespaceSlice, tokenHeaderMap)
 
 		if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
@@ -143,8 +135,7 @@ func (c *DataController) Get() {
 
 	leafAmount := 0
 	for _, namespace := range namespaceSlice {
-		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollers/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/replicationcontrollers/" + namespace
 
 		replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
 

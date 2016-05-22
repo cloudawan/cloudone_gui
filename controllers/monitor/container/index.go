@@ -17,10 +17,8 @@ package container
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 	"time"
 )
 
@@ -75,13 +73,6 @@ func (c *IndexController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.OutputMessage(c.Data)
-		return
-	}
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
 	cloudoneGUIHost := c.Ctx.Input.Host()
@@ -90,13 +81,13 @@ func (c *IndexController) Get() {
 	namespaces, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespaces
 
 	jsonMapSlice := make([]interface{}, 0)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &jsonMapSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &jsonMapSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -133,15 +124,6 @@ func (c *DataController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		errorJsonMap := make(map[string]interface{})
-		errorJsonMap["error"] = err.Error()
-		c.Data["json"] = errorJsonMap
-		c.ServeJSON()
-		return
-	}
 
 	namespaces, _ := c.GetSession("namespace").(string)
 
@@ -152,7 +134,7 @@ func (c *DataController) Get() {
 	if replicationControllerName != "" && replicationControllerName != allKeyword {
 		replicationControllerMetric := ReplicationControllerMetric{}
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollermetrics/" + namespaces + "/" + replicationControllerName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollermetrics/" + namespaces + "/" + replicationControllerName
 
 		tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
@@ -174,7 +156,7 @@ func (c *DataController) Get() {
 		replicationControllerMetricAmount = 1
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollermetrics/" + namespaces + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollermetrics/" + namespaces
 
 		replicationControllerMetricList := ReplicationControllerMetricList{}
 
@@ -408,7 +390,8 @@ func (c *DataController) Get() {
 		convertedCpuUsageTotalJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(cpuUsageTotalDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range cpuUsageTotalJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ := cpuUsageTotalJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedCpuUsageTotalJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedCpuUsageTotalJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -430,7 +413,8 @@ func (c *DataController) Get() {
 		convertedMemoryUsageJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(memoryUsageAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range memoryUsageJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = memoryUsageJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedMemoryUsageJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedMemoryUsageJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -452,7 +436,8 @@ func (c *DataController) Get() {
 		convertedDiskIOServiceBytesStatsJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(diskIOServiceBytesStatsDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range diskIOServiceBytesStatsJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = diskIOServiceBytesStatsJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedDiskIOServiceBytesStatsJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedDiskIOServiceBytesStatsJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -474,7 +459,8 @@ func (c *DataController) Get() {
 		convertedDiskIOServicedStatsJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(diskIOServicedStatsDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range diskIOServicedStatsJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = diskIOServicedStatsJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedDiskIOServicedStatsJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedDiskIOServicedStatsJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -496,7 +482,8 @@ func (c *DataController) Get() {
 		convertedNetworkRXBytesJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(networkRXBytesDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range networkRXBytesJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = networkRXBytesJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedNetworkRXBytesJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedNetworkRXBytesJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -518,7 +505,8 @@ func (c *DataController) Get() {
 		convertedNetworkTXBytesJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(networkTXBytesDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range networkTXBytesJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = networkTXBytesJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedNetworkTXBytesJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedNetworkTXBytesJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -540,7 +528,8 @@ func (c *DataController) Get() {
 		convertedNetworkRXPacketsJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(networkRXPacketsDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range networkRXPacketsJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = networkRXPacketsJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedNetworkRXPacketsJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedNetworkRXPacketsJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))
@@ -562,7 +551,8 @@ func (c *DataController) Get() {
 		convertedNetworkTXPacketsJsonMap["data"].([]map[string]interface{})[i]["x"] = current.Add(
 			time.Duration(time.Second * time.Duration(-1*(networkTXPacketsDifferenceAmountMaximum-i)))).Format("2006-01-02 15:04:05")
 	}
-	for _, line := range networkTXPacketsJsonMap["series"].([]interface{}) {
+	seriesJsonMap, _ = networkTXPacketsJsonMap["series"].([]interface{})
+	for _, line := range seriesJsonMap {
 		convertedNetworkTXPacketsJsonMap["metadata"].(map[string]interface{})["lineName"] = append(
 			convertedNetworkTXPacketsJsonMap["metadata"].(map[string]interface{})["lineName"].([]string),
 			line.(map[string]interface{})["name"].(string))

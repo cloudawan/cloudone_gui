@@ -18,10 +18,8 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 	"strings"
 )
 
@@ -110,7 +108,6 @@ func (c *LaunchController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -121,8 +118,7 @@ func (c *LaunchController) Post() {
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/clusterapplications/launch/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/clusterapplications/launch/" + namespace + "/" + name
 	jsonMap := make(map[string]interface{})
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)

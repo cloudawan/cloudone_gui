@@ -18,10 +18,8 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/limit"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type Cluster struct {
@@ -89,7 +87,6 @@ func (c *SizeController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -148,8 +145,8 @@ func (c *SizeController) Get() {
 	replicationControllerName := deployClusterApplication.ReplicationControllerNameSlice[0]
 
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName
+
 	replicationController := ReplicationController{}
 
 	_, err = restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
@@ -205,13 +202,11 @@ func (c *SizeController) Put() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, _ := configuration.GetAvailableKubeapiHostAndPort()
 
 	namespace, _ := c.GetSession("namespace").(string)
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
+		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name + "?size=" + size
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 

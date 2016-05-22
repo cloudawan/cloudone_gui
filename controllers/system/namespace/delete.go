@@ -21,10 +21,8 @@ import (
 	"github.com/cloudawan/cloudone_gui/controllers/deploy/deployclusterapplication"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
 	"github.com/cloudawan/cloudone_gui/controllers/notification/notifier"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 	"time"
 )
 
@@ -40,14 +38,6 @@ func (c *DeleteController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		c.Ctx.Redirect(302, "/gui/system/namespace/list")
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		return
-	}
 
 	// Delete deploy
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -57,7 +47,7 @@ func (c *DeleteController) Get() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &deployInformationSlice, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -69,7 +59,7 @@ func (c *DeleteController) Get() {
 	} else {
 		for _, deployInformation := range deployInformationSlice {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/deploys/" + name + "/" + deployInformation.ImageInformationName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				"/api/v1/deploys/" + name + "/" + deployInformation.ImageInformationName
 
 			_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
 
@@ -100,7 +90,7 @@ func (c *DeleteController) Get() {
 	} else {
 		for _, deployClusterApplication := range deployClusterApplicationSlice {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/deployclusterapplications/" + name + "/" + deployClusterApplication.Name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				"/api/v1/deployclusterapplications/" + name + "/" + deployClusterApplication.Name
 
 			_, err := restclient.RequestDelete(url, nil, tokenHeaderMap, true)
 
@@ -116,7 +106,7 @@ func (c *DeleteController) Get() {
 
 	// Delete namespace
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/namespaces/" + name + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/namespaces/" + name
 
 	_, err = restclient.RequestDelete(url, nil, tokenHeaderMap, true)
 

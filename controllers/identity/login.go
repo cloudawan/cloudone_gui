@@ -16,7 +16,6 @@ package identity
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/rbac"
 	"github.com/cloudawan/cloudone_utility/restclient"
@@ -55,14 +54,6 @@ func (c *LoginController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger("Fail to get kubeapi host with error " + err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/login/")
-		return
-	}
 
 	username := c.GetString("username")
 	password := c.GetString("password")
@@ -150,8 +141,7 @@ func (c *LoginController) Post() {
 	}
 
 	// Check if the namespace existing
-	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/namespaces/" + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/namespaces/"
 
 	nameSlice := make([]string, 0)
 

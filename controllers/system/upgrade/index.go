@@ -20,12 +20,10 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"github.com/cloudawan/cloudone_utility/sshclient"
 	"golang.org/x/net/websocket"
-	"strconv"
 	"time"
 )
 
@@ -219,14 +217,6 @@ func ProxyServer(ws *websocket.Conn) {
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-
-	if err != nil {
-		ws.Write([]byte(err.Error()))
-		ws.Close()
-		return
-	}
-
 	parameterMap := ws.Request().URL.Query()
 	upgradeCloudone := getParameter(parameterMap, "upgradeCloudone")
 	upgradeCloudoneImagePath := getParameter(parameterMap, "upgradeCloudoneImagePath")
@@ -277,7 +267,7 @@ func ProxyServer(ws *websocket.Conn) {
 
 	credentialSlice := make([]Credential, 0)
 
-	_, err = restclient.RequestGetWithStructure(url, &credentialSlice, headerMap)
+	_, err := restclient.RequestGetWithStructure(url, &credentialSlice, headerMap)
 
 	if identity.IsTokenInvalid(err) {
 		ws.Write([]byte(err.Error()))
@@ -326,7 +316,7 @@ func ProxyServer(ws *websocket.Conn) {
 	// Update service
 	if len(serviceJsonMap) > 0 {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/services/json/" + upgradeNamespace + "/" + upgradeReplicationControllerName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/services/json/" + upgradeNamespace + "/" + upgradeReplicationControllerName
 
 		ws.Write([]byte("Start to update service\n"))
 
@@ -351,7 +341,7 @@ func ProxyServer(ws *websocket.Conn) {
 	if len(replicationControllerJsonMap) > 0 {
 		// Update replication controller to change all instances
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollers/json/" + upgradeNamespace + "/" + upgradeServiceName + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollers/json/" + upgradeNamespace + "/" + upgradeServiceName
 
 		ws.Write([]byte("Stop and recreate the replication controller. Please refresh the page after tens of seconds\n"))
 
@@ -374,7 +364,7 @@ func ProxyServer(ws *websocket.Conn) {
 	} else {
 		// Only update the specific docker containers
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-			"/api/v1/replicationcontrollers/" + upgradeNamespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+			"/api/v1/replicationcontrollers/" + upgradeNamespace
 
 		replicationControllerAndRelatedPodSlice := make([]ReplicationControllerAndRelatedPod, 0)
 		_, err := restclient.RequestGetWithStructure(url, &replicationControllerAndRelatedPodSlice, headerMap)

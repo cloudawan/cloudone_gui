@@ -17,10 +17,8 @@ package deployclusterapplication
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
-	"strconv"
 )
 
 type Cluster struct {
@@ -81,14 +79,6 @@ func (c *SizeController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		// Redirect to list
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
-		return
-	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -101,7 +91,7 @@ func (c *SizeController) Get() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &cluster, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &cluster, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -151,8 +141,8 @@ func (c *SizeController) Get() {
 	replicationControllerName := deployClusterApplication.ReplicationControllerNameSlice[0]
 
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/replicationcontrollers/" + namespace + "/" + replicationControllerName
+
 	replicationController := ReplicationController{}
 
 	_, err = restclient.RequestGetWithStructure(url, &replicationController, tokenHeaderMap)
@@ -186,14 +176,6 @@ func (c *SizeController) Post() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/deploy/deployclusterapplication/list")
-		return
-	}
 
 	namespace, _ := c.GetSession("namespace").(string)
 
@@ -220,12 +202,11 @@ func (c *SizeController) Post() {
 	}
 
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name +
-		"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort) + "&size=" + size
+		"/api/v1/deployclusterapplications/size/" + namespace + "/" + name + "?size=" + size
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestPut(url, environmentSlice, tokenHeaderMap, true)
+	_, err := restclient.RequestPut(url, environmentSlice, tokenHeaderMap, true)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return

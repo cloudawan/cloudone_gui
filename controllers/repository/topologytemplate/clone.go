@@ -17,11 +17,9 @@ package topologytemplate
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
-	"github.com/cloudawan/cloudone_gui/controllers/utility/configuration"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -39,14 +37,6 @@ func (c *CloneController) Get() {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
-		return
-	}
 
 	topologyName := c.GetString("name")
 
@@ -57,7 +47,7 @@ func (c *CloneController) Get() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &topology, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &topology, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -96,7 +86,7 @@ func (c *CloneController) Get() {
 
 	// Region
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-		"/api/v1/nodes/topology?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+		"/api/v1/nodes/topology"
 
 	regionSlice := make([]Region, 0)
 
@@ -135,15 +125,6 @@ func (c *CloneController) Post() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 
-	kubeapiHost, kubeapiPort, err := configuration.GetAvailableKubeapiHostAndPort()
-	if err != nil {
-		// Error
-		guimessage.AddDanger(err.Error())
-		guimessage.RedirectMessage(c)
-		c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
-		return
-	}
-
 	// Get topology
 	name := c.GetString("name")
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -153,7 +134,7 @@ func (c *CloneController) Post() {
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err = restclient.RequestGetWithStructure(url, &topology, tokenHeaderMap)
+	_, err := restclient.RequestGetWithStructure(url, &topology, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -321,7 +302,7 @@ func (c *CloneController) Post() {
 	for _, launch := range launchSlice {
 		if launch.LaunchApplication != nil {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/deploys/create/" + namespace + "?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				"/api/v1/deploys/create/" + namespace
 
 			_, err = restclient.RequestPostWithStructure(url, launch.LaunchApplication, nil, tokenHeaderMap)
 
@@ -339,8 +320,8 @@ func (c *CloneController) Post() {
 		}
 		if launch.LaunchClusterApplication != nil {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
-				"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.LaunchClusterApplication.Name +
-				"?kubeapihost=" + kubeapiHost + "&kubeapiport=" + strconv.Itoa(kubeapiPort)
+				"/api/v1/clusterapplications/launch/" + namespace + "/" + launch.LaunchClusterApplication.Name
+
 			jsonMap := make(map[string]interface{})
 
 			_, err = restclient.RequestPostWithStructure(url, launch.LaunchClusterApplication, &jsonMap, tokenHeaderMap)

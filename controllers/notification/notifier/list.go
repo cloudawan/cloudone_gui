@@ -32,8 +32,8 @@ type ReplicationControllerNotifier struct {
 	Check                                  bool
 	CoolDownDuration                       time.Duration
 	RemainingCoolDown                      time.Duration
-	KubeapiHost                            string
-	KubeapiPort                            int
+	KubeApiServerEndPoint                  string
+	KubeApiServerToken                     string
 	Namespace                              string
 	Kind                                   string
 	Name                                   string
