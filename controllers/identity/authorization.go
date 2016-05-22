@@ -147,9 +147,9 @@ func GetLayoutMenu(user *rbac.User) string {
 	if user.HasPermission(componentName, "GET", "/gui/monitor/container/list") {
 		buffer.WriteString("							<li><a href='/gui/monitor/container'>Containers</a></li>\n")
 	}
-	if user.HasPermission(componentName, "GET", "/gui/monitor/historicalcontainer/list") {
-		buffer.WriteString("							<li><a href='/gui/monitor/historicalcontainer'>Historical Containers</a></li>\n")
-	}
+	//if user.HasPermission(componentName, "GET", "/gui/monitor/historicalcontainer/list") {
+	//	buffer.WriteString("							<li><a href='/gui/monitor/historicalcontainer'>Historical Containers</a></li>\n")
+	//}
 	// Parent
 	if user.HasChildPermission(componentName, "GET", "/gui/monitor") {
 		buffer.WriteString("						</ul>\n")
