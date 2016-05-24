@@ -56,7 +56,7 @@ func (c *ListController) Get() {
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 	// Authorization for Button
 	user, _ := c.GetSession("user").(*rbac.User)
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiFileSystemGlusterfsClusterEdit", user, "GET", "/gui/filesystem/glusterfs/cluster/edit")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiFileSystemGlusterfsClusterEdit", user, "GET", "/gui/filesystem/glusterfs/cluster/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiFileSystemGlusterfsVolumeList := user.HasPermission(identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/volume/list")
 	hasGuiFileSystemGlusterfsClusterEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/filesystem/glusterfs/cluster/edit")

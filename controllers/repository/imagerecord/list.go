@@ -55,7 +55,7 @@ func (c *ListController) Get() {
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 	// Authorization for Button
 	user, _ := c.GetSession("user").(*rbac.User)
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiRepositoryImageInformationList", user, "GET", "/gui/repository/imageinformation/list")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiRepositoryImageInformationList", user, "GET", "/gui/repository/imageinformation/list")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiRepositoryImageRecordLog := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/log")
 	hasGuiRepositoryImageRecordDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/repository/imagerecord/delete")

@@ -54,7 +54,7 @@ func (c *ListController) Get() {
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 	// Authorization for Button
 	user, _ := c.GetSession("user").(*rbac.User)
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemHostCredentialEdit", user, "GET", "/gui/system/host/credential/edit")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiSystemHostCredentialEdit", user, "GET", "/gui/system/host/credential/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemHostCredentialEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/host/credential/edit")
 	hasGuiSystemHostCredentialDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/host/credential/delete")

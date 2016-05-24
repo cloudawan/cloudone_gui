@@ -56,7 +56,7 @@ func (c *ListController) Get() {
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 	// Authorization for Button
 	user, _ := c.GetSession("user").(*rbac.User)
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNamespaceEdit", user, "GET", "/gui/system/namespace/edit")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiSystemNamespaceEdit", user, "GET", "/gui/system/namespace/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemNamespaceSelect := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/select")
 	hasGuiSystemNamespaceBookmark := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/namespace/bookmark")

@@ -52,7 +52,7 @@ func (c *ListController) Get() {
 	user, _ := c.GetSession("user").(*rbac.User)
 	c.Data["systemNotificationTabMenu"] = identity.GetSystemNotificationTabMenu(user, "emailserver")
 	// Authorization for Button
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationEmailServerCreate", user, "GET", "/gui/system/notification/emailserver/create")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationEmailServerCreate", user, "GET", "/gui/system/notification/emailserver/create")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemNotificationEmailserverDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/notification/emailserver/delete")
 

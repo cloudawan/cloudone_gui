@@ -83,7 +83,7 @@ func (c *ListController) Get() {
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 	// Authorization for Button
 	user, _ := c.GetSession("user").(*rbac.User)
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiNotificationNotifierEdit", user, "GET", "/gui/notification/notifier/edit")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiNotificationNotifierEdit", user, "GET", "/gui/notification/notifier/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiNotificationNotifierEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/notification/notifier/edit")
 	hasGuiNotificationNotifierDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/notification/notifier/delete")

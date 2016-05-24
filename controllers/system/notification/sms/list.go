@@ -51,7 +51,7 @@ func (c *ListController) Get() {
 	user, _ := c.GetSession("user").(*rbac.User)
 	c.Data["systemNotificationTabMenu"] = identity.GetSystemNotificationTabMenu(user, "sms")
 	// Authorization for Button
-	identity.SetPriviledgeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationSMSCreate", user, "GET", "/gui/system/notification/sms/create")
+	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiSystemNotificationSMSCreate", user, "GET", "/gui/system/notification/sms/create")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemNotificationSMSDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/notification/sms/delete")
 
