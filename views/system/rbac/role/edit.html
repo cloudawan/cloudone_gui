@@ -891,6 +891,81 @@
 					</div>
 					
 					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemPrivateRegistry">Private Registry:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemPrivateRegistry" type="checkbox" name="systemPrivateRegistry" onclick="$('#regionSystemPrivateRegistry').toggle();" {{ .checkedTagSystemPrivateRegistry }}>
+						</div>
+					</div>
+					<div id="regionSystemPrivateRegistry" {{ .hiddenTagSystemPrivateRegistry }}>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemPrivateRegistryServer">Server:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemPrivateRegistryServer" type="checkbox" name="systemPrivateRegistryServer" onclick="$('#regionSystemPrivateRegistryServer').toggle();" {{ .checkedTagSystemPrivateRegistryServer }}>
+							</div>
+						</div>
+						<div id="regionSystemPrivateRegistryServer" {{ .hiddenTagSystemPrivateRegistryServer }}>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryServerList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryServerList" type="checkbox" name="systemPrivateRegistryServerList" {{ .checkedTagSystemPrivateRegistryServerList }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryServerEdit">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryServerEdit" type="checkbox" name="systemPrivateRegistryServerEdit" {{ .checkedTagSystemPrivateRegistryServerEdit }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryServerDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryServerDelete" type="checkbox" name="systemPrivateRegistryServerDelete" {{ .checkedTagSystemPrivateRegistryServerDelete }}>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemPrivateRegistryRepository">Repository:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemPrivateRegistryRepository" type="checkbox" name="systemPrivateRegistryRepository" onclick="$('#regionSystemPrivateRegistryRepository').toggle();" {{ .checkedTagSystemPrivateRegistryRepository }}>
+							</div>
+						</div>
+						<div id="regionSystemPrivateRegistryRepository" {{ .hiddenTagSystemPrivateRegistryRepository }}>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryRepositoryList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryRepositoryList" type="checkbox" name="systemPrivateRegistryRepositoryList" {{ .checkedTagSystemPrivateRegistryRepositoryList }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryRepositoryDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryRepositoryDelete" type="checkbox" name="systemPrivateRegistryRepositoryDelete" {{ .checkedTagSystemPrivateRegistryRepositoryDelete }}>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemPrivateRegistryImage">Image:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemPrivateRegistryImage" type="checkbox" name="systemPrivateRegistryImage" onclick="$('#regionSystemPrivateRegistryImage').toggle();" {{ .checkedTagSystemPrivateRegistryImage }}>
+							</div>
+						</div>
+						<div id="regionSystemPrivateRegistryImage" {{ .hiddenTagSystemPrivateRegistryImage }}>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryImageList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryImageList" type="checkbox" name="systemPrivateRegistryImageList" {{ .checkedTagSystemPrivateRegistryImageList }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemPrivateRegistryImageDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemPrivateRegistryImageDelete" type="checkbox" name="systemPrivateRegistryImageDelete" {{ .checkedTagSystemPrivateRegistryImageDelete }}>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
 						<label class="col-md-4 control-label" for="systemUpgrade">Upgrade:</label>
 						<div class="col-md-offset-1 col-md-5 checkbox">
 							<input id="systemUpgrade" type="checkbox" name="systemUpgrade" {{ .checkedTagSystemUpgrade }}>

@@ -241,6 +241,21 @@ func (c *EditController) Get() {
 		setCheckedTag("/gui/system/rbac/role/list", "checkedTagSystemRBACRoleList", c.Data, pathMap)
 		setCheckedTag("/gui/system/rbac/role/edit", "checkedTagSystemRBACRoleCreate", c.Data, pathMap)
 		setCheckedTag("/gui/system/rbac/role/delete", "checkedTagSystemRBACRoleDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry", "checkedTagSystemPrivateRegistry", c.Data, pathMap)
+		setHiddenTag("/gui/system/privateregistry", "hiddenTagSystemPrivateRegistry", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/server", "checkedTagSystemPrivateRegistryServer", c.Data, pathMap)
+		setHiddenTag("/gui/system/privateregistry/server", "hiddenTagSystemPrivateRegistryServer", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/server/list", "checkedTagSystemPrivateRegistryServerList", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/server/edit", "checkedTagSystemPrivateRegistryServerCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/server/delete", "checkedTagSystemPrivateRegistryServerDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/repository", "checkedTagSystemPrivateRegistryRepository", c.Data, pathMap)
+		setHiddenTag("/gui/system/privateregistry/repository", "hiddenTagSystemPrivateRegistryRepository", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/repository/list", "checkedTagSystemPrivateRegistryRepositoryList", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/repository/delete", "checkedTagSystemPrivateRegistryRepositoryDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/image", "checkedTagSystemPrivateRegistryImage", c.Data, pathMap)
+		setHiddenTag("/gui/system/privateregistry/image", "hiddenTagSystemPrivateRegistryImage", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/image/list", "checkedTagSystemPrivateRegistryImageList", c.Data, pathMap)
+		setCheckedTag("/gui/system/privateregistry/image/delete", "checkedTagSystemPrivateRegistryImageDelete", c.Data, pathMap)
 		setCheckedTag("/gui/system/upgrade", "checkedTagSystemUpgrade", c.Data, pathMap)
 
 		c.Data["name"] = name
@@ -799,6 +814,57 @@ func (c *EditController) Post() {
 				}
 				if c.GetString("systemRBACRoleDelete") == "on" {
 					permission := &rbac.Permission{"systemRBACRoleDelete", identity.GetConponentName(), "GET", "/gui/system/rbac/role/delete"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+			}
+		}
+
+		if c.GetString("systemPrivateRegistry") == "on" {
+			permission := &rbac.Permission{"systemPrivateRegistry", identity.GetConponentName(), "GET", "/gui/system/privateregistry"}
+			permissionSlice = append(permissionSlice, permission)
+		} else {
+			if c.GetString("systemPrivateRegistryServer") == "on" {
+				permission := &rbac.Permission{"systemPrivateRegistryServer", identity.GetConponentName(), "GET", "/gui/system/privateregistry/server"}
+				permissionSlice = append(permissionSlice, permission)
+			} else {
+				if c.GetString("systemPrivateRegistryServerList") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryServerList", identity.GetConponentName(), "GET", "/gui/system/privateregistry/server/list"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemPrivateRegistryServerEdit") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryServerEdit", identity.GetConponentName(), "GET", "/gui/system/privateregistry/server/edit"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemPrivateRegistryServerDelete") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryServerDelete", identity.GetConponentName(), "GET", "/gui/system/privateregistry/server/delete"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+			}
+
+			if c.GetString("systemPrivateRegistryRepository") == "on" {
+				permission := &rbac.Permission{"systemPrivateRegistryRepository", identity.GetConponentName(), "GET", "/gui/system/privateregistry/repository"}
+				permissionSlice = append(permissionSlice, permission)
+			} else {
+				if c.GetString("systemPrivateRegistryRepositoryList") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryRepositoryList", identity.GetConponentName(), "GET", "/gui/system/privateregistry/repository/list"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemPrivateRegistryRepositoryDelete") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryRepositoryDelete", identity.GetConponentName(), "GET", "/gui/system/privateregistry/repository/delete"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+			}
+
+			if c.GetString("systemPrivateRegistryImage") == "on" {
+				permission := &rbac.Permission{"systemPrivateRegistryImage", identity.GetConponentName(), "GET", "/gui/system/privateregistry/image"}
+				permissionSlice = append(permissionSlice, permission)
+			} else {
+				if c.GetString("systemPrivateRegistryImageList") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryImageList", identity.GetConponentName(), "GET", "/gui/system/privateregistry/image/list"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemPrivateRegistryRepositoryDelete") == "on" {
+					permission := &rbac.Permission{"systemPrivateRegistryImageDelete", identity.GetConponentName(), "GET", "/gui/system/privateregistry/image/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}

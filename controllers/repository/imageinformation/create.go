@@ -27,12 +27,52 @@ type CreateController struct {
 	beego.Controller
 }
 
+type PrivateRegistry struct {
+	Name string
+	Host string
+	Port int
+}
+
 func (c *CreateController) Get() {
 	c.TplName = "repository/imageinformation/create.html"
 	guimessage := guimessagedisplay.GetGUIMessage(c)
 
 	// Authorization for web page display
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
+
+	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
+	cloudoneHost := beego.AppConfig.String("cloudoneHost")
+	cloudonePort := beego.AppConfig.String("cloudonePort")
+
+	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
+		"/api/v1/privateregistries/servers/"
+
+	privateRegistrySlice := make([]PrivateRegistry, 0)
+
+	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+
+	_, err := restclient.RequestGetWithStructure(url, &privateRegistrySlice, tokenHeaderMap)
+
+	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
+		return
+	}
+
+	if err != nil {
+		// Error
+		guimessage.AddDanger(err.Error())
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
+		return
+	}
+
+	if len(privateRegistrySlice) == 0 {
+		guimessage.AddWarning("At least one private registry is required. Please configure it in system.")
+		guimessage.RedirectMessage(c)
+		c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
+		return
+	}
+
+	c.Data["privateRegistrySlice"] = privateRegistrySlice
 
 	guimessage.OutputMessage(c.Data)
 }

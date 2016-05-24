@@ -1,0 +1,55 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Pepository List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="pull-right">
+				<div class="btn-group">
+					{{ str2html .hiddenTagGuiSystemPrivateRegistryRepositoryList }}
+						<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/privateregistry/repository/list?serverName={{.serverName}}">Cancel</a>
+					</div>
+				</div>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Tag</th>
+					<th>Server</th>
+					<th>Repository</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $imageKey, $image := .imageSlice}}
+					<tr>
+						<td>{{$imageKey}}</td>
+						<td>{{$image.Tag}}</td>
+						<td>{{$image.Server}}</td>
+						<td>{{$image.Repository}}</td>
+						
+						<td>
+							<div class="btn-group ">
+								{{ str2html $image.HiddenTagGuiSystemPrivateRegistryImageDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$image.Tag}}" data-color="btn-danger" data-herf="/gui/system/privateregistry/image/delete?serverName={{$image.Server}}&repositoryName={{$image.Repository}}&tag={{$image.Tag}}">Delete Image</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

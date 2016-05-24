@@ -23,7 +23,7 @@ func GetConponentName() string {
 	return componentName
 }
 
-func SetPriviledgeHiddenTag(data map[interface{}]interface{}, tagName string, user *rbac.User, method string, path string) {
+func SetPrivilegeHiddenTag(data map[interface{}]interface{}, tagName string, user *rbac.User, method string, path string) {
 	if user.HasPermission(componentName, method, path) {
 		data[tagName] = "<div class='btn-group'>"
 	} else {
@@ -215,6 +215,9 @@ func GetLayoutMenu(user *rbac.User) string {
 	}
 	if user.HasPermission(componentName, "GET", "/gui/system/rbac/user/list") {
 		buffer.WriteString("							<li><a href='/gui/system/rbac/user/list'>RBAC</a></li>\n")
+	}
+	if user.HasPermission(componentName, "GET", "/gui/system/privateregistry/server/list") {
+		buffer.WriteString("							<li><a href='/gui/system/privateregistry/server/list'>Private Registry</a></li>\n")
 	}
 	if user.HasPermission(componentName, "GET", "/gui/system/upgrade/list") {
 		buffer.WriteString("							<li><a href='/gui/system/upgrade'>Upgrade</a></li>\n")

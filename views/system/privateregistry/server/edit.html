@@ -1,0 +1,42 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/system/privateregistry/server/edit" method="post">
+				<input id="createOrUpdate" class="form-control" type="hidden" name="createOrUpdate" value="{{ .createOrUpdate }}">
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" {{ .nameFieldReadOnly }} required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="host">Host:</label>
+					<div class="col-md-9">
+						<input id="host" class="form-control" type="text" name="host" value="{{ .host }}" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="port">Port:</label>
+					<div class="col-md-9">
+						<input id="port" class="form-control" type="number" name="port" value="{{ .port }}" min="22" max="65535" required>
+					</div>
+				</div>
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/privateregistry/server/list">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" type="submit" value="{{.actionButtonValue}}">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

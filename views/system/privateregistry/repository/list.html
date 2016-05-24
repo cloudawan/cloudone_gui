@@ -1,0 +1,56 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>Pepository List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="pull-right">
+				<div class="btn-group">
+					{{ str2html .hiddenTagGuiSystemPrivateRegistryServerList }}
+						<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/privateregistry/server/list">Cancel</a>
+					</div>
+				</div>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Server</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $repositoryKey, $repository := .repositorySlice}}
+					<tr>
+						<td>{{$repositoryKey}}</td>
+						<td>{{$repository.Name}}</td>
+						<td>{{$repository.Server}}</td>
+						
+						<td>
+							<div class="btn-group ">
+								{{ str2html $repository.HiddenTagGuiSystemPrivateRegistryRepositoryList }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/privateregistry/image/list?serverName={{$repository.Server}}&repositoryName={{$repository.Name}}">Tag List</a>
+								</div>
+								{{ str2html $repository.HiddenTagGuiSystemPrivateRegistryRepositoryDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$repository.Name}}" data-color="btn-danger" data-herf="/gui/system/privateregistry/repository/delete?serverName={{$repository.Server}}&repositoryName={{$repository.Name}}">Delete All Images</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}
