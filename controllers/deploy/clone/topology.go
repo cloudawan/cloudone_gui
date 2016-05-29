@@ -187,7 +187,7 @@ func (c *TopologyController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger("Fail to get node topology with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.OutputMessage(c.Data)
 		return
 	}
@@ -213,7 +213,7 @@ func (c *TopologyController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.OutputMessage(c.Data)
 		return
 	}
@@ -262,7 +262,7 @@ func (c *TopologyController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.OutputMessage(c.Data)
 		return
 	}
@@ -372,7 +372,7 @@ func (c *TopologyController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/deploy/clone/select")
 		return
@@ -510,7 +510,7 @@ func (c *TopologyController) Post() {
 
 				if err != nil {
 					// Error
-					guimessage.AddDanger(err.Error())
+					guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 					guimessage.RedirectMessage(c)
 					c.Ctx.Redirect(302, "/gui/deploy/clone/select")
 					return
@@ -530,13 +530,7 @@ func (c *TopologyController) Post() {
 
 				if err != nil {
 					// Error
-					errorMessage, _ := jsonMap["Error"].(string)
-					if strings.HasPrefix(errorMessage, "Replication controller already exists") {
-						guimessage.AddDanger("Replication controller " + launch.LaunchClusterApplication.Name + " already exists")
-					} else {
-						guimessage.AddDanger(err.Error())
-					}
-
+					guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 					guimessage.RedirectMessage(c)
 					c.Ctx.Redirect(302, "/gui/deploy/clone/select")
 					return
@@ -574,7 +568,7 @@ func (c *TopologyController) Post() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			guimessage.RedirectMessage(c)
 			c.Ctx.Redirect(302, "/gui/deploy/clone/select")
 			return

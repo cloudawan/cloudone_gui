@@ -61,7 +61,7 @@ func (c *BookmarkController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		c.Ctx.Redirect(302, "/gui/system/namespace/list")
 		guimessage.RedirectMessage(c)
 		return
@@ -84,7 +84,7 @@ func (c *BookmarkController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		c.Ctx.Redirect(302, "/gui/system/namespace/list")
 		guimessage.RedirectMessage(c)
 		return

@@ -69,7 +69,7 @@ func (c *UpgradeController) Post() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess(imageInformationName + " is launched")
 	}

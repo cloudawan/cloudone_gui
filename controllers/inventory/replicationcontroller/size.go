@@ -68,7 +68,7 @@ func (c *SizeController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Replication Controller " + name + " is resized")
 	}

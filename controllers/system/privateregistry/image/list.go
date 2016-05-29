@@ -76,7 +76,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		imageSlice := make([]Image, 0)
 		for _, tag := range tagSlice {

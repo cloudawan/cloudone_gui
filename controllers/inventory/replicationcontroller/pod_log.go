@@ -54,7 +54,7 @@ func (c *PodLogController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		c.Data["logJsonMap"] = jsonMap
 	}

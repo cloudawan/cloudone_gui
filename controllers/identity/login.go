@@ -76,17 +76,10 @@ func (c *LoginController) Post() {
 		"/api/v1/authorizations/tokens/"
 	userData := UserData{username, password}
 	tokenData := TokenData{}
-	errorInterface, err := restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
-	errorJsonMap, _ := errorInterface.(map[string]interface{})
+	_, err = restclient.RequestPostWithStructure(url, userData, &tokenData, nil)
 
 	if err != nil {
-		if errorJsonMap != nil {
-			errorMessage, _ := errorJsonMap["ErrorMessage"].(string)
-			guimessage.AddDanger(errorMessage)
-		} else {
-			guimessage.AddDanger(err.Error())
-		}
-
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return
@@ -97,7 +90,7 @@ func (c *LoginController) Post() {
 	user := &rbac.User{}
 	_, err = restclient.RequestGetWithStructure(url, &user, nil)
 	if err != nil {
-		guimessage.AddDanger("Fail to get user data with error " + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return
@@ -152,7 +145,7 @@ func (c *LoginController) Post() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger("Fail to get namespace data with error " + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/login/")
 		return

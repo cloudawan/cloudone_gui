@@ -59,7 +59,7 @@ func (c *CreateController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/repository/imageinformation/list")
 		return
@@ -156,7 +156,7 @@ func (c *CreateController) Post() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess(name + " is launched")
 	}

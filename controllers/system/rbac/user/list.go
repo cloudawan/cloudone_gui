@@ -79,7 +79,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/namespaces"
 
@@ -92,7 +92,7 @@ func (c *ListController) Get() {
 		}
 
 		if err != nil {
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			simplifiedUserSlice := make([]SimplifiedUser, 0)
 			for _, user := range userSlice {

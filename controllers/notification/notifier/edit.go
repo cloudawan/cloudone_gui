@@ -75,7 +75,7 @@ func (c *EditController) Get() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	}
 
 	url = cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -89,7 +89,7 @@ func (c *EditController) Get() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	}
 
 	c.Data["emailServerSMTPSlice"] = emailServerSMTPSlice
@@ -129,7 +129,7 @@ func (c *EditController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			for _, notifier := range replicationControllerNotifier.NotifierSlice {
 				switch notifier.Kind {
@@ -137,7 +137,7 @@ func (c *EditController) Get() {
 					notifierEmail := NotifierEmail{}
 					err := json.Unmarshal([]byte(notifier.Data), &notifierEmail)
 					if err != nil {
-						guimessage.AddDanger(err.Error())
+						guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 					} else {
 						receiverAccountList := ""
 						length := len(notifierEmail.ReceiverAccountSlice)
@@ -160,7 +160,7 @@ func (c *EditController) Get() {
 				case "smsNexmo":
 					notifierSMSNexmo := NotifierSMSNexmo{}
 					if err != nil {
-						guimessage.AddDanger(err.Error())
+						guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 					} else {
 						receiverNumberList := ""
 						length := len(notifierSMSNexmo.ReceiverNumberSlice)
@@ -341,7 +341,7 @@ func (c *EditController) Post() {
 		}
 		byteSlice, err := json.Marshal(notifierEmail)
 		if err != nil {
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			guimessage.OutputMessage(c.Data)
 			return
 		}
@@ -363,7 +363,7 @@ func (c *EditController) Post() {
 		}
 		byteSlice, err := json.Marshal(notifierSMSNexmo)
 		if err != nil {
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			guimessage.OutputMessage(c.Data)
 			return
 		}
@@ -399,7 +399,7 @@ func (c *EditController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Email notifier for " + kind + " " + name + " is edited")
 	}

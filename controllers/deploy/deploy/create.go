@@ -124,7 +124,7 @@ func (c *CreateController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 
 		url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort + "/api/v1/nodes/topology"
@@ -139,7 +139,7 @@ func (c *CreateController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			filteredRegionSlice := make([]Region, 0)
 			for _, region := range regionSlice {
@@ -207,7 +207,7 @@ func (c *CreateController) Post() {
 	if resourceCPURequestError == nil && resourceCPULimitError == nil {
 		if resourceCPURequest > resourceCPULimit {
 			// Error
-			guimessage.AddDanger("CPU request must be smaller or equal to CPU limit")
+			guimessage.AddWarning("CPU request must be smaller or equal to CPU limit")
 			guimessage.RedirectMessage(c)
 			c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 			return
@@ -217,7 +217,7 @@ func (c *CreateController) Post() {
 	if resourceMemoryRequestError == nil && resourceMemoryLimitError == nil {
 		if resourceMemoryRequest > resourceMemoryLimit {
 			// Error
-			guimessage.AddDanger("Memory request must be smaller or equal to Memory limit")
+			guimessage.AddWarning("Memory request must be smaller or equal to Memory limit")
 			guimessage.RedirectMessage(c)
 			c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
 			return
@@ -333,7 +333,7 @@ func (c *CreateController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Create deploy " + imageInformationName + " version " + version + " success")
 	}

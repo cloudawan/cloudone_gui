@@ -55,7 +55,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for _, deployInformation := range deployInformationSlice {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -68,7 +68,7 @@ func (c *DeleteController) Get() {
 			}
 
 			if err != nil {
-				guimessage.AddDanger(err.Error())
+				guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			}
 		}
 	}
@@ -86,7 +86,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for _, deployClusterApplication := range deployClusterApplicationSlice {
 			url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
@@ -99,7 +99,7 @@ func (c *DeleteController) Get() {
 			}
 
 			if err != nil {
-				guimessage.AddDanger(err.Error())
+				guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			}
 		}
 	}
@@ -116,7 +116,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Namespace " + name + " is deleted")
 
@@ -139,7 +139,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for _, replicationControllerAutoScaler := range replicationControllerAutoScalerSlice {
 			if replicationControllerAutoScaler.Namespace == name {
@@ -153,7 +153,7 @@ func (c *DeleteController) Get() {
 				}
 
 				if err != nil {
-					guimessage.AddDanger(err.Error())
+					guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 				}
 			}
 		}
@@ -172,7 +172,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for _, replicationControllerNotifier := range replicationControllerNotifierSlice {
 			if replicationControllerNotifier.Namespace == name {
@@ -186,7 +186,7 @@ func (c *DeleteController) Get() {
 				}
 
 				if err != nil {
-					guimessage.AddDanger(err.Error())
+					guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 				}
 			}
 		}

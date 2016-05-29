@@ -65,7 +65,7 @@ func (c *IndexController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger("Fail to get all replication controller name with error " + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		nameSlice := make([]string, 0)
 		nameSlice = append(nameSlice, allKeyword)

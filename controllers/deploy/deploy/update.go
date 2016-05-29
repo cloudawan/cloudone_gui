@@ -92,7 +92,7 @@ func (c *UpdateController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		// Redirect to list
 		c.Ctx.Redirect(302, "/gui/deploy/deploy/list")
@@ -115,7 +115,7 @@ func (c *UpdateController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		filteredImageRecordSlice := make([]ImageRecord, 0)
 		for _, imageRecord := range imageRecordSlice {
@@ -192,7 +192,7 @@ func (c *UpdateController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Update deploy " + imageInformationName + " to version " + version + " success")
 	}

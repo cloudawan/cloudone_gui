@@ -68,7 +68,7 @@ func (c *CreateController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		hostList := ""
 		length := len(glusterfsCluster.HostSlice)
@@ -143,7 +143,7 @@ func (c *CreateController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Glusterfs volume " + name + " is created and started")
 	}

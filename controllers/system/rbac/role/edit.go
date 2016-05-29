@@ -61,7 +61,7 @@ func (c *EditController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			c.Ctx.Redirect(302, "/gui/system/rbac/role/list")
 			guimessage.RedirectMessage(c)
 			return
@@ -911,7 +911,7 @@ func (c *EditController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Role " + name + " is edited")
 	}

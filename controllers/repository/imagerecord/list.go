@@ -86,7 +86,7 @@ func (c *ListController) Get() {
 
 		} else {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		}
 	}
 

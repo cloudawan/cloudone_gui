@@ -49,7 +49,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Glusterfs volume " + glusterfsVolume + " is deleted")
 	}

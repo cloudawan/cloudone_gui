@@ -91,7 +91,7 @@ func (c *LaunchController) Get() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger("Fail to get data with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		// Redirect to list
 		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
@@ -111,7 +111,7 @@ func (c *LaunchController) Get() {
 	}
 
 	if err != nil {
-		guimessage.AddDanger("Fail to get node topology with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		// Redirect to list
 		c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
@@ -216,11 +216,9 @@ func (c *LaunchController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/clusterapplications/launch/" + namespace + "/" + name
 
-	jsonMap := make(map[string]interface{})
-
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 
-	_, err := restclient.RequestPostWithStructure(url, clusterLaunch, &jsonMap, tokenHeaderMap)
+	_, err := restclient.RequestPostWithStructure(url, clusterLaunch, nil, tokenHeaderMap)
 
 	if identity.IsTokenInvalidAndRedirect(c, c.Ctx, err) {
 		return
@@ -228,12 +226,7 @@ func (c *LaunchController) Post() {
 
 	if err != nil {
 		// Error
-		errorMessage, _ := jsonMap["Error"].(string)
-		if errorMessage == "The cluster application already exists" {
-			guimessage.AddDanger("Cluster application " + name + " already exists")
-		} else {
-			guimessage.AddDanger(err.Error())
-		}
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Cluster application " + name + " is launched")
 	}

@@ -55,7 +55,7 @@ func (c *LogController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		c.Data["log"] = buildLog.Content
 	}

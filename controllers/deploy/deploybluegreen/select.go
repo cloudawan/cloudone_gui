@@ -185,7 +185,7 @@ func (c *SelectController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Create blue green deployment " + imageInformation + " success")
 	}

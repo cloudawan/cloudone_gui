@@ -64,7 +64,7 @@ func (c *EditController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger("Fail to get the cluster date with error " + err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			guimessage.OutputMessage(c.Data)
 			return
 		}
@@ -159,7 +159,7 @@ func (c *EditController) Post() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			guimessage.AddSuccess("Glusterfs cluster " + name + " is created")
 		}
@@ -177,7 +177,7 @@ func (c *EditController) Post() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			guimessage.AddSuccess("Glusterfs cluster " + name + " is updated")
 		}

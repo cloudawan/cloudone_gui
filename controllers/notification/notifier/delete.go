@@ -49,7 +49,7 @@ func (c *DeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Email notifier for " + kind + " " + name + " is deleted")
 	}

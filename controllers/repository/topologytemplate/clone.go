@@ -55,7 +55,7 @@ func (c *CloneController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger("Fail to get topology with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
 		return
@@ -98,7 +98,7 @@ func (c *CloneController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger("Fail to get node topology with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
 		return
@@ -142,7 +142,7 @@ func (c *CloneController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger("Fail to get topology with error" + err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.RedirectMessage(c)
 		c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
 		return
@@ -312,7 +312,7 @@ func (c *CloneController) Post() {
 
 			if err != nil {
 				// Error
-				guimessage.AddDanger(err.Error())
+				guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 				guimessage.RedirectMessage(c)
 				c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
 				return
@@ -331,14 +331,7 @@ func (c *CloneController) Post() {
 			}
 
 			if err != nil {
-				// Error
-				errorMessage, _ := jsonMap["Error"].(string)
-				if strings.HasPrefix(errorMessage, "Replication controller already exists") {
-					guimessage.AddDanger("Replication controller " + launch.LaunchClusterApplication.Name + " already exists")
-				} else {
-					guimessage.AddDanger(err.Error())
-				}
-
+				guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 				guimessage.RedirectMessage(c)
 				c.Ctx.Redirect(302, "/gui/repository/topologytemplate/list")
 				return

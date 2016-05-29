@@ -83,7 +83,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		// Only show those belonging to this namespace
 		filteredDeployInformationSlice := make([]DeployInformation, 0)

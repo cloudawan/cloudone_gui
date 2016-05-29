@@ -48,7 +48,7 @@ func (c *PodDeleteController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Pod " + pod + " is deleted")
 	}

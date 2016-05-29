@@ -79,7 +79,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for i := 0; i < len(deployBlueGreenSlice); i++ {
 			if deployBlueGreenSlice[i].NodePort == 0 {

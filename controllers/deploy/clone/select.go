@@ -55,7 +55,7 @@ func (c *SelectController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		guimessage.OutputMessage(c.Data)
 		return
 	}

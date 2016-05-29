@@ -47,7 +47,7 @@ func (c *EditController) Get() {
 		}
 
 		if err != nil {
-			guimessage.AddDanger("Fail to get with error" + err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			// Redirect to list
 			c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
@@ -55,7 +55,7 @@ func (c *EditController) Get() {
 		} else {
 			environmentByteSlice, err := json.MarshalIndent(cluster.Environment, "", "    ")
 			if err != nil {
-				guimessage.AddDanger("Fail to get with error" + err.Error())
+				guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 				// Redirect to list
 				c.Ctx.Redirect(302, "/gui/repository/thirdparty/list")
 
@@ -243,7 +243,7 @@ func (c *EditController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Third party application " + name + " is edited")
 	}

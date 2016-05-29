@@ -69,7 +69,7 @@ func (c *EditController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			c.Data["maximumReplica"] = replicationControllerAutoScaler.MaximumReplica
 			c.Data["minimumReplica"] = replicationControllerAutoScaler.MinimumReplica
@@ -228,7 +228,7 @@ func (c *EditController) Post() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		guimessage.AddSuccess("Auto scaler for " + kind + " " + name + " is edited")
 	}

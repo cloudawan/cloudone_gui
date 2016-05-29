@@ -60,7 +60,7 @@ func (c *EditController) Get() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger("Fail to get the credential with error " + err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 			guimessage.OutputMessage(c.Data)
 			return
 		}
@@ -118,7 +118,7 @@ func (c *EditController) Post() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			guimessage.AddSuccess("Host credential " + ip + " is created")
 		}
@@ -136,7 +136,7 @@ func (c *EditController) Post() {
 
 		if err != nil {
 			// Error
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			guimessage.AddSuccess("Host credential " + ip + " is updated")
 		}

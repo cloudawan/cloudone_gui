@@ -87,7 +87,7 @@ func (c *ListController) Get() {
 
 	if err != nil {
 		// Error
-		guimessage.AddDanger(err.Error())
+		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
 		for i := 0; i < len(auditLogSlice); i++ {
 			auditLogSlice[i].CreatedTime = auditLogSlice[i].CreatedTime.Local()
@@ -135,7 +135,7 @@ func (c *ListController) Get() {
 		_, err = restclient.RequestGetWithStructure(url, &userSlice, tokenHeaderMap)
 
 		if err != nil {
-			guimessage.AddDanger(err.Error())
+			guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 		} else {
 			userDataSlice := make([]UserData, 0)
 			userDataSlice = append(userDataSlice, UserData{"All", ""})
