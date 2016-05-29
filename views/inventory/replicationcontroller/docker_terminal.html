@@ -11,7 +11,7 @@
 	<!-- Tab panes -->
 	<div class="tab-content">
 		<div class="">
-			<iframe id="iframeTerminal" width="1145" height="700"></iframe>
+			<iframe id="iframeTerminal" width="1000" height="500"></iframe>
 		</div>
 		<div class="">
 			<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/inventory/replicationcontroller/list">Cancel</a>
@@ -69,6 +69,10 @@
 		
 		term.open(document.getElementById('iframeTerminal').contentDocument.body);
 		
+		adjustedWidth = 10 + document.getElementById('iframeTerminal').contentDocument.body.scrollWidth;
+		adjustedHeight = 10 + document.getElementById('iframeTerminal').contentDocument.body.scrollHeight;
+		$("#iframeTerminal").width(adjustedWidth);
+		$("#iframeTerminal").height(adjustedHeight);
 	})();
 
 	</script>
