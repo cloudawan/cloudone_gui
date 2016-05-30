@@ -30,6 +30,7 @@ type ListController struct {
 type Credential struct {
 	IP                                     string
 	SSH                                    SSH
+	Disabled                               bool
 	HiddenTagGuiSystemHostCredentialEdit   string
 	HiddenTagGuiSystemHostCredentialDelete string
 }

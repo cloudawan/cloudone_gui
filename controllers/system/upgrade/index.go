@@ -54,8 +54,9 @@ func (c *IndexController) Get() {
 }
 
 type Credential struct {
-	IP  string
-	SSH SSH
+	IP       string
+	SSH      SSH
+	Disabled bool
 }
 
 type SSH struct {
@@ -133,36 +134,38 @@ func UpgradeDockerImage(ws *websocket.Conn, credentialSlice []Credential, path s
 	errorChannel := make(chan error, totalAmount)
 
 	for _, credential := range credentialSlice {
-		go func(credential Credential) {
-			ws.Write([]byte("Start to pull " + imageUri + " on host " + credential.IP + "\n"))
+		if credential.Disabled == false {
+			go func(credential Credential) {
+				ws.Write([]byte("Start to pull " + imageUri + " on host " + credential.IP + "\n"))
 
-			commandSlice := make([]string, 0)
-			commandSlice = append(commandSlice, "sudo docker pull "+imageUri+"\n")
-			interactiveMap := make(map[string]string)
-			interactiveMap["[sudo]"] = credential.SSH.Password + "\n"
+				commandSlice := make([]string, 0)
+				commandSlice = append(commandSlice, "sudo docker pull "+imageUri+"\n")
+				interactiveMap := make(map[string]string)
+				interactiveMap["[sudo]"] = credential.SSH.Password + "\n"
 
-			resultSlice, err := sshclient.InteractiveSSH(
-				2*time.Second,
-				10*time.Minute,
-				credential.IP,
-				credential.SSH.Port,
-				credential.SSH.User,
-				credential.SSH.Password,
-				commandSlice,
-				interactiveMap)
+				resultSlice, err := sshclient.InteractiveSSH(
+					2*time.Second,
+					10*time.Minute,
+					credential.IP,
+					credential.SSH.Port,
+					credential.SSH.User,
+					credential.SSH.Password,
+					commandSlice,
+					interactiveMap)
 
-			if err != nil {
-				errorChannel <- err
-				ws.Write([]byte(imageUri + " on host " + credential.IP + " has error to upgraded\n"))
-				for _, result := range resultSlice {
-					ws.Write([]byte(result + "\n"))
+				if err != nil {
+					errorChannel <- err
+					ws.Write([]byte(imageUri + " on host " + credential.IP + " has error to upgraded\n"))
+					for _, result := range resultSlice {
+						ws.Write([]byte(result + "\n"))
+					}
+
+				} else {
+					errorChannel <- nil
+					ws.Write([]byte(imageUri + " on host " + credential.IP + " is upgraded\n"))
 				}
-
-			} else {
-				errorChannel <- nil
-				ws.Write([]byte(imageUri + " on host " + credential.IP + " is upgraded\n"))
-			}
-		}(credential)
+			}(credential)
+		}
 	}
 
 	// Wait for all go routine to finish

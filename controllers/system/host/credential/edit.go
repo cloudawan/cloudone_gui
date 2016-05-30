@@ -38,6 +38,7 @@ func (c *EditController) Get() {
 		c.Data["actionButtonValue"] = "Create"
 		c.Data["pageHeader"] = "Create Host Credential"
 		c.Data["createOrUpdate"] = "create"
+		c.Data["fieldDisabledChecked"] = ""
 
 		c.Data["sshPort"] = 22
 	} else {
@@ -73,6 +74,11 @@ func (c *EditController) Get() {
 		c.Data["sshPort"] = credential.SSH.Port
 		c.Data["sshUser"] = credential.SSH.User
 		c.Data["sshPassword"] = credential.SSH.Password
+		if credential.Disabled {
+			c.Data["fieldDisabledChecked"] = "checked"
+		} else {
+			c.Data["fieldDisabledChecked"] = ""
+		}
 
 		c.Data["ipFieldReadOnly"] = "readonly"
 	}
@@ -90,8 +96,14 @@ func (c *EditController) Post() {
 	createOrUpdate := c.GetString("createOrUpdate")
 	ip := c.GetString("ip")
 	sshPort, _ := c.GetInt("sshPort")
+	disabledText := c.GetString("disabled")
 	sshUser := c.GetString("sshUser")
 	sshPassword := c.GetString("sshPassword")
+
+	disabled := false
+	if disabledText == "on" {
+		disabled = true
+	}
 
 	credential := Credential{
 		ip,
@@ -100,6 +112,7 @@ func (c *EditController) Post() {
 			sshUser,
 			sshPassword,
 		},
+		disabled,
 		"",
 		"",
 	}
