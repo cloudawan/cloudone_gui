@@ -113,6 +113,18 @@
 							<textarea id="upgradeServiceContent" class="form-control" name="upgradeServiceContent" rows="20"></textarea>
 						</div>
 					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="httpsCertFile">GUI Certificate:</label>
+						<div class="col-md-9">
+							<textarea id="httpsCertFile" class="form-control" name="httpsCertFile" rows="20"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label" for="httpsKeyFile">GUI Key:</label>
+						<div class="col-md-9">
+							<textarea id="httpsKeyFile" class="form-control" name="httpsKeyFile" rows="20"></textarea>
+						</div>
+					</div>
 				</div>
 				
 				<input class="btn btn-md btn-info pull-right" onclick="$('#inputData').toggle();$('#outputData').toggle();moduleSystemUpgrade.query(moduleSystemUpgrade.parameter)" value="Upgrade">
@@ -143,6 +155,8 @@
 				"upgradeReplicationControllerContent=" + encodeURIComponent($("#upgradeReplicationControllerContent").val()) + "&" +
 				"upgradeServiceName=" + encodeURIComponent($("#upgradeServiceName").val()) + "&" +
 				"upgradeServiceContent=" + encodeURIComponent($("#upgradeServiceContent").val()) + "&" +
+				"httpsCertFile=" + encodeURIComponent($("#httpsCertFile").val()) + "&" +
+				"httpsKeyFile=" + encodeURIComponent($("#httpsKeyFile").val()) + "&" +
 				"token="+{{.token}};
 
 			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/system/upgrade/websocket?" + encodedParameter;

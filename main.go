@@ -27,5 +27,7 @@ func main() {
 	beego.InsertFilter("/api/v1/*", beego.BeforeRouter, restapiidentity.FilterToken)
 	beego.InsertFilter("/guirestapi/v1/*", beego.BeforeRouter, identity.FilterUser)
 
+	beego.AppConfigPath = "/etc/cloudone_gui/app.conf"
+
 	beego.Run()
 }

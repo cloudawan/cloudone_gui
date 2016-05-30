@@ -24,6 +24,7 @@ import (
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"github.com/cloudawan/cloudone_utility/sshclient"
 	"golang.org/x/net/websocket"
+	"io/ioutil"
 	"time"
 )
 
@@ -209,6 +210,32 @@ func stopDockerContainer(credential Credential, containerID string) error {
 	}
 }
 
+func configureCertificate(ws *websocket.Conn, httpsCertFileContent string, httpsKeyFileContent string) (bool, error) {
+	if len(httpsCertFileContent) > 0 {
+		httpsCertFilePath := beego.AppConfig.String("HTTPSCertFile")
+		err := ioutil.WriteFile(httpsCertFilePath, []byte(httpsCertFileContent), 0644)
+		if err != nil {
+			return false, err
+		}
+		ws.Write([]byte("The GUI certificate is replaced\n"))
+	}
+
+	if len(httpsKeyFileContent) > 0 {
+		httpsKeyFilePath := beego.AppConfig.String("HTTPSKeyFile")
+		err := ioutil.WriteFile(httpsKeyFilePath, []byte(httpsKeyFileContent), 0644)
+		if err != nil {
+			return false, err
+		}
+		ws.Write([]byte("The GUI key is replaced\n"))
+	}
+
+	if len(httpsCertFileContent) > 0 || len(httpsKeyFileContent) > 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 func ProxyServer(ws *websocket.Conn) {
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
@@ -233,10 +260,24 @@ func ProxyServer(ws *websocket.Conn) {
 	upgradeReplicationControllerContent := getParameter(parameterMap, "upgradeReplicationControllerContent")
 	upgradeServiceName := getParameter(parameterMap, "upgradeServiceName")
 	upgradeServiceContent := getParameter(parameterMap, "upgradeServiceContent")
+	httpsCertFileContent := getParameter(parameterMap, "httpsCertFile")
+	httpsKeyFileContent := getParameter(parameterMap, "httpsKeyFile")
 
 	token := getParameter(parameterMap, "token")
 	headerMap := make(map[string]string)
 	headerMap["token"] = token
+
+	// Configre certificate
+	certificateChanged, err := configureCertificate(ws, httpsCertFileContent, httpsKeyFileContent)
+	if err != nil {
+		errorMessage := "Configure certificates with error " + err.Error() + "\n"
+		ws.Write([]byte(errorMessage))
+		ws.Close()
+		return
+	}
+	if certificateChanged {
+		upgradeCloudoneGUI = "true"
+	}
 
 	replicationControllerJsonMap := make(map[string]interface{})
 	serviceJsonMap := make(map[string]interface{})
@@ -267,7 +308,7 @@ func ProxyServer(ws *websocket.Conn) {
 
 	credentialSlice := make([]Credential, 0)
 
-	_, err := restclient.RequestGetWithStructure(url, &credentialSlice, headerMap)
+	_, err = restclient.RequestGetWithStructure(url, &credentialSlice, headerMap)
 
 	if identity.IsTokenInvalid(err) {
 		ws.Write([]byte(err.Error()))
