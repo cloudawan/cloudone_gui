@@ -165,6 +165,9 @@ func UpgradeDockerImage(ws *websocket.Conn, credentialSlice []Credential, path s
 					ws.Write([]byte(imageUri + " on host " + credential.IP + " is upgraded\n"))
 				}
 			}(credential)
+		} else {
+			errorChannel <- nil
+			ws.Write([]byte("The host " + credential.IP + " is passed since it is disabled\n"))
 		}
 	}
 
