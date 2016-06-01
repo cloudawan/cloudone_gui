@@ -148,11 +148,25 @@ func (c *CreateController) Get() {
 				}
 			}
 
+			namespace, _ := c.GetSession("namespace").(string)
+
 			c.Data["regionSlice"] = filteredRegionSlice
 
 			filteredImageRecordSlice := make([]ImageRecord, 0)
 			for _, imageRecord := range imageRecordSlice {
 				if imageRecord.Failure == false {
+					if imageRecord.Environment != nil {
+						// Try to set the known common parameter
+						for key, _ := range imageRecord.Environment {
+							if key == "SERVICE_NAME" {
+								imageRecord.Environment[key] = name
+							}
+							if key == "NAMESPACE" {
+								imageRecord.Environment[key] = namespace
+							}
+						}
+					}
+
 					filteredImageRecordSlice = append(filteredImageRecordSlice, imageRecord)
 				}
 			}
