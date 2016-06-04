@@ -52,6 +52,7 @@
 		
 			function onError(evt)
 			{
+				$("#outputTextarea").val($("#outputTextarea").val() + evt.data);
 				//alert(evt);
 			}
 		};

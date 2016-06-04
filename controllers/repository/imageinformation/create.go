@@ -158,7 +158,7 @@ func (c *CreateController) Post() {
 	if err != nil {
 		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
-		guimessage.AddSuccess(name + " is launched")
+		guimessage.AddSuccess("The build " + name + " is launched asynchronizedly")
 	}
 
 	c.Ctx.Redirect(302, "/gui/repository/imageinformation/log?imageInformation="+imageInformation.Name)

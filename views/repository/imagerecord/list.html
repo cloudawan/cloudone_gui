@@ -40,7 +40,7 @@
 						<td>{{$imageRecordKey}}</td>
 						<td>{{$imageRecord.ImageInformation}}</td>
 						<td>{{$imageRecord.Version}}</td>
-						<td>{{$imageRecord.Failure}}</td>
+						<td style="color:{{$imageRecord.FieldFailureStyleColor}};" >{{$imageRecord.Failure}}</td>
 						<td>{{$imageRecord.Path}}</td>
 						<td>
 							{{range $versionKey, $versionValue := $imageRecord.VersionInfo}}

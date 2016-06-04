@@ -37,6 +37,7 @@ type ImageRecord struct {
 	Description                             string
 	CreatedTime                             string
 	Failure                                 bool
+	FieldFailureStyleColor                  string
 	HiddenTagGuiRepositoryImageRecordLog    string
 	HiddenTagGuiRepositoryImageRecordDelete string
 }
@@ -91,6 +92,9 @@ func (c *ListController) Get() {
 	}
 
 	for i := 0; i < len(imageRecordSlice); i++ {
+		if imageRecordSlice[i].Failure {
+			imageRecordSlice[i].FieldFailureStyleColor = "red"
+		}
 		if hasGuiRepositoryImageRecordLog {
 			imageRecordSlice[i].HiddenTagGuiRepositoryImageRecordLog = "<div class='btn-group'>"
 		} else {
