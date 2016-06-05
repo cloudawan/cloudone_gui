@@ -14,8 +14,11 @@
 					<label class="col-md-3 control-label" for="kind">Type:</label>
 					<div class="col-md-9">
 						<select id="kind" class="form-control" name="kind" {{ .readonly }}>
+							<option value="application" {{ .kindApplicationSelected }}>Application</option>
+							<!--
 							<option value="selector" {{ .kindSelectorSelected }}>Selector</option>
 							<option value="replicationController" {{ .kindReplicationControllerSelected }}>ReplicationController</option>
+							-->
 						</select>
 					</div>
 				</div>

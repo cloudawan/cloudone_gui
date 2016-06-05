@@ -119,9 +119,15 @@ func (c *EditController) Get() {
 			if kind == "selector" {
 				c.Data["kindSelectorSelected"] = "selected"
 				c.Data["kindReplicationControllerSelected"] = ""
+				c.Data["kindApplicationSelected"] = ""
 			} else if kind == "replicationController" {
 				c.Data["kindSelectorSelected"] = ""
 				c.Data["kindReplicationControllerSelected"] = "selected"
+				c.Data["kindApplicationSelected"] = ""
+			} else if kind == "application" {
+				c.Data["kindSelectorSelected"] = ""
+				c.Data["kindReplicationControllerSelected"] = ""
+				c.Data["kindApplicationSelected"] = "selected"
 			}
 		}
 
