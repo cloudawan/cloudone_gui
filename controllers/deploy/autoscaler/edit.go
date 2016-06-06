@@ -116,18 +116,13 @@ func (c *EditController) Get() {
 			c.Data["coolDownDuration"] = coolDownDurationInSecond
 			c.Data["readonly"] = "readonly"
 
-			if kind == "selector" {
-				c.Data["kindSelectorSelected"] = "selected"
-				c.Data["kindReplicationControllerSelected"] = ""
-				c.Data["kindApplicationSelected"] = ""
-			} else if kind == "replicationController" {
-				c.Data["kindSelectorSelected"] = ""
-				c.Data["kindReplicationControllerSelected"] = "selected"
-				c.Data["kindApplicationSelected"] = ""
-			} else if kind == "application" {
-				c.Data["kindSelectorSelected"] = ""
-				c.Data["kindReplicationControllerSelected"] = ""
+			switch kind {
+			case "application":
 				c.Data["kindApplicationSelected"] = "selected"
+			case "selector":
+				c.Data["kindSelectorSelected"] = "selected"
+			case "replicationController":
+				c.Data["kindReplicationControllerSelected"] = "selected"
 			}
 		}
 

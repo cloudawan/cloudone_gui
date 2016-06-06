@@ -94,6 +94,10 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
+		namespace, _ := c.GetSession("namespace").(string)
+
+		filteredReplicationControllerAutoScalerSlice := make([]ReplicationControllerAutoScaler, 0)
+
 		for i := 0; i < len(replicationControllerAutoScalerSlice); i++ {
 			if hasGuiDeployAutoScalerEdit {
 				replicationControllerAutoScalerSlice[i].HiddenTagGuiDeployAutoScalerEdit = "<div class='btn-group'>"
@@ -105,10 +109,14 @@ func (c *ListController) Get() {
 			} else {
 				replicationControllerAutoScalerSlice[i].HiddenTagGuiDeployAutoScalerDelete = "<div hidden>"
 			}
+
+			if replicationControllerAutoScalerSlice[i].Namespace == namespace {
+				filteredReplicationControllerAutoScalerSlice = append(filteredReplicationControllerAutoScalerSlice, replicationControllerAutoScalerSlice[i])
+			}
 		}
 
-		sort.Sort(ByReplicationControllerAutoScaler(replicationControllerAutoScalerSlice))
-		c.Data["replicationControllerAutoScalerSlice"] = replicationControllerAutoScalerSlice
+		sort.Sort(ByReplicationControllerAutoScaler(filteredReplicationControllerAutoScalerSlice))
+		c.Data["replicationControllerAutoScalerSlice"] = filteredReplicationControllerAutoScalerSlice
 	}
 
 	guimessage.OutputMessage(c.Data)

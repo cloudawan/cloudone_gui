@@ -234,10 +234,12 @@ func (c *EditController) Get() {
 		c.Data["selectorSelected"] = ""
 		c.Data["replicationControllerSelected"] = ""
 		switch kind {
+		case "application":
+			c.Data["kindApplicationSelected"] = "selected"
 		case "selector":
-			c.Data["selectorSelected"] = "selected"
+			c.Data["kindSelectorSelected"] = "selected"
 		case "replicationController":
-			c.Data["replicationControllerSelected"] = "selected"
+			c.Data["kindReplicationControllerSelected"] = "selected"
 		}
 	}
 

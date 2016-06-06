@@ -109,6 +109,10 @@ func (c *ListController) Get() {
 		// Error
 		guimessage.AddDanger(guimessagedisplay.GetErrorMessage(err))
 	} else {
+		namespace, _ := c.GetSession("namespace").(string)
+
+		filteredReplicationControllerNotifierSlice := make([]ReplicationControllerNotifier, 0)
+
 		for i := 0; i < len(replicationControllerNotifierSlice); i++ {
 			if hasGuiNotificationNotifierEdit {
 				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierEdit = "<div class='btn-group'>"
@@ -120,10 +124,14 @@ func (c *ListController) Get() {
 			} else {
 				replicationControllerNotifierSlice[i].HiddenTagGuiNotificationNotifierDelete = "<div hidden>"
 			}
+
+			if replicationControllerNotifierSlice[i].Namespace == namespace {
+				filteredReplicationControllerNotifierSlice = append(filteredReplicationControllerNotifierSlice, replicationControllerNotifierSlice[i])
+			}
 		}
 
-		sort.Sort(ByReplicationControllerNotifier(replicationControllerNotifierSlice))
-		c.Data["replicationControllerNotifierSlice"] = replicationControllerNotifierSlice
+		sort.Sort(ByReplicationControllerNotifier(filteredReplicationControllerNotifierSlice))
+		c.Data["replicationControllerNotifierSlice"] = filteredReplicationControllerNotifierSlice
 	}
 
 	guimessage.OutputMessage(c.Data)
