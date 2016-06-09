@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"github.com/cloudawan/cloudone_utility/sshclient"
@@ -39,8 +40,7 @@ func (c *IndexController) Get() {
 	// Authorization for web page display
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
 	token, _ := tokenHeaderMap["token"]

@@ -17,6 +17,7 @@ package container
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"time"
 )
@@ -72,8 +73,7 @@ func (c *IndexController) Get() {
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	namespaces, _ := c.GetSession("namespace").(string)
 

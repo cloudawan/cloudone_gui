@@ -17,6 +17,7 @@ package node
 import (
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"time"
 )
@@ -45,8 +46,7 @@ type IndexController struct {
 // @router /information [get]
 func (c *IndexController) Get() {
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	c.Data["json"] = make(map[string]interface{})
 	c.Data["json"].(map[string]interface{})["cloudoneGUIProtocol"] = cloudoneGUIProtocol

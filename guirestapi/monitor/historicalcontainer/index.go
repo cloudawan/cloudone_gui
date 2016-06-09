@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/cloudawan/cloudone_gui/controllers/identity"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_utility/restclient"
 	"net/url"
 	"sort"
@@ -43,8 +44,7 @@ func (c *IndexController) Get() {
 	cloudoneAnalysisHost := beego.AppConfig.String("cloudoneAnalysisHost")
 	cloudoneAnalysisPort := beego.AppConfig.String("cloudoneAnalysisPort")
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	namespaces, _ := c.GetSession("namespace").(string)
 

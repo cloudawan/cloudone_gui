@@ -69,8 +69,7 @@ func (c *IndexController) Get() {
 	c.Data["dashboardTabMenu"] = identity.GetDashboardTabMenu(user, "topology")
 
 	cloudoneGUIProtocol := beego.AppConfig.String("cloudoneGUIProtocol")
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	c.Data["cloudoneGUIProtocol"] = cloudoneGUIProtocol
 	c.Data["cloudoneGUIHost"] = cloudoneGUIHost

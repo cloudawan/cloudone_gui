@@ -16,6 +16,7 @@ package imageinformation
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/cloudawan/cloudone_gui/controllers/utility/dashboard"
 	"github.com/cloudawan/cloudone_gui/controllers/utility/guimessagedisplay"
 	"github.com/hpcloud/tail"
 	"golang.org/x/net/websocket"
@@ -41,8 +42,7 @@ func (c *LogController) Get() {
 	// Authorization for web page display
 	c.Data["layoutMenu"] = c.GetSession("layoutMenu")
 
-	cloudoneGUIHost := c.Ctx.Input.Host()
-	cloudoneGUIPort := c.Ctx.Input.Port()
+	cloudoneGUIHost, cloudoneGUIPort := dashboard.GetServerHostAndPortFromUserRequest(c.Ctx.Input)
 
 	imageInformation := c.GetString("imageInformation")
 
