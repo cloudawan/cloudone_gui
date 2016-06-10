@@ -62,7 +62,7 @@ func (c *PushController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.Ctx.Output.Status = 401
+		c.Ctx.Output.Status = 400
 		c.ServeJSON()
 		return
 	}

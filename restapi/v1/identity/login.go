@@ -76,10 +76,6 @@ func (c *LoginController) Post() {
 		return
 	}
 
-	headerMap := make(map[string]string)
-	headerMap["token"] = tokenData.Token
-	c.SetSession("tokenHeaderMap", headerMap)
-
 	jsonMap := make(map[string]interface{})
 	jsonMap["Token"] = tokenData.Token
 	c.Data["json"] = jsonMap

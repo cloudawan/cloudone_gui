@@ -15,7 +15,6 @@
 package identity
 
 import (
-	"encoding/json"
 	"github.com/astaxie/beego/context"
 )
 
@@ -28,26 +27,7 @@ func FilterToken(ctx *context.Context) {
 	if (ctx.Input.IsGet() || ctx.Input.IsPost()) && (ctx.Input.URL() == loginURL || ctx.Input.URL() == webhookGithubURL) {
 		// Don't redirect itself to prevent the circle
 	} else {
-		token := ctx.Input.Header("token")
-
-		headerMap, _ := ctx.Input.Session("tokenHeaderMap").(map[string]interface{})
-		cachedToken, _ := headerMap["token"].(string)
-		if cachedToken == "" {
-			jsonMap := make(map[string]interface{})
-			jsonMap["error"] = "No cached user in session. Please login first."
-			byteSlice, _ := json.Marshal(jsonMap)
-			ctx.Output.SetStatus(404)
-			ctx.Output.Body(byteSlice)
-			return
-		}
-
-		if cachedToken != token {
-			jsonMap := make(map[string]interface{})
-			jsonMap["error"] = "Invalid token."
-			byteSlice, _ := json.Marshal(jsonMap)
-			ctx.Output.SetStatus(401)
-			ctx.Output.Body(byteSlice)
-			return
-		}
+		// No need to verify here since it is just relay the data.
+		// The authorization happens in the real processing places
 	}
 }

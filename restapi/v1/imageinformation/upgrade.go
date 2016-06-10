@@ -34,6 +34,8 @@ type DeployUpgradeInput struct {
 func (c *UpdateController) Post() {
 	inputBody := c.Ctx.Input.CopyBody(limit.InputPostBodyMaximum)
 
+	token := c.Ctx.Input.Header("Token")
+
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
 	cloudoneHost := beego.AppConfig.String("cloudoneHost")
 	cloudonePort := beego.AppConfig.String("cloudonePort")
@@ -45,7 +47,7 @@ func (c *UpdateController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.Ctx.Output.Status = 401
+		c.Ctx.Output.Status = 400
 		c.ServeJSON()
 		return
 	}
@@ -53,7 +55,8 @@ func (c *UpdateController) Post() {
 	url := cloudoneProtocol + "://" + cloudoneHost + ":" + cloudonePort +
 		"/api/v1/imageinformations/upgrade/"
 
-	tokenHeaderMap, _ := c.GetSession("tokenHeaderMap").(map[string]string)
+	tokenHeaderMap := make(map[string]string, 0)
+	tokenHeaderMap["token"] = token
 
 	_, err = restclient.RequestPutWithStructure(url, deployUpgradeInput, nil, tokenHeaderMap)
 
@@ -66,7 +69,7 @@ func (c *UpdateController) Post() {
 		errorJsonMap := make(map[string]interface{})
 		errorJsonMap["error"] = err.Error()
 		c.Data["json"] = errorJsonMap
-		c.Ctx.Output.Status = 401
+		c.Ctx.Output.Status = 400
 		c.ServeJSON()
 		return
 	}
