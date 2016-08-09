@@ -1,0 +1,67 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>SLB Daemon List</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="pull-right">
+				<div class="btn-group">
+					{{ str2html .hiddenTagGuiSystemSLBDaemonEdit }}
+						<a class="btn btn-md btn-success pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/slb/daemon/edit">Create</a>
+					</div>
+				</div>
+			</div>
+			
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Node Host</th>
+					<th>Endpoint</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $slbDaemonKey, $slbDaemon := .slbDaemonSlice}}
+					<tr>
+						<td>{{$slbDaemonKey}}</td>
+						<td>{{$slbDaemon.Name}}</td>
+						<td>{{$slbDaemon.Description}}</td>
+						<td>
+							{{range $nodeHostKey, $nodeHost := $slbDaemon.NodeHostSlice}}
+								{{$nodeHost}}<br/>
+							{{end}}
+						</td>
+						<td>
+							{{range $endPointKey, $endPoint := $slbDaemon.EndPointSlice}}
+								{{$endPoint}}<br/>
+							{{end}}
+						</td>
+						<td>
+							<div class="btn-group">
+								{{ str2html $slbDaemon.HiddenTagGuiSystemSLBDaemonEdit }}
+									<a class="btn btn-xs btn-info" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/slb/daemon/edit?name={{$slbDaemon.Name}}">Update</a>	
+								</div>
+								{{ str2html $slbDaemon.HiddenTagGuiSystemSLBDaemonDelete }}
+									<button class="btn btn-xs btn-danger" type="button" data-toggle="modal" data-target="#linkModal" data-action="Delete {{$slbDaemon.Name}}" data-color="btn-danger" data-herf="/gui/system/slb/daemon/delete?name={{$slbDaemon.Name}}">Delete</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+				{{end}}
+			</tbody>
+			</table>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

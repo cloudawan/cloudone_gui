@@ -966,6 +966,41 @@
 					</div>
 					
 					<div class="form-group">
+						<label class="col-md-4 control-label" for="systemSLB">SLB:</label>
+						<div class="col-md-offset-1 col-md-5 checkbox">
+							<input id="systemSLB" type="checkbox" name="systemSLB" onclick="$('#regionSystemSLB').toggle();" {{ .checkedTagSystemSLB }}>
+						</div>
+					</div>
+					<div id="regionSystemSLB" {{ .hiddenTagSystemSLB }}>
+						<div class="form-group">
+							<label class="col-md-5 control-label" for="systemSLBDaemon">SLB Daemon:</label>
+							<div class="col-md-offset-1 col-md-4 checkbox">
+								<input id="systemSLBDaemon" type="checkbox" name="systemSLBDaemon" onclick="$('#regionSystemSLBDaemon').toggle();" {{ .checkedTagSystemSLBDaemon }}>
+							</div>
+						</div>
+						<div id="regionSystemSLBDaemon" {{ .hiddenTagSystemSLBDaemon }}>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemSLBDaemonList">View:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemSLBDaemonList" type="checkbox" name="systemSLBDaemonList" {{ .checkedTagSystemSLBDaemonList }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemSLBDaemonEdit">Create/Update:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemSLBDaemonEdit" type="checkbox" name="systemSLBDaemonEdit" {{ .checkedTagSystemSLBDaemonEdit }}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label" for="systemSLBDaemonDelete">Delete:</label>
+								<div class="col-md-offset-1 col-md-3 checkbox">
+									<input id="systemSLBDaemonDelete" type="checkbox" name="systemSLBDaemonDelete" {{ .checkedTagSystemSLBDaemonDelete }}>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
 						<label class="col-md-4 control-label" for="systemUpgrade">Upgrade:</label>
 						<div class="col-md-offset-1 col-md-5 checkbox">
 							<input id="systemUpgrade" type="checkbox" name="systemUpgrade" {{ .checkedTagSystemUpgrade }}>

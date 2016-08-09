@@ -256,6 +256,13 @@ func (c *EditController) Get() {
 		setHiddenTag("/gui/system/privateregistry/image", "hiddenTagSystemPrivateRegistryImage", c.Data, pathMap)
 		setCheckedTag("/gui/system/privateregistry/image/list", "checkedTagSystemPrivateRegistryImageList", c.Data, pathMap)
 		setCheckedTag("/gui/system/privateregistry/image/delete", "checkedTagSystemPrivateRegistryImageDelete", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb", "checkedTagSystemSLB", c.Data, pathMap)
+		setHiddenTag("/gui/system/slb", "hiddenTagSystemSLB", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb/daemon", "checkedTagSystemSLBDaemon", c.Data, pathMap)
+		setHiddenTag("/gui/system/slb/daemon", "hiddenTagSystemSLBDaemon", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb/daemon/list", "checkedTagSystemSLBDaemonList", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb/daemon/edit", "checkedTagSystemSLBDaemonCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb/daemon/delete", "checkedTagSystemSLBDaemonDelete", c.Data, pathMap)
 		setCheckedTag("/gui/system/upgrade", "checkedTagSystemUpgrade", c.Data, pathMap)
 
 		c.Data["name"] = name
@@ -865,6 +872,29 @@ func (c *EditController) Post() {
 				}
 				if c.GetString("systemPrivateRegistryRepositoryDelete") == "on" {
 					permission := &rbac.Permission{"systemPrivateRegistryImageDelete", identity.GetConponentName(), "GET", "/gui/system/privateregistry/image/delete"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+			}
+		}
+
+		if c.GetString("systemSLB") == "on" {
+			permission := &rbac.Permission{"systemSLB", identity.GetConponentName(), "GET", "/gui/system/slb"}
+			permissionSlice = append(permissionSlice, permission)
+		} else {
+			if c.GetString("systemSLBDaemon") == "on" {
+				permission := &rbac.Permission{"systemSLBDaemon", identity.GetConponentName(), "GET", "/gui/system/slb/daemon"}
+				permissionSlice = append(permissionSlice, permission)
+			} else {
+				if c.GetString("systemSLBDaemonList") == "on" {
+					permission := &rbac.Permission{"systemSLBDaemonList", identity.GetConponentName(), "GET", "/gui/system/slb/daemon/list"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemSLBDaemonEdit") == "on" {
+					permission := &rbac.Permission{"systemSLBDaemonEdit", identity.GetConponentName(), "GET", "/gui/system/slb/daemon/edit"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemSLBDaemonDelete") == "on" {
+					permission := &rbac.Permission{"systemSLBDaemonDelete", identity.GetConponentName(), "GET", "/gui/system/slb/daemon/delete"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 			}

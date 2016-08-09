@@ -1,0 +1,64 @@
+{{ template "layout.html" . }}
+
+{{ define "css" }}
+{{ end}}
+
+{{ define "content" }}
+	<div class="page-header">
+		<h1>{{ .pageHeader }}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-9">	
+			<form class="form-horizontal" onsubmit="$('#idWaitingPanel').modal({backdrop: 'static'});" action="/gui/system/slb/daemon/edit" method="post">
+				<input id="createOrUpdate" class="form-control" type="hidden" name="createOrUpdate" value="{{ .createOrUpdate }}">
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="name">Name:</label>
+					<div class="col-md-9">
+						<input id="name" class="form-control" type="text" name="name" value="{{ .name }}" {{ .ipFieldReadOnly }} required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="description">Description:</label>
+					<div class="col-md-9">
+						<input id="description" class="form-control" type="text" name="description" value="{{ .description }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="endPointList">EndPoint List:</label>
+					<div class="col-md-9">
+						<input id="endPointList" class="form-control" type="text" name="endPointList" value="{{ .endPointList }}" required>
+					</div>
+				</div>
+
+				{{range $regionKey, $region := .regionSlice}}
+					<hr>
+					
+					<div class="form-group">
+						<label class="col-md-3 control-label" >Region: {{ $region.Name }}</label>
+					</div>
+					{{range $zoneKey, $zone := $region.ZoneSlice}}
+						<div class="form-group">
+							<label class="col-md-4 control-label" >Zone: {{ $zone.Name }}</label>
+						</div>
+
+						{{range $nodeKey, $node := $zone.NodeSlice}}
+							<div class="form-group">
+								<label class="col-md-5 control-label" for="endPointList">Host {{ $node.Address }}:</label>
+								<div class="col-md-offset-1 col-md-4 checkbox">
+									<input id="nodeHost_{{ $node.Address }}" type="checkbox" name="nodeHost_{{ $node.Address }}" {{ $node.Checked }}>
+								</div>
+							</div>
+						{{end}}
+					{{end}}
+				{{end}}
+
+				<a class="btn btn-md btn-warning pull-right" onclick="$('#idWaitingPanel').modal({backdrop: 'static'});" href="/gui/system/slb/daemon/list">Cancel</a>
+				<input class="btn btn-md btn-info pull-right" type="submit" value="{{.actionButtonValue}}">
+			</form>
+		</div>
+	</div>
+{{ end }}
+
+{{ define "js" }}
+{{ end}}

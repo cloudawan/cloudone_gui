@@ -44,6 +44,7 @@ type DeployContainerPort struct {
 	Name          string
 	ContainerPort int
 	NodePort      int
+	Protocol      string
 }
 
 type ReplicationControllerContainerPort struct {
@@ -282,7 +283,8 @@ func (c *CreateController) Post() {
 				nodePort, _ = c.GetInt("nodePort" + index)
 			}
 		}
-		deployContainerPortSlice = append(deployContainerPortSlice, DeployContainerPort{portName + strconv.Itoa(i), containerPort, nodePort})
+		protocol := c.GetString("protocol" + index)
+		deployContainerPortSlice = append(deployContainerPortSlice, DeployContainerPort{portName + strconv.Itoa(i), containerPort, nodePort, protocol})
 		i++
 	}
 
