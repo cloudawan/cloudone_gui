@@ -52,6 +52,7 @@ import (
 	privateregistryserver "github.com/cloudawan/cloudone_gui/controllers/system/privateregistry/server"
 	"github.com/cloudawan/cloudone_gui/controllers/system/rbac/role"
 	"github.com/cloudawan/cloudone_gui/controllers/system/rbac/user"
+	"github.com/cloudawan/cloudone_gui/controllers/system/slb/daemon"
 	"github.com/cloudawan/cloudone_gui/controllers/system/upgrade"
 )
 
@@ -75,7 +76,7 @@ func init() {
 	beego.Router("/gui/repository/imageinformation/upgrade", &imageinformation.UpgradeController{})
 	beego.Router("/gui/repository/imageinformation/delete", &imageinformation.DeleteController{})
 	beego.Router("/gui/repository/imageinformation/log", &imageinformation.LogController{})
-	beego.Router("/gui/repository/imageinformation/websocket", &imageinformation.WebSocketController{})
+	beego.Router("/gui/repository/imageinformation/log/websocket", &imageinformation.WebSocketController{})
 	beego.Router("/gui/repository/imagerecord/list", &imagerecord.ListController{})
 	beego.Router("/gui/repository/imagerecord/log", &imagerecord.LogController{})
 	beego.Router("/gui/repository/imagerecord/delete", &imagerecord.DeleteController{})
@@ -160,6 +161,9 @@ func init() {
 	beego.Router("/gui/system/privateregistry/repository/delete", &privateregistryrepository.DeleteController{})
 	beego.Router("/gui/system/privateregistry/image/list", &privateregistryimage.ListController{})
 	beego.Router("/gui/system/privateregistry/image/delete", &privateregistryimage.DeleteController{})
+	beego.Router("/gui/system/slb/daemon/list", &daemon.ListController{})
+	beego.Router("/gui/system/slb/daemon/edit", &daemon.EditController{})
+	beego.Router("/gui/system/slb/daemon/delete", &daemon.DeleteController{})
 	beego.Router("/gui/system/upgrade", &upgrade.IndexController{})
 	beego.Router("/gui/system/upgrade/websocket", &upgrade.WebSocketController{})
 }

@@ -27,7 +27,7 @@
 		var parameter = {};
 		
 		var query = function(parameter) {
-			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/repository/imageinformation/websocket?imageInformation=" + {{ .imageInformation }};
+			var wsUri = "wss://{{.cloudoneGUIHost}}:{{.cloudoneGUIPort}}/gui/repository/imageinformation/log/websocket?imageInformation=" + {{ .imageInformation }};
 
 			parameter.websocket = new WebSocket(wsUri);
 			parameter.websocket.onopen = function(evt) { onOpen(evt) };
