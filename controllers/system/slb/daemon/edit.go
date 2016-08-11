@@ -183,6 +183,7 @@ func (c *EditController) Post() {
 		description,
 		"",
 		"",
+		"",
 	}
 
 	if createOrUpdate == "create" {

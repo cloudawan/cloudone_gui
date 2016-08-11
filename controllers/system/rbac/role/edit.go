@@ -262,6 +262,7 @@ func (c *EditController) Get() {
 		setHiddenTag("/gui/system/slb/daemon", "hiddenTagSystemSLBDaemon", c.Data, pathMap)
 		setCheckedTag("/gui/system/slb/daemon/list", "checkedTagSystemSLBDaemonList", c.Data, pathMap)
 		setCheckedTag("/gui/system/slb/daemon/edit", "checkedTagSystemSLBDaemonCreate", c.Data, pathMap)
+		setCheckedTag("/gui/system/slb/daemon/configure", "checkedTagSystemSLBDaemonConfigure", c.Data, pathMap)
 		setCheckedTag("/gui/system/slb/daemon/delete", "checkedTagSystemSLBDaemonDelete", c.Data, pathMap)
 		setCheckedTag("/gui/system/upgrade", "checkedTagSystemUpgrade", c.Data, pathMap)
 
@@ -891,6 +892,10 @@ func (c *EditController) Post() {
 				}
 				if c.GetString("systemSLBDaemonEdit") == "on" {
 					permission := &rbac.Permission{"systemSLBDaemonEdit", identity.GetConponentName(), "GET", "/gui/system/slb/daemon/edit"}
+					permissionSlice = append(permissionSlice, permission)
+				}
+				if c.GetString("systemSLBDaemonConfigure") == "on" {
+					permission := &rbac.Permission{"systemSLBDaemonConfigure", identity.GetConponentName(), "GET", "/gui/system/slb/daemon/configure"}
 					permissionSlice = append(permissionSlice, permission)
 				}
 				if c.GetString("systemSLBDaemonDelete") == "on" {

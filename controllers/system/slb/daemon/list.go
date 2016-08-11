@@ -28,12 +28,13 @@ type ListController struct {
 }
 
 type SLBDaemon struct {
-	Name                              string
-	EndPointSlice                     []string
-	NodeHostSlice                     []string
-	Description                       string
-	HiddenTagGuiSystemSLBDaemonEdit   string
-	HiddenTagGuiSystemSLBDaemonDelete string
+	Name                                 string
+	EndPointSlice                        []string
+	NodeHostSlice                        []string
+	Description                          string
+	HiddenTagGuiSystemSLBDaemonEdit      string
+	HiddenTagGuiSystemSLBDaemonConfigure string
+	HiddenTagGuiSystemSLBDaemonDelete    string
 }
 
 type BySLBDaemon []SLBDaemon
@@ -53,6 +54,7 @@ func (c *ListController) Get() {
 	identity.SetPrivilegeHiddenTag(c.Data, "hiddenTagGuiSystemSLBDaemonEdit", user, "GET", "/gui/system/slb/daemon/edit")
 	// Tag won't work in loop so need to be placed in data
 	hasGuiSystemSLBDaemonEdit := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/slb/daemon/edit")
+	hasGuiSystemSLBDaemonConfigure := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/slb/daemon/configure")
 	hasGuiSystemSLBDaemonDelete := user.HasPermission(identity.GetConponentName(), "GET", "/gui/system/slb/daemon/delete")
 
 	cloudoneProtocol := beego.AppConfig.String("cloudoneProtocol")
@@ -81,6 +83,11 @@ func (c *ListController) Get() {
 				slbDaemonSlice[i].HiddenTagGuiSystemSLBDaemonEdit = "<div class='btn-group'>"
 			} else {
 				slbDaemonSlice[i].HiddenTagGuiSystemSLBDaemonEdit = "<div hidden>"
+			}
+			if hasGuiSystemSLBDaemonConfigure {
+				slbDaemonSlice[i].HiddenTagGuiSystemSLBDaemonConfigure = "<div class='btn-group'>"
+			} else {
+				slbDaemonSlice[i].HiddenTagGuiSystemSLBDaemonConfigure = "<div hidden>"
 			}
 			if hasGuiSystemSLBDaemonDelete {
 				slbDaemonSlice[i].HiddenTagGuiSystemSLBDaemonDelete = "<div class='btn-group'>"

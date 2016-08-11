@@ -163,6 +163,7 @@ func init() {
 	beego.Router("/gui/system/privateregistry/image/delete", &privateregistryimage.DeleteController{})
 	beego.Router("/gui/system/slb/daemon/list", &daemon.ListController{})
 	beego.Router("/gui/system/slb/daemon/edit", &daemon.EditController{})
+	beego.Router("/gui/system/slb/daemon/configure", &daemon.ConfigureController{})
 	beego.Router("/gui/system/slb/daemon/delete", &daemon.DeleteController{})
 	beego.Router("/gui/system/upgrade", &upgrade.IndexController{})
 	beego.Router("/gui/system/upgrade/websocket", &upgrade.WebSocketController{})
