@@ -95,31 +95,110 @@
 			</tbody>
 			</table>
 
-			<!--
 			<div>
 				<h2>Glusterfs</h2>
 			</div>
 			<table class="table table-condensed tree">
 			<thead>
 				<tr>
+					<!--
 					<th>#</th>
-					<th>IP</th>
-					<th>Power/Network</th>
-					<th>Glusterfs</th>
+					-->
+					<th>Name</th>
 				</tr>
 			</thead>
 			<tbody>
-				{{range $glusterfsStatusKey, $glusterfsStatus := .glusterfsStatusSlice}}
+				{{range $glusterfsClusterStatusKey, $glusterfsClusterStatus := .glusterfsClusterStatusSlice}}
 					<tr>
-						<td>{{$glusterfsStatusKey}}</td>
-						<td>{{$glusterfsStatus.IP}}</td>
-						<td>{{$glusterfsStatus.Active}}</td>
-						<td>{{$glusterfsStatus.Glusterfs}}</td>
+						<!--
+						<td>{{$glusterfsClusterStatusKey}}</td>
+						-->
+						<td>{{$glusterfsClusterStatus.Name}}</td>
+						<td></td>
+						<td></td>
+						<td></td>
 					</tr>
+					
+					<thead>
+						<tr class="treegrid-parent-{{$glusterfsClusterStatusKey}}">
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+							<th>IP</th>
+							<th>Power/Network</th>
+							<th>Glusterfs Server</th>
+						</tr>
+					</thead>
+					
+					{{range $serverKey, $server := $glusterfsClusterStatus.ServerSlice}}
+						<tr class="treegrid-parent-{{$glusterfsClusterStatusKey}}">
+							<!--
+							<td>{{$serverKey}}</td>
+							-->
+							<td></td>
+							<td>{{$server.IP}}</td>
+							<td>{{$server.Active}}</td>
+							<td>{{$server.GlusterfsServer}}</td>
+						</tr>		
+					{{end}}
 				{{end}}
 			</tbody>
 			</table>
-			-->
+
+			<div>
+				<h2>SLB</h2>
+			</div>
+			<table class="table table-condensed tree">
+			<thead>
+				<tr>
+					<!--
+					<th>#</th>
+					-->
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $slbSetStatusKey, $slbSetStatus := .slbSetStatusSlice}}
+					<tr>
+						<!--
+						<td>{{$slbSetStatusKey}}</td>
+						-->
+						<td>{{$slbSetStatus.Name}}</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					
+					<thead>
+						<tr class="treegrid-parent-{{$slbSetStatusKey}}">
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+							<th>IP</th>
+							<th>Power/Network</th>
+							<th>CloudOne SLB</th>
+							<th>Keepalived</th>
+							<th>HAProxy</th>
+							<th>Last Command</th>
+						</tr>
+					</thead>
+					
+					{{range $serverKey, $server := $slbSetStatus.ServerSlice}}
+						<tr class="treegrid-parent-{{$slbSetStatusKey}}">
+							<!--
+							<td>{{$serverKey}}</td>
+							-->
+							<td></td>
+							<td>{{$server.IP}}</td>
+							<td>{{$server.Active}}</td>
+							<td>{{$server.CloudOneSLB}}</td>
+							<td>{{$server.Keepalived}}</td>
+							<td>{{$server.HAProxy}}</td>
+							<td>{{$server.LastCommandTime}}</td>
+						</tr>		
+					{{end}}
+				{{end}}
+			</tbody>
+			</table>
 			
 		</div>
 	</div>

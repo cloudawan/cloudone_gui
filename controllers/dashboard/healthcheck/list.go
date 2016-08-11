@@ -53,10 +53,29 @@ type KubernetesStatus struct {
 	DockerIPValid         bool
 }
 
-type GlusterfsStatus struct {
-	IP        string
-	Active    bool
-	Glusterfs bool
+type GlusterfsClusterStatus struct {
+	Name        string
+	ServerSlice []GlusterfsServerStatus
+}
+
+type GlusterfsServerStatus struct {
+	IP              string
+	Active          bool
+	GlusterfsServer bool
+}
+
+type SLBSetStatus struct {
+	Name        string
+	ServerSlice []SLBServerStatus
+}
+
+type SLBServerStatus struct {
+	IP              string
+	Active          bool
+	CloudOneSLB     bool
+	Keepalived      bool
+	HAProxy         bool
+	LastCommandTime string
 }
 
 type SortKubernetesStatusByIP []KubernetesStatus
@@ -71,16 +90,52 @@ func (sortKubernetesStatusByIP SortKubernetesStatusByIP) Less(i, j int) bool {
 	return sortKubernetesStatusByIP[i].IP < sortKubernetesStatusByIP[j].IP
 }
 
-type SortGlusterfsStatusByIP []GlusterfsStatus
+type SortGlusterfsClusterStatusByName []GlusterfsClusterStatus
 
-func (sortGlusterfsStatusByIP SortGlusterfsStatusByIP) Len() int {
-	return len(sortGlusterfsStatusByIP)
+func (sortGlusterfsClusterStatusByName SortGlusterfsClusterStatusByName) Len() int {
+	return len(sortGlusterfsClusterStatusByName)
 }
-func (sortGlusterfsStatusByIP SortGlusterfsStatusByIP) Swap(i, j int) {
-	sortGlusterfsStatusByIP[i], sortGlusterfsStatusByIP[j] = sortGlusterfsStatusByIP[j], sortGlusterfsStatusByIP[i]
+func (sortGlusterfsClusterStatusByName SortGlusterfsClusterStatusByName) Swap(i, j int) {
+	sortGlusterfsClusterStatusByName[i], sortGlusterfsClusterStatusByName[j] = sortGlusterfsClusterStatusByName[j], sortGlusterfsClusterStatusByName[i]
 }
-func (sortGlusterfsStatusByIP SortGlusterfsStatusByIP) Less(i, j int) bool {
-	return sortGlusterfsStatusByIP[i].IP < sortGlusterfsStatusByIP[j].IP
+func (sortGlusterfsClusterStatusByName SortGlusterfsClusterStatusByName) Less(i, j int) bool {
+	return sortGlusterfsClusterStatusByName[i].Name < sortGlusterfsClusterStatusByName[j].Name
+}
+
+type SortGlusterfsServerStatusByIP []GlusterfsServerStatus
+
+func (sortGlusterfsServerStatusByIP SortGlusterfsServerStatusByIP) Len() int {
+	return len(sortGlusterfsServerStatusByIP)
+}
+func (sortGlusterfsServerStatusByIP SortGlusterfsServerStatusByIP) Swap(i, j int) {
+	sortGlusterfsServerStatusByIP[i], sortGlusterfsServerStatusByIP[j] = sortGlusterfsServerStatusByIP[j], sortGlusterfsServerStatusByIP[i]
+}
+func (sortGlusterfsServerStatusByIP SortGlusterfsServerStatusByIP) Less(i, j int) bool {
+	return sortGlusterfsServerStatusByIP[i].IP < sortGlusterfsServerStatusByIP[j].IP
+}
+
+type SortSLBSetStatusByName []SLBSetStatus
+
+func (sortSLBSetStatusByName SortSLBSetStatusByName) Len() int {
+	return len(sortSLBSetStatusByName)
+}
+func (sortSLBSetStatusByName SortSLBSetStatusByName) Swap(i, j int) {
+	sortSLBSetStatusByName[i], sortSLBSetStatusByName[j] = sortSLBSetStatusByName[j], sortSLBSetStatusByName[i]
+}
+func (sortSLBSetStatusByName SortSLBSetStatusByName) Less(i, j int) bool {
+	return sortSLBSetStatusByName[i].Name < sortSLBSetStatusByName[j].Name
+}
+
+type SortSLBServerStatusByIP []SLBServerStatus
+
+func (sortSLBServerStatusByIP SortSLBServerStatusByIP) Len() int {
+	return len(sortSLBServerStatusByIP)
+}
+func (sortSLBServerStatusByIP SortSLBServerStatusByIP) Swap(i, j int) {
+	sortSLBServerStatusByIP[i], sortSLBServerStatusByIP[j] = sortSLBServerStatusByIP[j], sortSLBServerStatusByIP[i]
+}
+func (sortSLBServerStatusByIP SortSLBServerStatusByIP) Less(i, j int) bool {
+	return sortSLBServerStatusByIP[i].IP < sortSLBServerStatusByIP[j].IP
 }
 
 func (c *ListController) Get() {
@@ -151,10 +206,26 @@ func (c *ListController) Get() {
 		allErrorMessageSlice = append(allErrorMessageSlice, errorMessageSlice...)
 	}
 
+	glusterfsClusterStatusSlice, errorMessageSlice := parseGlusterfsClusterStatusSlice(cloudoneJsonMap)
+	if len(errorMessageSlice) > 0 {
+		// Error
+		allErrorMessageSlice = append(allErrorMessageSlice, errorMessageSlice...)
+	}
+
+	slbSetStatusSlice, errorMessageSlice := parseSLBSetStatusSlice(cloudoneJsonMap)
+	if len(errorMessageSlice) > 0 {
+		// Error
+		allErrorMessageSlice = append(allErrorMessageSlice, errorMessageSlice...)
+	}
+
 	sort.Sort(SortKubernetesStatusByIP(kubernetesStatusSlice))
+	sort.Sort(SortGlusterfsClusterStatusByName(glusterfsClusterStatusSlice))
+	sort.Sort(SortSLBSetStatusByName(slbSetStatusSlice))
 
 	c.Data["componentStatusSlice"] = componentStatusSlice
 	c.Data["kubernetesStatusSlice"] = kubernetesStatusSlice
+	c.Data["glusterfsClusterStatusSlice"] = glusterfsClusterStatusSlice
+	c.Data["slbSetStatusSlice"] = slbSetStatusSlice
 
 	if len(allErrorMessageSlice) > 0 {
 		errorText := fmt.Sprintf("%v", allErrorMessageSlice)
@@ -239,31 +310,31 @@ func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Kuber
 				errorText := fmt.Sprintf("Fail to parse nodeStatusJsonMap[service] %v cloudoneJsonMap %v", nodeStatusJsonMap["service"], cloudoneJsonMap)
 				errorMessageSlice = append(errorMessageSlice, errorText)
 			} else {
-				if kubernetesStatus.Docker, _ = serviceJsonMap["docker"].(bool); ok == false {
+				if kubernetesStatus.Docker, ok = serviceJsonMap["docker"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field docker in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["docker"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.Flannel, _ = serviceJsonMap["flanneld"].(bool); ok == false {
+				if kubernetesStatus.Flannel, ok = serviceJsonMap["flanneld"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field flanneld in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["flanneld"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.KubeApiserver, _ = serviceJsonMap["kube-apiserver"].(bool); ok == false {
+				if kubernetesStatus.KubeApiserver, ok = serviceJsonMap["kube-apiserver"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field kube-apiserver in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-apiserver"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.KubeControllerManager, _ = serviceJsonMap["kube-controller-manager"].(bool); ok == false {
+				if kubernetesStatus.KubeControllerManager, ok = serviceJsonMap["kube-controller-manager"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field kube-controller-manager in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-controller-manager"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.KubeProxy, _ = serviceJsonMap["kube-proxy"].(bool); ok == false {
+				if kubernetesStatus.KubeProxy, ok = serviceJsonMap["kube-proxy"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field kube-proxy in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-proxy"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.KubeScheduler, _ = serviceJsonMap["kube-scheduler"].(bool); ok == false {
+				if kubernetesStatus.KubeScheduler, ok = serviceJsonMap["kube-scheduler"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field kube-scheduler in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kube-scheduler"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
-				if kubernetesStatus.Kubelet, _ = serviceJsonMap["kubelet"].(bool); ok == false {
+				if kubernetesStatus.Kubelet, ok = serviceJsonMap["kubelet"].(bool); ok == false {
 					errorText := fmt.Sprintf("Fail to convert field kubelet in serviceJsonMap[docker] %v cloudoneJsonMap %v", serviceJsonMap["kubelet"], cloudoneJsonMap)
 					errorMessageSlice = append(errorMessageSlice, errorText)
 				}
@@ -325,4 +396,143 @@ func parseKubernetesStatusSlice(cloudoneJsonMap map[string]interface{}) ([]Kuber
 	}
 
 	return kubernetesStatusSlice, errorMessageSlice
+}
+
+func parseGlusterfsClusterStatusSlice(cloudoneJsonMap map[string]interface{}) ([]GlusterfsClusterStatus, []string) {
+	glusterfsClusterStatusSlice := make([]GlusterfsClusterStatus, 0)
+
+	errorMessageSlice := make([]string, 0)
+
+	glusterfsClusterStatusJsonMap, ok := cloudoneJsonMap["glusterfs"].(map[string]interface{})
+	if ok == false {
+		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[glusterfs] %v cloudoneJsonMap %v", cloudoneJsonMap["glusterfs"], cloudoneJsonMap)
+		errorMessageSlice = append(errorMessageSlice, errorText)
+	}
+
+	for clusterKey, clusterValue := range glusterfsClusterStatusJsonMap {
+		glusterfsClusterStatus := GlusterfsClusterStatus{}
+		glusterfsClusterStatus.Name = clusterKey
+		glusterfsClusterStatus.ServerSlice = make([]GlusterfsServerStatus, 0)
+
+		clusterStatusJsonMap, ok := clusterValue.(map[string]interface{})
+		if ok == false {
+			errorText := fmt.Sprintf("Fail to parse clusterValue %v cloudoneJsonMap %v", clusterValue, cloudoneJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		} else {
+			for serverKey, serverValue := range clusterStatusJsonMap {
+				serverStatusJsonMap, ok := serverValue.(map[string]interface{})
+				if ok == false {
+					errorText := fmt.Sprintf("Fail to parse serverValue %v cloudoneJsonMap %v", serverValue, cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				} else {
+					glusterfsServerStatus := GlusterfsServerStatus{}
+					glusterfsServerStatus.IP = serverKey
+
+					glusterfsServerStatus.Active, ok = serverStatusJsonMap["active"].(bool)
+					if ok == false {
+						errorText := fmt.Sprintf("Fail to parse serverStatusJsonMap[active] %v cloudoneJsonMap %v", serverStatusJsonMap["active"], cloudoneJsonMap)
+						errorMessageSlice = append(errorMessageSlice, errorText)
+					}
+
+					if glusterfsServerStatus.Active {
+						serviceJsonMap, ok := serverStatusJsonMap["service"].(map[string]interface{})
+						if ok == false {
+							errorText := fmt.Sprintf("Fail to parse serverStatusJsonMap[service] %v cloudoneJsonMap %v", serverStatusJsonMap["service"], cloudoneJsonMap)
+							errorMessageSlice = append(errorMessageSlice, errorText)
+						} else {
+							if glusterfsServerStatus.GlusterfsServer, ok = serviceJsonMap["glusterfs-server"].(bool); ok == false {
+								errorText := fmt.Sprintf("Fail to convert field glusterfs-server in serviceJsonMap[glusterfs-server] %v cloudoneJsonMap %v", serviceJsonMap["glusterfs-server"], cloudoneJsonMap)
+								errorMessageSlice = append(errorMessageSlice, errorText)
+							}
+						}
+					}
+
+					glusterfsClusterStatus.ServerSlice = append(glusterfsClusterStatus.ServerSlice, glusterfsServerStatus)
+				}
+			}
+		}
+		sort.Sort(SortGlusterfsServerStatusByIP(glusterfsClusterStatus.ServerSlice))
+		glusterfsClusterStatusSlice = append(glusterfsClusterStatusSlice, glusterfsClusterStatus)
+	}
+
+	return glusterfsClusterStatusSlice, errorMessageSlice
+}
+
+func parseSLBSetStatusSlice(cloudoneJsonMap map[string]interface{}) ([]SLBSetStatus, []string) {
+	slbSetStatusSlice := make([]SLBSetStatus, 0)
+
+	errorMessageSlice := make([]string, 0)
+
+	slbSetStatusJsonMap, ok := cloudoneJsonMap["slb"].(map[string]interface{})
+	if ok == false {
+		errorText := fmt.Sprintf("Fail to parse cloudoneJsonMap[slb] %v cloudoneJsonMap %v", cloudoneJsonMap["slb"], cloudoneJsonMap)
+		errorMessageSlice = append(errorMessageSlice, errorText)
+	}
+
+	for clusterKey, clusterValue := range slbSetStatusJsonMap {
+		slbSetStatus := SLBSetStatus{}
+		slbSetStatus.Name = clusterKey
+		slbSetStatus.ServerSlice = make([]SLBServerStatus, 0)
+
+		clusterStatusJsonMap, ok := clusterValue.(map[string]interface{})
+		if ok == false {
+			errorText := fmt.Sprintf("Fail to parse clusterValue %v cloudoneJsonMap %v", clusterValue, cloudoneJsonMap)
+			errorMessageSlice = append(errorMessageSlice, errorText)
+		} else {
+			for serverKey, serverValue := range clusterStatusJsonMap {
+				serverStatusJsonMap, ok := serverValue.(map[string]interface{})
+				if ok == false {
+					errorText := fmt.Sprintf("Fail to parse serverValue %v cloudoneJsonMap %v", serverValue, cloudoneJsonMap)
+					errorMessageSlice = append(errorMessageSlice, errorText)
+				} else {
+					slbServerStatus := SLBServerStatus{}
+					slbServerStatus.IP = serverKey
+
+					slbServerStatus.Active, ok = serverStatusJsonMap["active"].(bool)
+					if ok == false {
+						errorText := fmt.Sprintf("Fail to parse serverStatusJsonMap[active] %v cloudoneJsonMap %v", serverStatusJsonMap["active"], cloudoneJsonMap)
+						errorMessageSlice = append(errorMessageSlice, errorText)
+					}
+
+					if slbServerStatus.Active {
+						serviceJsonMap, ok := serverStatusJsonMap["service"].(map[string]interface{})
+						if ok == false {
+							errorText := fmt.Sprintf("Fail to parse serverStatusJsonMap[service] %v cloudoneJsonMap %v", serverStatusJsonMap["service"], cloudoneJsonMap)
+							errorMessageSlice = append(errorMessageSlice, errorText)
+						} else {
+							if slbServerStatus.CloudOneSLB, ok = serviceJsonMap["cloudone_slb"].(bool); ok == false {
+								errorText := fmt.Sprintf("Fail to convert field cloudone_slb in serviceJsonMap[cloudone_slb] %v cloudoneJsonMap %v", serviceJsonMap["cloudone_slb"], cloudoneJsonMap)
+								errorMessageSlice = append(errorMessageSlice, errorText)
+							}
+							if slbServerStatus.HAProxy, ok = serviceJsonMap["haproxy"].(bool); ok == false {
+								errorText := fmt.Sprintf("Fail to convert field haproxy in serviceJsonMap[haproxy] %v cloudoneJsonMap %v", serviceJsonMap["haproxy"], cloudoneJsonMap)
+								errorMessageSlice = append(errorMessageSlice, errorText)
+							}
+							if slbServerStatus.Keepalived, ok = serviceJsonMap["keepalived"].(bool); ok == false {
+								errorText := fmt.Sprintf("Fail to convert field keepalived in serviceJsonMap[keepalived] %v cloudoneJsonMap %v", serviceJsonMap["keepalived"], cloudoneJsonMap)
+								errorMessageSlice = append(errorMessageSlice, errorText)
+							}
+						}
+
+						slbDaemonJsonMap, ok := serverStatusJsonMap["slb_daemon"].(map[string]interface{})
+						if ok == false {
+							errorText := fmt.Sprintf("Fail to parse serverStatusJsonMap[slb_daemon] %v cloudoneJsonMap %v", serverStatusJsonMap["slb_daemon"], cloudoneJsonMap)
+							errorMessageSlice = append(errorMessageSlice, errorText)
+						} else {
+							if slbServerStatus.LastCommandTime, ok = slbDaemonJsonMap["last_command_created_time"].(string); ok == false {
+								errorText := fmt.Sprintf("Fail to convert field last_command_created_time in slbDaemonJsonMap[last_command_created_time] %v cloudoneJsonMap %v", slbDaemonJsonMap["last_command_created_time"], cloudoneJsonMap)
+								errorMessageSlice = append(errorMessageSlice, errorText)
+							}
+						}
+					}
+
+					slbSetStatus.ServerSlice = append(slbSetStatus.ServerSlice, slbServerStatus)
+				}
+			}
+		}
+		sort.Sort(SortSLBServerStatusByIP(slbSetStatus.ServerSlice))
+		slbSetStatusSlice = append(slbSetStatusSlice, slbSetStatus)
+	}
+
+	return slbSetStatusSlice, errorMessageSlice
 }
